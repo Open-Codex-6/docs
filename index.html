@@ -21,7 +21,7 @@
         name: "软工3文档仓库",
         nameLink: "/",
         themeColor: "#114514",
-        loadSidebar: "/_sidebar.md",
+        loadSidebar: "./_sidebar.md",
         auto2top: true,
         subMaxLevel: 4,
         // coverpage: true,
@@ -46,6 +46,9 @@
           language: "chinese",
         },
         subMaxLevel: 2, // Set the maximum header depth of the sidebar to 2 (##)
+        alias: {
+          "/.*/_sidebar.md": "/_sidebar.md",
+        },
       };
     </script>
     <!-- Docsify v4 -->
