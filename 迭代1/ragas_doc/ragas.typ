@@ -12,15 +12,29 @@
 
 #show: frame-style(styles.thmbox)
 
+#outline()
+
+#pagebreak()
+
 #include "1-intro.typ"
+
+#pagebreak()
 
 #include "2-software-architecture.typ"
 
+#pagebreak()
+
 #include "3-class-description.typ"
+
+#pagebreak()
 
 #include "4-class-diagram.typ"
 
+#pagebreak()
+
 #include "5-function-to-class-mapping.typ"
+
+#pagebreak()
 
 #include "6-reading-insights.typ"
 
