@@ -1,0 +1,80 @@
+
+classDiagram
+direction LR
+
+class BasePrompt {
+  <<abstract>>
+  +format(input) str
+  +parse(output)
+  +save(path)
+}
+
+class StringPrompt {
+  +template: str
+  +format(input) str
+}
+
+class PromptMixin {
+  +register_prompt(name, prompt)
+  +override_prompt(name, prompt)
+  +get_prompt(name) BasePrompt
+}
+
+class PydanticPrompt {
+  +input_model: Type
+  +output_model: Type
+  +format(input) str
+  +parse(output)
+}
+
+class RagasOutputParser {
+  +parse(text, output_model)
+  +repair(text)
+}
+
+class FixOutputFormat {
+  +fix(raw_output, schema) str
+}
+
+class ExampleStore {
+  <<interface>>
+  +add(example)
+  +retrieve(query, k) List
+}
+
+class FewShotPydanticPrompt {
+  +example_store: ExampleStore
+  +select_examples(input) List
+}
+
+class DynamicFewShotPrompt {
+  +select_examples(input) List
+}
+
+class ImageTextPrompt {
+  +build_messages(text, images) ImageTextPromptValue
+}
+
+class ImageTextPromptValue {
+  +texts: List~str~
+  +images: List~str~
+}
+
+class BaseMetricPrompt {
+  +language: str
+  +format_metric_input(input) str
+}
+
+BasePrompt <|-- StringPrompt
+BasePrompt <|-- PydanticPrompt
+BasePrompt <|-- ImageTextPrompt
+BasePrompt <|-- BaseMetricPrompt
+
+PydanticPrompt --> RagasOutputParser
+PydanticPrompt <|-- FixOutputFormat
+PydanticPrompt <|-- FewShotPydanticPrompt
+FewShotPydanticPrompt --> ExampleStore
+FewShotPydanticPrompt <|-- DynamicFewShotPrompt
+
+ImageTextPrompt --> ImageTextPromptValue
+PromptMixin ..> BasePrompt
