@@ -1,11 +1,11 @@
 #import "./template.typ": *
 
 #show: assignment_class.with(
-  title: "Ragas 源码泛读文档",
+  title: "Ragas 源码泛读报告",
   author: "华振翔 王涵 柯羽桐 蔡宇阳 张屹峰 张家浩",
   course: "软件工程与计算 III",
-  professor_name: "2025年",
-  semester: "秋季学期",
+  professor_name: "2026年",
+  semester: "春季学期",
   due_time: datetime.today(),
   id: "",
 )
