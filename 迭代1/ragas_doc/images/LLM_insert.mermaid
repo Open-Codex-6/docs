@@ -1,0 +1,84 @@
+
+classDiagram
+direction LR
+
+class BaseRagasLLM {
+  <<abstract>>
+  +generate(prompt) str
+  +agenerate(prompt) str
+  +is_finished(resp) bool
+}
+
+class LangchainLLMWrapper {
+  +lc_model: BaseLanguageModel
+  +generate(prompt) str
+}
+
+class LlamaIndexLLMWrapper {
+  +li_model: LLM
+  +generate(prompt) str
+}
+
+class InstructorBaseRagasLLM {
+  <<abstract>>
+  +generate_structured(prompt, response_model)
+}
+
+class StructuredOutputAdapter {
+  <<abstract>>
+  +build_schema(model) Dict
+  +parse(raw) Dict
+}
+
+class LiteLLMAdapter {
+  +provider: str
+  +call(messages, schema) Dict
+}
+
+class LiteLLMStructuredLLM {
+  +response_model: Type
+  +generate_structured(prompt, response_model)
+}
+
+class BaseRagasEmbedding {
+  <<abstract>>
+  +embed_text(text) List~float~
+  +embed_texts(texts) List~List~float~~
+}
+
+class BaseRagasEmbeddings {
+  <<abstract>>
+  +embed_query(text) List~float~
+  +embed_documents(texts) List~List~float~~
+}
+
+class LangchainEmbeddingsWrapper {
+  +lc_embeddings: Embeddings
+}
+
+class OpenAIEmbeddings {
+  +model: str
+}
+
+class HuggingFaceEmbeddings {
+  +model_name: str
+}
+
+class LiteLLMEmbeddings {
+  +provider: str
+}
+
+BaseRagasLLM <|-- LangchainLLMWrapper
+BaseRagasLLM <|-- LlamaIndexLLMWrapper
+BaseRagasLLM <|-- InstructorBaseRagasLLM
+
+StructuredOutputAdapter <|-- LiteLLMAdapter
+InstructorBaseRagasLLM --> StructuredOutputAdapter
+LiteLLMStructuredLLM <|-- InstructorBaseRagasLLM
+LiteLLMStructuredLLM --> LiteLLMAdapter
+
+BaseRagasEmbedding <|-- BaseRagasEmbeddings
+BaseRagasEmbeddings <|-- LangchainEmbeddingsWrapper
+BaseRagasEmbeddings <|-- OpenAIEmbeddings
+BaseRagasEmbeddings <|-- HuggingFaceEmbeddings
+BaseRagasEmbeddings <|-- LiteLLMEmbeddings

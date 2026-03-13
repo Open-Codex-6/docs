@@ -1,0 +1,111 @@
+
+classDiagram
+direction LR
+
+class Node {
+  +id: str
+  +type: str
+  +properties: Dict
+}
+
+class Relationship {
+  +source: Node
+  +target: Node
+  +relation_type: str
+  +properties: Dict
+}
+
+class KnowledgeGraph {
+  +nodes: List~Node~
+  +relationships: List~Relationship~
+  +add_node(node)
+  +add_relationship(rel)
+}
+
+class Persona {
+  +name: str
+  +background: str
+}
+
+class PersonaGenerationPrompt {
+  +generate(topics) Persona
+}
+
+class BaseScenario {
+  +query_style: str
+  +constraints: Dict
+}
+
+class BaseSynthesizer {
+  <<abstract>>
+  +generate_scenarios() List~BaseScenario~
+  +generate_samples() List~TestsetSample~
+}
+
+class SingleHopQuerySynthesizer {
+  +generate_scenarios() List~BaseScenario~
+}
+
+class MultiHopQuerySynthesizer {
+  +generate_scenarios() List~BaseScenario~
+}
+
+class TestsetGenerator {
+  +from_documents(docs) Testset
+  +generate() Testset
+}
+
+class TestsetSample {
+  +user_input: str
+  +reference: str
+  +metadata: Dict
+}
+
+class Testset {
+  +samples: List~TestsetSample~
+  +to_list() List~Dict~
+  +to_dataframe()
+}
+
+class BaseGraphTransformation {
+  <<abstract>>
+  +apply(kg: KnowledgeGraph) KnowledgeGraph
+}
+
+class Extractor {
+  <<abstract>>
+  +extract(node: Node) Dict
+}
+
+class SummaryExtractor {
+  +extract(node: Node) Dict
+}
+
+class RelationshipBuilder {
+  <<abstract>>
+  +build(kg: KnowledgeGraph) List~Relationship~
+}
+
+class CosineSimilarityBuilder {
+  +threshold: float
+  +build(kg: KnowledgeGraph) List~Relationship~
+}
+
+KnowledgeGraph *-- Node
+KnowledgeGraph *-- Relationship
+Testset *-- TestsetSample
+
+BaseSynthesizer <|-- SingleHopQuerySynthesizer
+BaseSynthesizer <|-- MultiHopQuerySynthesizer
+BaseSynthesizer --> BaseScenario
+
+BaseGraphTransformation <|-- Extractor
+BaseGraphTransformation <|-- RelationshipBuilder
+Extractor <|-- SummaryExtractor
+RelationshipBuilder <|-- CosineSimilarityBuilder
+
+TestsetGenerator --> KnowledgeGraph
+TestsetGenerator --> BaseSynthesizer
+TestsetGenerator --> Testset
+TestsetGenerator ..> Persona
+PersonaGenerationPrompt ..> Persona
