@@ -1,5 +1,3 @@
-// TODO @zjh
-
 = 软件架构
 
 #figure(
