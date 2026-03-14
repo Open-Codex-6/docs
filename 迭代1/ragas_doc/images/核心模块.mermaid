@@ -1,0 +1,102 @@
+classDiagram
+    class EvaluationModule {
+        <<Facade / Module>>
+        +evaluate(dataset, metrics, column_map) EvaluationResult
+        +aevaluate(dataset, metrics, column_map) EvaluationResult
+    }
+    
+    class Executor {
+        +run_config : RunConfig
+        +keep_on_memory : bool
+        +wrap_with_callbacks()
+        +results() list
+    }
+
+    class RunConfig {
+        +timeout : int
+        +max_retries : int
+        +max_workers : int
+    }
+
+    class Experiment {
+        +name : str
+        +run_config : RunConfig
+    }
+
+    EvaluationModule ..> Executor
+    EvaluationModule ..> EvaluationResult
+    Executor *-- RunConfig
+    Experiment o-- RunConfig
+
+    class DataTable~T~ {
+        +to_pandas()
+        +to_dicts()
+        +to_list()
+    }
+
+    class Dataset~T~ {
+        +features
+    }
+
+    class EvaluationDataset {
+        +samples : list~BaseSample~
+    }
+
+    class EvaluationResult {
+        +dataset : EvaluationDataset
+        +scores : list
+        +to_pandas()
+    }
+
+    DataTable <|-- Dataset
+    DataTable <|-- Experiment
+    Dataset <|-- EvaluationDataset
+
+    class BaseSample {
+        <<Pydantic BaseModel>>
+    }
+
+    class SingleTurnSample {
+        +user_input : str
+        +retrieved_contexts : list~str~
+        +response : str
+        +reference : str
+    }
+
+    class MultiTurnSample {
+        +user_input : list~Message~
+        +reference : str
+    }
+
+    BaseSample <|-- SingleTurnSample
+    BaseSample <|-- MultiTurnSample
+    EvaluationDataset *-- BaseSample
+
+    class Message {
+        <<Pydantic BaseModel>>
+        +content : str
+    }
+
+    class HumanMessage {
+        +role = "human"
+    }
+
+    class AIMessage {
+        +role = "ai"
+        +tool_calls : list~ToolCall~
+    }
+
+    class ToolMessage {
+        +role = "tool"
+    }
+
+    class ToolCall {
+        +name : str
+        +args : dict
+    }
+
+    Message <|-- HumanMessage
+    Message <|-- AIMessage
+    Message <|-- ToolMessage
+    MultiTurnSample *-- Message
+    AIMessage *-- ToolCall

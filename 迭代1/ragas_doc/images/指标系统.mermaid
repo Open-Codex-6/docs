@@ -1,0 +1,96 @@
+classDiagram
+    class Metric {
+        <<Abstract>>
+        +name : str
+        +score() float
+        +ascore() float
+    }
+
+    class SingleTurnMetric {
+        <<Abstract>>
+        +score(row: SingleTurnSample) float
+        +ascore(row: SingleTurnSample) float
+    }
+
+    class MultiTurnMetric {
+        <<Abstract>>
+        +score(row: MultiTurnSample) float
+        +ascore(row: MultiTurnSample) float
+    }
+
+    class MetricWithLLM {
+        +llm : BaseRagasLLM
+        +prompt : PydanticPrompt
+    }
+
+    Metric <|-- SingleTurnMetric
+    Metric <|-- MultiTurnMetric
+    Metric <|-- MetricWithLLM
+    
+    class SimpleBaseMetric {
+        <<Abstract>>
+    }
+
+    class SimpleLLMMetric {
+        <<Abstract>>
+        +llm
+    }
+
+    class BaseValidator {
+        <<Abstract>>
+        +validate()
+    }
+
+    class DiscreteValidator {
+        +validate_discrete()
+    }
+
+    class NumericValidator {
+        +validate_numeric()
+    }
+
+    class DiscreteMetric {
+        <<Concrete>>
+    }
+
+    class NumericMetric {
+        <<Concrete>>
+    }
+
+    SimpleBaseMetric <|-- SimpleLLMMetric
+    BaseValidator <|-- DiscreteValidator
+    BaseValidator <|-- NumericValidator
+    SimpleLLMMetric <|-- DiscreteMetric
+    DiscreteValidator <|-- DiscreteMetric
+    SimpleLLMMetric <|-- NumericMetric
+    NumericValidator <|-- NumericMetric
+
+    class AgentGoalAccuracyWithReference {
+        +llm
+        +prompt
+        -_ascore(row: MultiTurnSample) float
+    }
+    
+    class AgentGoalAccuracyWithoutReference {
+        +llm
+        +prompt
+        -_ascore(row: MultiTurnSample) float
+    }
+
+    class ToolCallAccuracy {
+        -_ascore(row: MultiTurnSample) float
+    }
+
+    class ToolCallF1 {
+        -_ascore(row: MultiTurnSample) float
+        -_calculate_f1_score() float
+    }
+
+    MultiTurnMetric <|-- AgentGoalAccuracyWithReference
+    MetricWithLLM <|-- AgentGoalAccuracyWithReference
+
+    MultiTurnMetric <|-- AgentGoalAccuracyWithoutReference
+    MetricWithLLM <|-- AgentGoalAccuracyWithoutReference
+
+    MultiTurnMetric <|-- ToolCallAccuracy
+    MultiTurnMetric <|-- ToolCallF1
