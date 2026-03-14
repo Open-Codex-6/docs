@@ -2,7 +2,7 @@
 
 #table(
   columns: (9%, 25%, 24%, 42%),
-  align: (center, center, center, left),
+  align: (center, center, center, center),
   table.header[*包*][*模块*][*类*][*描述与作用*],
 
   table.cell(rowspan: 14)[`ragas`],
@@ -38,7 +38,7 @@
 
 #table(
   columns: (9%, 25%, 24%, 42%),
-  align: (center, center, center, left),
+  align: (center, center, center, center),
   table.header[*包*][*模块*][*类*][*描述与作用*],
 
   table.cell(rowspan: 20)[`ragas`],
