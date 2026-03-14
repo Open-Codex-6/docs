@@ -28,7 +28,7 @@
   [`FeedbackMutation` `PromptGeneration`], [Prompt 类：根据指令与反馈集合生成改写后的指令文本（即将反馈落地为新的 prompt）。],
 
   table.cell(rowspan: 1)[`genetic (misc)`],
-  [`-`], [其它内部函数与私有协程（如 `_reverse_engineer_instruction`、`_feedback_mutation`、`_cross_over_prompts` 等）负责与 LLM 的交互、candidate 的生成与组合，这些为 `GeneticOptimizer` 的子步骤实现。],
+  [`-`], [其它内部函数与私有协程（如 `_reverse_engineer` `_instruction`、`_feedback_mutation`、`_cross_over_prompts` 等）负责与 LLM 的交互、candidate 的生成与组合，这些为 `GeneticOptimizer` 的子步骤实现。],
 
   table.cell(rowspan: 1)[`utils`],
    [ `hamming_distance` ], [工具函数：计算候选预测向量之间的汉明距离（返回距离矩阵），用于交叉变异阶段的父代选择（寻找行为差异最大的配对）。],
