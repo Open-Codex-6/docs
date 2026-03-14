@@ -3,11 +3,11 @@
 
 == 优化器
 #table(
-  columns: (20%, 20%, 33%, 27%),
+  columns: (9%, 25%, 24%, 42%),
   align: (center, center, center, center),
   table.header[*包*][*模块*][*类*][*描述与作用*],
 
-  table.cell(rowspan: 17)[`ragas.optimizers`],
+  table.cell(rowspan: 17)[`ragas.` `optim` `izers`],
 
   table.cell(rowspan: 1)[`base`],
   [`Optimizer`], [抽象基类：定义 `optimize` 抽象方法及优化器通用属性（如 `metric`、`llm`）。所有具体优化器应继承此类并实现优化流程，保证接口一致性与可插拔性。],
@@ -22,9 +22,9 @@
 
   table.cell(rowspan: 5)[`genetic (feedback)`],
   [`FeedbackExample`], [反馈示例数据模型：封装单个样本的输入/输出/期望输出，供反馈生成 prompt 使用。],
-  [`FeedbackMutationInput`], [反馈生成 Prompt 的输入模型：包含指令与若干 `FeedbackExample`，用于请求模型产生对指令的改进意见。],
-  [`FeedbackMutationOutput`], [反馈生成 Prompt 的输出模型：包含若干具体反馈字符串，用于后续指令改写。],
-  [`FeedbackMutationPrompt`], [Prompt 类：生成针对给定指令与示例的改进反馈，限制反馈数量并避免建议通过修改示例来改进（聚焦指令本身）。],
+  [`FeedbackMutation` `Input`], [反馈生成 Prompt 的输入模型：包含指令与若干 `FeedbackExample`，用于请求模型产生对指令的改进意见。],
+  [`FeedbackMutation` `Output`], [反馈生成 Prompt 的输出模型：包含若干具体反馈字符串，用于后续指令改写。],
+  [`FeedbackMutation` `Prompt`], [Prompt 类：生成针对给定指令与示例的改进反馈，限制反馈数量并避免建议通过修改示例来改进（聚焦指令本身）。],
   [`FeedbackMutation` `PromptGeneration`], [Prompt 类：根据指令与反馈集合生成改写后的指令文本（即将反馈落地为新的 prompt）。],
 
   table.cell(rowspan: 1)[`genetic (misc)`],
@@ -46,11 +46,11 @@
 
 == 后端存储
 #table(
-  columns: (20%, 20%, 33%, 27%),
+  columns: (9%, 25%, 24%, 42%),
   align: (center, center, center, center),
   table.header[*包*][*模块*][*类*][*描述与作用*],
 
-  table.cell(rowspan: 7)[`ragas.backends`],
+  table.cell(rowspan: 7)[`ragas.` `backends`],
 
   table.cell(rowspan: 1)[`base`],
   [`BaseBackend`], [抽象后端基类：定义存取数据集与实验（load/save/list）的统一接口契约，要求子类实现持久化细节并在缺失时抛出 FileNotFoundError，确保返回格式为 List[Dict]。],
@@ -77,11 +77,11 @@
 
 == 集成
 #table(
-  columns: (20%, 20%, 33%, 27%),
+  columns: (9%, 25%, 24%, 42%),
   align: (center, center, center, center),
   table.header[*包*][*模块*][*类*][*描述与作用*],
 
-  table.cell(rowspan: 11)[`ragas.` `integrations`],
+  table.cell(rowspan: 11)[`ragas.` `integra` `tions`],
 
   table.cell(rowspan: 3)[`tracing.langfuse`],
   [`LangfuseTrace`], [Langfuse trace 的封装类：包装 Langfuse 返回的 trace 对象，提供统一的 `get_url()` 与简单过滤方法，并在缺少依赖时通过类型桩保持兼容。],

@@ -121,26 +121,26 @@ Optimizer <|-- GeneticOptimizer
 Optimizer <|-- DSPyOptimizer
 
 %% Prompt/model usage & composition
-GeneticOptimizer --> ReverseEngineerPrompt : uses
-GeneticOptimizer --> CrossOverPrompt : uses
-GeneticOptimizer --> FeedbackMutationPrompt : uses
-GeneticOptimizer --> FeedbackMutationPromptGeneration : uses
+GeneticOptimizer --> ReverseEngineerPrompt
+GeneticOptimizer --> CrossOverPrompt
+GeneticOptimizer --> FeedbackMutationPrompt 
+GeneticOptimizer --> FeedbackMutationPromptGeneration
 
-ReverseEngineerPrompt --> FormattedExamples : input_model
-ReverseEngineerPrompt --> OutputInstruction : output_model
+ReverseEngineerPrompt --> FormattedExamples 
+ReverseEngineerPrompt --> OutputInstruction
 
-CrossOverPrompt --> ParentPrompts : input_model
-CrossOverPrompt --> OutputInstruction : output_model
+CrossOverPrompt --> ParentPrompts
+CrossOverPrompt --> OutputInstruction
 
-FeedbackMutationPrompt --> FeedbackMutationInput : input_model
-FeedbackMutationPrompt --> FeedbackMutationOutput : output_model
+FeedbackMutationPrompt --> FeedbackMutationInput 
+FeedbackMutationPrompt --> FeedbackMutationOutput
 
-FeedbackMutationPromptGeneration --> FeedbackMutationPromptInput : input_model
-FeedbackMutationPromptGeneration --> OutputInstruction : output_model
+FeedbackMutationPromptGeneration --> FeedbackMutationPromptInput 
+FeedbackMutationPromptGeneration --> OutputInstruction
 
-GeneticOptimizer --> utils_hamming : uses
+GeneticOptimizer --> utils_hamming
 
 %% DSPy integration
-DSPyOptimizer --> dspy_adapter : uses
-dspy_adapter --> RagasDSPyLM : setup_dspy_llm uses RagasDSPyLM
-DSPyOptimizer --> RagasDSPyLM : via setup_dspy_llm
+DSPyOptimizer --> dspy_adapter
+dspy_adapter --> RagasDSPyLM
+DSPyOptimizer --> RagasDSPyLM 

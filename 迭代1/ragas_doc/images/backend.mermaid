@@ -122,15 +122,14 @@ BaseBackend <|-- LocalJSONLBackend
 BaseBackend <|-- GDriveBackend
 
 %% Backend registry relationships
-BackendRegistry --> BaseBackend : manages registrations
-BackendRegistry o-- "1" BACKEND_REGISTRY : global instance
+BackendRegistry --> BaseBackend 
+BackendRegistry o-- BACKEND_REGISTRY 
 
 class BACKEND_REGISTRY {
   <<instance>>
 }
-BACKEND_REGISTRY ..> BackendRegistry : instanceOf
+BACKEND_REGISTRY ..> BackendRegistry 
 
 %% Utility / helper usage
-InMemoryBackend --> MemorableNames : can use (example)
-LocalCSVBackend ..> LocalCSVBackend : uses private _get_file_path/_save/_load
-LocalJSONLBackend ..> LocalJSONLBackend : uses private serialization helpers
+InMemoryBackend --> MemorableNames 
+ serialization helpers

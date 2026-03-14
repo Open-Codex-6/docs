@@ -105,18 +105,18 @@ RunEvaluator <|-- EvaluatorChain
 LangchainOpikTracer <|-- OpikTracer
 
 %% --- Associations / Usages ---
-LangfuseTrace --> TraceWithFullDetails : wraps
-LangfuseTrace --> Observation : contains
-MLflowTrace --> Trace : wraps
-MLflowTrace --> Span : filters on
+LangfuseTrace --> TraceWithFullDetails
+LangfuseTrace --> Observation 
+MLflowTrace --> Trace 
+MLflowTrace --> Span
 
-EvaluatorChain ..> Metric : uses
-EvaluatorChain ..> BaseRagasLLM : may inject (for MetricWithLLM)
-EvaluatorChain ..> Embeddings : may inject (for MetricWithEmbeddings)
+EvaluatorChain ..> Metric 
+EvaluatorChain ..> BaseRagasLLM 
+EvaluatorChain ..> Embeddings 
 
-OpikTracer ..> Langchain run tracing : integrates with
-AGUIEventCollector ..> Message : produces / reconstructs
-AGUIEventCollector ..> ag_ui.core types : depends on (external)
+OpikTracer ..> Langchain run tracing 
+AGUIEventCollector ..> Message 
+AGUIEventCollector ..> ag_ui.core types
 
-HeliconeSingleton --> CacheConfig : configures
+HeliconeSingleton --> CacheConfig 
 

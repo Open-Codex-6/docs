@@ -13,8 +13,12 @@
 )
 == 集成
 #figure(
-  image("images/集成.png", width: 100%),
-  caption: [集成类图],
+  image("images/集成1.png", width: 100%),
+  caption: [集成类图1],
+)
+#figure(
+  image("images/集成2.png", width: 100%),
+  caption: [集成类图2],
 )
 == 工具模块
 #figure(
