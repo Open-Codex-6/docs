@@ -1,7 +1,7 @@
 == 核心模块
 
 #figure(
-  image("images/核心模块.png", width: 100%),
+  image("images/核心模块.png", width: 80%),
   caption: [核心模块类图],
 )
 
