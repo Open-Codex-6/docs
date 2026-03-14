@@ -1,0 +1,146 @@
+classDiagram
+direction LR
+
+class Optimizer {
+  <<abstract>>
+  +metric: MetricWithLLM?
+  +llm: BaseRagasLLM?
+  +optimize(dataset, loss, config, run_config=None, batch_size=None, callbacks=None) Dict~str~str~
+}
+
+class GeneticOptimizer {
+  +reverse_engineer_prompt: ReverseEngineerPrompt
+  +cross_over_prompt: CrossOverPrompt
+  +feedback_generation_prompt: FeedbackMutationPrompt
+  +feedback_mutation_prompt: FeedbackMutationPromptGeneration
+  +optimize(dataset, loss, config, run_config=None, batch_size=None, callbacks=None) Dict~str~str~
+  +initialize_population(...)
+  +feedback_mutation(...)
+  +cross_over_mutation(...)
+  +evaluate_fitness(...)
+}
+
+class DSPyOptimizer {
+  +num_candidates: int
+  +max_bootstrapped_demos: int
+  +max_labeled_demos: int
+  +init_temperature: float
+  +cache: CacheInterface?
+  +optimize(dataset, loss, config, run_config=None, batch_size=None, callbacks=None) Dict~str~str~
+  +_extract_instruction(optimized_module) str
+  +_generate_cache_key(dataset, loss, config) str
+}
+
+class FormattedExamples {
+  <<pydantic>>
+  +examples: List~Tuple~str,Any~~
+  +from_examples(examples) FormattedExamples
+}
+
+class OutputInstruction {
+  <<pydantic>>
+  +instruction: str
+}
+
+class ReverseEngineerPrompt {
+  <<prompt>>
+  +name: str
+  +instruction: str
+  +generate(data: FormattedExamples, llm) OutputInstruction
+}
+
+class ParentPrompts {
+  <<pydantic>>
+  +parent_1: str
+  +parent_2: str
+}
+
+class CrossOverPrompt {
+  <<prompt>>
+  +name: str
+  +instruction: str
+  +generate(data: ParentPrompts, llm) OutputInstruction
+}
+
+class FeedbackExample {
+  <<pydantic>>
+  +input: str
+  +output: Dict
+  +expected_output: Dict
+}
+
+class FeedbackMutationInput {
+  <<pydantic>>
+  +instruction: str
+  +examples: List~FeedbackExample~
+}
+
+class FeedbackMutationOutput {
+  <<pydantic>>
+  +feedbacks: List~str~
+}
+
+class FeedbackMutationPrompt {
+  <<prompt>>
+  +generate(data: FeedbackMutationInput, llm) FeedbackMutationOutput
+}
+
+class FeedbackMutationPromptInput {
+  <<pydantic>>
+  +instruction: str
+  +feedbacks: List~str~
+}
+
+class FeedbackMutationPromptGeneration {
+  <<prompt>>
+  +generate(data: FeedbackMutationPromptInput, llm) OutputInstruction
+}
+
+class RagasDSPyLM {
+  <<adapter>>
+  +ragas_llm: BaseRagasLLM
+  +__call__(prompt=None, messages=None, **kwargs) List~str~
+  +_generate(messages, **kwargs) str
+}
+
+class dspy_adapter {
+  <<module>>
+  +pydantic_prompt_to_dspy_signature(prompt) Type
+  +ragas_dataset_to_dspy_examples(dataset, prompt_name) List~dspy.Example~
+  +create_dspy_metric(loss, metric_name) Callable
+  +setup_dspy_llm(dspy, ragas_llm) None
+}
+
+class utils_hamming {
+  <<function>>
+  +hamming_distance(vectors: np.ndarray) np.ndarray
+}
+
+%% Inheritance
+Optimizer <|-- GeneticOptimizer
+Optimizer <|-- DSPyOptimizer
+
+%% Prompt/model usage & composition
+GeneticOptimizer --> ReverseEngineerPrompt : uses
+GeneticOptimizer --> CrossOverPrompt : uses
+GeneticOptimizer --> FeedbackMutationPrompt : uses
+GeneticOptimizer --> FeedbackMutationPromptGeneration : uses
+
+ReverseEngineerPrompt --> FormattedExamples : input_model
+ReverseEngineerPrompt --> OutputInstruction : output_model
+
+CrossOverPrompt --> ParentPrompts : input_model
+CrossOverPrompt --> OutputInstruction : output_model
+
+FeedbackMutationPrompt --> FeedbackMutationInput : input_model
+FeedbackMutationPrompt --> FeedbackMutationOutput : output_model
+
+FeedbackMutationPromptGeneration --> FeedbackMutationPromptInput : input_model
+FeedbackMutationPromptGeneration --> OutputInstruction : output_model
+
+GeneticOptimizer --> utils_hamming : uses
+
+%% DSPy integration
+DSPyOptimizer --> dspy_adapter : uses
+dspy_adapter --> RagasDSPyLM : setup_dspy_llm uses RagasDSPyLM
+DSPyOptimizer --> RagasDSPyLM : via setup_dspy_llm

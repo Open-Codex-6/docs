@@ -1,0 +1,122 @@
+classDiagram
+direction LR
+
+%% --- Integrations classes (ragas.integrations) ---
+
+class LangfuseTrace {
+  +trace: TraceWithFullDetails
+  -_langfuse_client: Langfuse
+  +__init__(trace: TraceWithFullDetails)
+  +get_url() Optional~str~
+  +filter(span_name: str) List~Observation~
+}
+class TraceWithFullDetails {
+  +id: str
+  +timestamp: datetime
+  +htmlPath: str
+  +latency: int
+  +totalCost: float
+  +observations: List~Observation~
+  +scores: List~float~
+  +tags: List~str~
+  +public: bool
+  +environment: str
+}
+class Observation {
+  +name: str
+  +... fields ...
+}
+
+class MLflowTrace {
+  +trace: Trace
+  +__init__(trace: Trace)
+  +get_url() str
+  +get_filter(span_name: str) List~Span~
+}
+class Span {
+  +name: str
+  +... fields ...
+}
+class Trace {
+  +info
+  +search_spans(name: str) List~Span~
+  +... fields ...
+}
+
+class EvaluatorChain {
+  +metric: Metric
+  +__init__(metric: Metric, **kwargs)
+  +input_keys() List~str~
+  +output_keys() List~str~
+  +_call(inputs) Dict
+  +_acall(inputs) Dict (async)
+  +evaluate_run(run, example) EvaluationResult
+}
+class Chain {
+  <<external>>
+}
+class RunEvaluator {
+  <<external>>
+}
+
+class OpikTracer {
+  +_evaluation_run_id: Optional~str~
+  +_process_start_trace(run)
+  +_process_end_trace(run)
+  +_persist_run(run)
+}
+class LangchainOpikTracer {
+  <<external>>
+}
+
+class AGUIEventCollector {
+  +messages: List~Message~
+  +include_metadata: bool
+  +__init__(metadata: bool=False)
+  +process_event(event) None
+  +get_messages() List~Message~
+  +_handle_text_message_start(event) None
+  +_handle_text_message_content(event) None
+  +_handle_text_message_end(event) None
+  +_handle_tool_call_start(event) None
+  +_handle_tool_call_end(event) None
+}
+class Message {
+  <<type alias / model>>
+}
+
+class HeliconeSingleton {
+  +api_key: Optional~str~
+  +base_url: Optional~str~
+  +cache_config: Optional~CacheConfig~
+  +__new__() HeliconeSingleton
+  +default_headers() Dict~str,str~
+  +is_enabled() bool
+}
+class CacheConfig {
+  +ttl: int
+  +maxsize: int
+}
+
+%% --- Inheritance / Implementation ---
+Chain <|-- EvaluatorChain
+RunEvaluator <|-- EvaluatorChain
+
+LangchainOpikTracer <|-- OpikTracer
+
+%% --- Associations / Usages ---
+LangfuseTrace --> TraceWithFullDetails : wraps
+LangfuseTrace --> Observation : contains
+MLflowTrace --> Trace : wraps
+MLflowTrace --> Span : filters on
+
+EvaluatorChain ..> Metric : uses
+EvaluatorChain ..> BaseRagasLLM : may inject (for MetricWithLLM)
+EvaluatorChain ..> Embeddings : may inject (for MetricWithEmbeddings)
+
+OpikTracer ..> Langchain run tracing : integrates with
+AGUIEventCollector ..> Message : produces / reconstructs
+AGUIEventCollector ..> ag_ui.core types : depends on (external)
+
+HeliconeSingleton --> CacheConfig : configures
+
