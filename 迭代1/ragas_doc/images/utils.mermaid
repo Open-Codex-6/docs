@@ -1,0 +1,63 @@
+classDiagram
+direction LR
+
+%% --- Classes from src/ragas/utils.py ---
+
+class DeprecationHelper {
+  +new_target: Type
+  +deprecation_message: str
+  +__init__(new_target, deprecation_message)
+  +__call__(*args, **kwargs) Any
+  +__getattr__(attr) Any
+  -_warn() None
+}
+
+class _ContextualFormatter {
+  <<extends logging.Formatter>>
+  +__init__(fmt=None, datefmt=None)
+  +format(record) str
+  +format_time(record, datefmt=None, local_time=False) str
+  +utc_converter(timestamp) datetime
+}
+
+class ProgressBarManager {
+  +desc: str
+  +show_progress: bool
+  +__init__(desc: str, show_progress: bool)
+  +create_single_bar(total: int) tqdm
+  +create_nested_bars(total_jobs: int, batch_size: int)
+  +update_batch_bar(batch_pbar: tqdm, batch_num: int, n_batches: int, batch_size: int) None
+}
+
+class MemorableNames {
+  -adjectives: List~str~
+  -scientists: List~str~
+  -used_names: Set~str~
+  +__init__() 
+  +generate_name() str
+  +generate_unique_name() str
+  +generate_unique_names(count: int) List~str~
+}
+
+class memorable_names {
+  <<instance>>
+  note "Global instance of MemorableNames for easy access" as N
+}
+
+%% --- External libs / types (illustrative) ---
+class logging.Formatter {
+  <<external>>
+}
+class tqdm {
+  <<external>>
+}
+
+%% --- Inheritance / relationships ---
+logging.Formatter <|-- _ContextualFormatter
+
+%% --- Associations / usages ---
+
+ProgressBarManager ..> tqdm
+memorable_names ..> MemorableNames
+
+c:\Users\25582\Downloads\diagram-class (3).png
