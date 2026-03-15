@@ -1,0 +1,135 @@
+classDiagram
+direction LR
+
+%% === Classes ===
+class BaseBackend {
+  <<abstract>>
+  +load_dataset(name: str) List~Dict~
+  +load_experiment(name: str) List~Dict~
+  +save_dataset(name: str, data: List~Dict~, data_model: Optional~Type~) None
+  +save_experiment(name: str, data: List~Dict~, data_model: Optional~Type~) None
+  +list_datasets() List~str~
+  +list_experiments() List~str~
+}
+
+class InMemoryBackend {
+  +_datasets: Dict~str, List~Dict~~
+  +_experiments: Dict~str, List~Dict~~
+  +__init__()
+  +load_dataset(name: str) List~Dict~
+  +load_experiment(name: str) List~Dict~
+  +save_dataset(name: str, data: List~Dict~, data_model: Optional~Type~) None
+  +save_experiment(name: str, data: List~Dict~, data_model: Optional~Type~) None
+  +list_datasets() List~str~
+  +list_experiments() List~str~
+}
+
+class LocalCSVBackend {
+  +root_dir: Path
+  +__init__(root_dir: str)
+  +load_dataset(name: str) List~Dict~
+  +load_experiment(name: str) List~Dict~
+  +save_dataset(name: str, data: List~Dict~, data_model: Optional~Type~) None
+  +save_experiment(name: str, data: List~Dict~, data_model: Optional~Type~) None
+  +list_datasets() List~str~
+  +list_experiments() List~str~
+  -_get_data_dir(data_type: str) Path
+  -_get_file_path(data_type: str, name: str) Path
+  -_load(data_type: str, name: str) List~Dict~
+  -_save(data_type: str, name: str, data: List~Dict~, data_model: Optional~Type~) None
+  -_list(data_type: str) List~str~
+}
+
+class LocalJSONLBackend {
+  +root_dir: Path
+  +__init__(root_dir: str)
+  +load_dataset(name: str) List~Dict~
+  +load_experiment(name: str) List~Dict~
+  +save_dataset(name: str, data: List~Dict~, data_model: Optional~Type~) None
+  +save_experiment(name: str, data: List~Dict~, data_model: Optional~Type~) None
+  +list_datasets() List~str~
+  +list_experiments() List~str~
+  -_serialize_datetime(obj) Any
+  -_deserialize_datetime(obj) Any
+  -_get_data_dir(data_type: str) Path
+  -_get_file_path(data_type: str, name: str) Path
+  -_load(data_type: str, name: str) List~Dict~
+  -_save(data_type: str, name: str, data: List~Dict~, data_model: Optional~Type~) None
+  -_list(data_type: str) List~str~
+}
+
+class GDriveBackend {
+  +folder_id: str
+  +credentials_path: Optional~str~
+  +service_account_path: Optional~str~
+  +token_path: Optional~str~
+  +drive_service
+  +sheets_service
+  +__init__(folder_id: str, credentials_path: Optional~str~, service_account_path: Optional~str~, token_path: Optional~str~)
+  -_setup_auth() None
+  -_ensure_folder_structure() None
+  -_get_or_create_folder(folder_name: str, parent_id: str) str
+  -_get_or_create_spreadsheet(name: str, data_type: str) str
+  -_spreadsheet_exists(name: str, data_type: str) bool
+  -_get_folder_id_for_type(data_type: str) str
+  -_load_data_from_spreadsheet(name: str, data_type: str) List~Dict~
+  -_save_data_to_spreadsheet(name: str, data: List~Dict~, data_type: str, data_model: Optional~Type~) None
+  +load_dataset(name: str) List~Dict~
+  +load_experiment(name: str) List~Dict~
+  +save_dataset(name: str, data: List~Dict~, data_model: Optional~Type~) None
+  +save_experiment(name: str, data: List~Dict~, data_model: Optional~Type~) None
+  +list_datasets() List~str~
+  +list_experiments() List~str~
+}
+
+class BackendRegistry {
+  <<singleton>>
+  -_backends: Dict~str, Type~BaseBackend~~
+  -_aliases: Dict~str, str~
+  -_discovered: bool
+  +__new__() BackendRegistry
+  +discover_backends() Dict~str, Type~
+  +_discover_backends() None
+  +register_aliases(name: str, aliases: List~str~, overwrite: bool=False) None
+  +list_all_names() Dict~str, List~str~
+  +list_backend_info() List~Dict~
+  +get_backend_info(name: str) Dict
+  +create_backend(backend_type: str, **kwargs) BaseBackend
+  +clear() None
+  +__getitem__(name: str) Type~BaseBackend~
+  +__setitem__(name: str, backend_class: Type~BaseBackend~) None
+  +__delitem__(name: str) None
+  +__contains__(name: str) bool
+  +keys() KeysView~str~
+  +values() ValuesView~Type~BaseBackend~~
+  +items() ItemsView~str, Type~BaseBackend~~
+  +__repr__() str
+}
+
+class MemorableNames {
+  -adjectives: List~str~
+  -scientists: List~str~
+  -used_names: Set~str~
+  +generate_name() str
+  +generate_unique_name() str
+  +generate_unique_names(count: int) List~str~
+}
+
+%% === Inheritance / relationships ===
+BaseBackend <|-- InMemoryBackend
+BaseBackend <|-- LocalCSVBackend
+BaseBackend <|-- LocalJSONLBackend
+BaseBackend <|-- GDriveBackend
+
+%% Backend registry relationships
+BackendRegistry --> BaseBackend 
+BackendRegistry o-- BACKEND_REGISTRY 
+
+class BACKEND_REGISTRY {
+  <<instance>>
+}
+BACKEND_REGISTRY ..> BackendRegistry 
+
+%% Utility / helper usage
+InMemoryBackend --> MemorableNames 
+ serialization helpers
