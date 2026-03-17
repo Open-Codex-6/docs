@@ -37,12 +37,12 @@
   table.cell(rowspan: 12)[评估指标体系],
 
   table.cell(rowspan: 5)[丰富的预置指标],
-  table.cell(rowspan: 4)[`metrics.`\ `base`],
+  table.cell(rowspan: 4)[`metrics.base`],
   [`Metric`],
   [`SingleTurnMetric`],
   [`MultiTurnMetric`],
   [`MetricWithLLM`],
-  [`metrics.`\ `discrete`], [`DiscreteMetric`],
+  [`metrics.discrete`], [`DiscreteMetric`],
 
   table.cell(rowspan: 4)[Agent 专项评估],
   [`metrics.`\ `_tool_call_accuracy`], [`ToolCallAccuracy`],
@@ -51,9 +51,9 @@
   [`AgentGoalAccuracy`\ `WithoutReference`],
 
   table.cell(rowspan: 3)[自定义指标能力],
-  [`metrics.`\ `base`], [`SimpleBaseMetric`],
-  [`metrics.`\ `decorator`], [`CustomMetric`],
-  [`metrics.`\ `validators`], [`BaseValidator`],
+  [`metrics.base`], [`SimpleBaseMetric`],
+  [`metrics.decorator`], [`CustomMetric`],
+  [`metrics.validators`], [`BaseValidator`],
 )
 
 == 模型评估执行
@@ -68,7 +68,7 @@
   table.cell(rowspan: 3)[同步与异步评估],
   [`executor`], [`Executor`],
   [`run_config`], [`RunConfig`],
-  [`metrics.`\ `base`], [`Metric`],
+  [`metrics.base`], [`Metric`],
 
   table.cell(rowspan: 2)[多维度评估报告],
   table.cell(rowspan: 2)[`dataset_schema`],
@@ -76,7 +76,7 @@
   [`EvaluationDataset`],
 
   table.cell(rowspan: 2)[灵活的 LLM 配置],
-  table.cell(rowspan: 2)[`llms.`\ `base`],
+  table.cell(rowspan: 2)[`llms.base`],
   [`BaseRagasLLM`],
   [`LangchainLLMWrapper`],
 )

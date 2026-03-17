@@ -35,12 +35,12 @@
 
   table.cell(rowspan: 3)[智能数据合成],
   [`testset.`\ `synthesizers.`\ `generate`], [`TestsetGenerator`],
-  [`testset.`\ `graph`], [`KnowledgeGraph`],
-  [`testset.`\ `synthesizers.`\ `base`], [`BaseSynthesizer`],
+  [`testset.graph`], [`KnowledgeGraph`],
+  [`testset.`\ `synthesizers.base`], [`BaseSynthesizer`],
 
   table.cell(rowspan: 2)[RAG 和 Agent\ 场景支持],
-  [`testset.`\ `synthesizers.`\ `single_hop.`\ `base`], [`SingleHopQuerySynthesizer`],
-  [`testset.`\ `synthesizers.`\ `multi_hop.`\ `base`], [`MultiHopQuerySynthesizer`],
+  [`testset.`\ `synthesizers.`\ `single_hop.base`], [`SingleHopQuerySynthesizer`],
+  [`testset.`\ `synthesizers.`\ `multi_hop.base`], [`MultiHopQuerySynthesizer`],
 
   table.cell(rowspan: 3)[可配置的生成策略],
   table.cell(rowspan: 3)[`testset.`\ `transforms.`\ `base`],
@@ -60,14 +60,14 @@
 
   table.cell(rowspan: 4)[主流框架集成],
   [`integrations.`\ `langchain`], [`EvaluatorChain`],
-  [`integrations.`\ `ag_ui`], [`AGUIEventCollector`],
+  [`integrations.ag_ui`], [`AGUIEventCollector`],
   table.cell(rowspan: 2)[`llms.base`], [`LangchainLLMWrapper`],
   [`LlamaIndexLLMWrapper`],
 
   table.cell(rowspan: 4)[可观测性工具集成],
-  [`integrations.`\ `tracing.`\ `langfuse`], [`LangfuseTrace`],
-  [`integrations.`\ `tracing.`\ `mlflow`], [`MLflowTrace`],
-  [`integrations.`\ `opik`], [`OpikTracer`],
+  [`integrations.`\ `tracing.langfuse`], [`LangfuseTrace`],
+  [`integrations.`\ `tracing.mlflow`], [`MLflowTrace`],
+  [`integrations.opik`], [`OpikTracer`],
   [`integrations.`\ `helicone`], [`HeliconeSingleton`],
 
   [统一的回调接口],
