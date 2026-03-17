@@ -37,5 +37,3 @@
 #pagebreak()
 
 #include "6-reading-insights.typ"
-
-#bibliography("ragas.bib")

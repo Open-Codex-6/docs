@@ -13,13 +13,13 @@
 
   table.cell(rowspan: 2)[`testset.persona`],
   [`Persona`], [用户画像模型，描述角色名称与背景，用于生成风格化、多样化查询。],
-  [`PersonaGenerationPrompt`], [基于 `PydanticPrompt` 的人物生成提示模板，从知识图主题中自动构建 persona。],
+  [`PersonaGeneration` `Prompt`], [基于 `PydanticPrompt` 的人物生成提示模板，从知识图主题中自动构建 persona。],
 
   table.cell(rowspan: 2)[
     `testset.synthesizers.`\
     `base`
   ],
-  [`BaseScenario`], [场景抽象数据模型，统一约束 single-hop 和 multi-hop 的输入结构。],
+  [`BaseScenario`], [场景抽象数据模型，统一约束 `single-hop` 和 `multi-hop` 的输入结构。],
   [`BaseSynthesizer`], [查询合成器抽象基类，定义场景生成、样本生成与异步执行接口。],
 
   [
@@ -33,14 +33,14 @@
     `single_hop.`\
     `base`
   ],
-  [`SingleHopQuerySynthesizer`], [单跳查询合成器，针对单节点/单事实生成可直接检索的问题与答案。],
+  [`SingleHopQuery` `Synthesizer`], [单跳查询合成器，针对单节点/单事实生成可直接检索的问题与答案。],
 
   [
     `testset.synthesizers.`\
     `multi_hop.`\
     `base`
   ],
-  [`MultiHopQuerySynthesizer`], [多跳查询合成器，组合多个概念或节点关系，生成需要跨段推理的问题。],
+  [`MultiHopQuery` `Synthesizer`], [多跳查询合成器，组合多个概念或节点关系，生成需要跨段推理的问题。],
 
   table.cell(rowspan: 2)[
     `testset.synthesizers.`\
@@ -49,8 +49,8 @@
   [`TestsetSample`], [测试样本模型，保存 `user_input`、`reference` 等字段，作为评测最小单位。],
   [`Testset`], [测试集容器，聚合 TestsetSample 并提供导入导出与格式转换能力。],
 
-  table.cell(rowspan: 3)[`testset.transforms.base`],
-  [`BaseGraphTransformation`], [图转换抽象基类，统一抽取、分割、关系构建、过滤等步骤的执行协议。],
+  table.cell(rowspan: 3)[`testset.transforms.` `base`],
+  [`BaseGraph` `Transformation`], [图转换抽象基类，统一抽取、分割、关系构建、过滤等步骤的执行协议。],
   [`Extractor`], [从节点文本抽取结构化信息的基类，供 LLM、Regex、Embedding 提取器复用。],
   [`RelationshipBuilder`], [关系构建器基类，按相似度或规则在节点间创建边。],
 
@@ -66,10 +66,11 @@
     `relationship_builders.`\
     `cosine`
   ],
-  [`CosineSimilarityBuilder`], [通过向量余弦相似度构建节点关系，形成语义邻接结构。],
+  [`CosineSimilarity` `Builder`], [通过向量余弦相似度构建节点关系，形成语义邻接结构。],
 )
 
 == LLM 和嵌入
+
 
 #table(
   columns: (9%, 25%, 24%, 42%),
@@ -82,10 +83,10 @@
   [`BaseRagasLLM`], [LLM 抽象基类，统一同步、异步生成、重试、温度策略与完成态检查。],
   [`LangchainLLMWrapper`], [将 LangChain BaseLanguageModel 适配为 Ragas LLM 接口，兼容 `n-completion` 与回调链路。],
   [`LlamaIndexLLMWrapper`], [将 LlamaIndex LLM 适配为 Ragas LLM 接口，复用统一的生成与追踪机制。],
-  [`InstructorBaseRagasLLM`], [结构化输出 LLM 抽象层，面向 Pydantic 模型约束的 JSON 输出生成。],
+  [`InstructorBase` `RagasLLM`], [结构化输出 LLM 抽象层，面向 Pydantic 模型约束的 JSON 输出生成。],
 
   [`llms.adapters.base`],
-  [`StructuredOutputAdapter`], [结构化输出适配器基类，屏蔽不同提供方在 schema 与调用方式上的差异。],
+  [`StructuredOutput` `Adapter`], [结构化输出适配器基类，屏蔽不同提供方在 schema 与调用方式上的差异。],
 
   [
     `llms.adapters.`\
@@ -99,7 +100,7 @@
   table.cell(rowspan: 3)[`embeddings.base`],
   [`BaseRagasEmbedding`], [现代 embedding 抽象基类，定义 `embed_text` 与 `embed_texts` 的同步、异步语义。],
   [`BaseRagasEmbeddings`], [LangChain Embeddings 兼容抽象层，支持 `run_config`、缓存和批处理行为统一。],
-  [`LangchainEmbeddingsWrapper`], [将 LangChain embeddings 包装为 Ragas 可用对象，便于旧代码迁移。],
+  [`LangchainEmbeddings` `Wrapper`], [将 LangChain embeddings 包装为 Ragas 可用对象，便于旧代码迁移。],
 
   [
     `embeddings.`\
@@ -111,7 +112,7 @@
     `embeddings.`\
     `huggingface_provider`
   ],
-  [`HuggingFaceEmbeddings`], [Hugging Face embedding 提供者实现，支持本地与远程模型。],
+  [`HuggingFace` `Embeddings`], [Hugging Face embedding 提供者实现，支持本地与远程模型。],
 
   [
     `embeddings.`\
@@ -140,16 +141,16 @@
     `prompt.`\
     `pydantic_prompt`
   ],
-  [`PydanticPrompt`], [核心泛型提示类，支持 `Input`、`Output` Pydantic 模型、`JSON schema` 约束与解析重试。],
-  [`RagasOutputParser`], [输出解析器，负责把 LLM 文本解析为目标 Pydantic 模型并统一异常语义。],
+  [`PydanticPrompt`], [核心泛型提示类，支持 `Input`、`Output` `Pydantic` 模型、`JSON schema` 约束与解析重试。],
+  [`RagasOutputParser`], [输出解析器，负责把 LLM 文本解析为目标 `Pydantic` 模型并统一异常语义。],
   [`FixOutputFormat`], [输出修复提示模板，用于在解析失败时重构格式并提升可解析率。],
 
   table.cell(rowspan: 2)[
     `prompt.`\
-    `few_shot_pydantic_prompt`
+    `few_shot_` `pydantic_prompt`
   ],
   [`ExampleStore`], [少样本示例仓库抽象接口，定义检索与更新示例的方法。],
-  [`FewShotPydanticPrompt`], [少样本增强版 PydanticPrompt，支持示例拼接与语义检索驱动示例选择。],
+  [`FewShot` `PydanticPrompt`], [少样本增强版 `PydanticPrompt`，支持示例拼接与语义检索驱动示例选择。],
 
   [
     `prompt.`\

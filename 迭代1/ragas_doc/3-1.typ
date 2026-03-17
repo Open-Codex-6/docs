@@ -24,14 +24,14 @@
   table.cell(rowspan: 5)[`dataset_schema`],
   [`BaseSample`], [通用的 `Pydantic` 测例基类，约束测试输入的数据格式。],
   [`SingleTurnSample`], [单轮测例数据类，含 `user_input` 甚至附带 `retrieved_contexts`，适用于基准 `RAG` 模型。],
-  [`MultiTurnSample`], [多轮对话测例数据类，代理/Agent 专属核心，搭载会话序列以追踪完整推演能力。],
+  [`MultiTurnSample`], [多轮对话测例数据类，搭载会话序列以追踪完整推演能力。],
   [`EvaluationDataset`], [用于聚合特定验证集的类型安全池，为引擎打包分发异构单多轮样本提供保障。],
   [`EvaluationResult`], [结构化的最终记分卡与反馈栈，包裹通过或失败评估的过程快照结果。],
 
   table.cell(rowspan: 3)[`messages`],
   [`Message`], [消息基类，面向人类/机器的意图表达基础。],
   [`Human/AIMessage`], [具体的聊天轮次对象，作为 `MultiTurnSample` 中的核心单元描摹会话时序。],
-  [`ToolCall`], [结构化表达外部函数和执行特征参数的模型，是评估工具编排准确率（Agent 典型指标）的核心素材。],
+  [`ToolCall`], [结构化表达外部函数和执行特征参数的模型，用于评估工具编排准确率。],
 )
 
 == 指标系统
