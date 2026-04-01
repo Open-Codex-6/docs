@@ -1,5 +1,13 @@
 # 迭代 2
 
+## 文档导航
+
+- [Agent 本体](/迭代2/agent/README.md)
+- [Agent 应用](/迭代2/app/README.md)
+- [Agent 评估平台](/迭代2/evaluation/README.md)
+
+## 任务
+
 1. 选题
 2. Base Agent：文档/Agent 仅提供基础 Agent 功能，无需特别复杂的前端
 3. Agent 应用：文档/前端/后端
