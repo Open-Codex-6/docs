@@ -27,21 +27,19 @@
 - Base Agent
   - @zjh @hzx
   - @hzx 还需完成评估平台的评估部分的开发
+- 前端：@cyy @wh
+- 后端：@zyf @kyt
 - Agent 应用
   - 组长 @zjh
-  - 前 @cyy
-  - 后 @zyf
 - Agent 评估平台
   - 组长 @hzx
-  - 前 @wh
-  - 后 @kyt
 - CI/CD @wh @zjh
 
 ## 技术选型
 
 - 前端：React + TS + MUI
 - 后端：Go + Redis + MySQL
-  - 高并发, mq, 分布式事务, 分布式锁, 数据库主从备份
+  - 高并发, mq, 分布式事务, 分布式锁, 数据库主从备份（待资源充足后另行配置）
 - Agent：Python
 
 ## 仓库
@@ -55,6 +53,12 @@
 |Agent 评估平台 后端|<http://172.29.4.49/2026seiii-016/agent-evaluation-backend>|<https://github.com/Open-Codex-6/agent-evaluation-backend>|
 
 - 每次 clone 新仓库前，请按照 <https://se3.cos.tg/#/rules/git?id=%e8%ae%be%e7%bd%ae%e7%94%a8%e6%88%b7%e5%90%8d%e9%82%ae%e7%ae%b1%e3%80%81gpg> 的要求配置好 git 用户名、邮箱和 GPG key。
+
+## 前端
+
+@cyy
+
+## 后端所需资源
 
 ## 进一步拓展项目
 
