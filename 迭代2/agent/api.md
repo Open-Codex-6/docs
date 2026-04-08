@@ -12,7 +12,7 @@
 - 接口地址: `POST /chat/completions`
 - 请求头
   - `Content-Type: application/json`
-  - `Authorization: Bearer <token>`
+  - `Authorization: Bearer <token>`（目前 `token` 无限制，填写任意字符串即可）
 
 #### 请求Body
 
