@@ -2,7 +2,7 @@
 
 ## 基础地址
 
-`baseUrl`: `/api/v1`
+`baseUrl`: `https://agent-base.cos.tg/api/v1`
 
 ## 核心会话接口
 
