@@ -7,6 +7,7 @@
   - [Agent 应用](/迭代2/app/README.md)
     - [API 接口文档](/迭代2/app/api.md)
   - [Agent 评估平台](/迭代2/evaluation/README.md)
+    - [API 接口文档](/迭代2/evaluation/api.md)
 - 会议纪要
   - [260401](/迭代2/meeting/260401.md)
   - [260408](/迭代2/meeting/260408.md)
