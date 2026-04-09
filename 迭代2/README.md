@@ -54,10 +54,6 @@
 
 - 每次 clone 新仓库前，请按照 <https://se3.cos.tg/#/rules/git?id=%e8%ae%be%e7%bd%ae%e7%94%a8%e6%88%b7%e5%90%8d%e9%82%ae%e7%ae%b1%e3%80%81gpg> 的要求配置好 git 用户名、邮箱和 GPG key。
 
-## 前端
-
-@cyy
-
 ## 后端所需资源
 
 ## 评估
