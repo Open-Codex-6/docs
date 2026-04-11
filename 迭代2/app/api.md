@@ -30,7 +30,7 @@
 ```json
 {
     "code": "200",
-    "msg": null,
+    "msg": "",
     "data": 2
 }
 ```
@@ -71,7 +71,7 @@
 ```json
 {
     "code": "200",
-    "msg": null,
+    "msg": "",
     "data": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1IiwiZXhwIjoxNzQyOTAwNDUwfQ.R_GtVrXmg8E_hGjUY4Gm_zFKVCg0Dy8jWreAAmJrvCM"
 }
 ```
@@ -114,7 +114,7 @@
 ```json
 {
     "code": "200",
-    "msg": null,
+    "msg": "",
     "data": "用户信息更新成功"
 }
 ```
