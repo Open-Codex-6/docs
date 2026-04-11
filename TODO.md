@@ -34,3 +34,8 @@
 
 | 任务名称 | 详情 | 负责人 | 截止日期 | 备注 | 完成状态 |
 | --- | --- | --- | --- | --- | --- |
+| agent-base 内网部署 | | @wh | 4/15 18:00 | | 已完成 |
+| agent-evaluation-frontend 内网部署 | | @wh | 4/15 18:00 | | 推进中 |
+| agent-app-frontend 内网部署 | | @wh | 4/15 18:00 | | 推进中 |
+| agent-evaluation-backend 内网部署 | | @wh | 4/15 18:00 | | 推进中 |
+| agent-app-backend 内网部署 | | @wh | 4/15 18:00 | | 推进中 |
