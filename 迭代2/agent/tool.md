@@ -9,7 +9,7 @@
 1. **编写工具类**：在 `src/services/tools/providers/local.py` 中补充一个新的 `BaseTool` 子类。
 2. **注册到 Provider**：确保将它挂载到 `LocalProvider._tools` 数组中。
 
-### 示例示例
+### 示例
 
 ```python
 from ..base import BaseTool
@@ -47,7 +47,7 @@ class CalculatorTool(BaseTool):
 
 ```python
 def __init__(self):
-    self._tools = [WeatherTool(), CalculatorTool()]
+    self._tools: List[BaseTool] = [WeatherTool(), CalculatorTool()]
 ```
 
 ## 【待实现】外部 MCP 服务器 (MCP Tool)
