@@ -91,7 +91,7 @@
 - 请求头
   - `Content-Type: application/json`
   - `Authorization: Bearer <token>`
-    - 说明：测试该接口时需要在`Authorization`中加入`Bearer <token>`，`token`来自于login返回的`data`，若第一次`update`成功而后续失败，则为`token`已过期需重新login获取`token`
+    - 说明：`token`来自于login返回的`data`，若第一次`update`成功而后续失败，则为`token`已过期需重新login获取`token`
 
 #### 请求参数
 
