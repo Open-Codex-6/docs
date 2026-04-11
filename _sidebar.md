@@ -4,6 +4,7 @@
 - [迭代 2](/迭代2/README.md)
   - [Agent 本体](/迭代2/agent/README.md)
     - [API 接口文档](/迭代2/agent/api.md)
+    - [工具接入指南](/迭代2/agent/tool.md)
   - [Agent 应用](/迭代2/app/README.md)
     - [API 接口文档](/迭代2/app/api.md)
   - [Agent 评估平台](/迭代2/evaluation/README.md)
