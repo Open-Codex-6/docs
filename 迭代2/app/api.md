@@ -244,7 +244,6 @@
 
 #### 响应示例
 
-//TODO：前端是否需要返回更新时间？
 ```json
 {
     "code": "200",
@@ -252,11 +251,13 @@
     "data": [
         {
             "id": 1,
-            "name": "行程1"
+            "name": "行程1",
+            "updatedAt": 2026-4-1 10:00:00
         },
         {
             "id": 2,
-            "name": "行程2"
+            "name": "行程2",
+            "updatedAt": 2025-4-1 09:00:00
         }
     ]
 }
@@ -287,7 +288,31 @@
     "msg": "",
     "data": {
         "name": "默认行程名",
-        "currentVersion": 1,//TODO:我是返回当前版本号还是返回历史版本列表还是返回当前版本的详情还是什么都不要?(旅行计划)
+        "currentVersion": 1,
+        "currentPlan": {
+            "version": 1,
+            "updatedBy": "account",
+            "items": [
+                {
+                    "id": 1,
+                    "type": "attraction",
+                	"name": "故宫",
+            	    "date": "2026-05-01",
+            	    "time_slot": "09:00-12:00",
+            	    "notes": "需提前预约门票",
+                    "status": "planned"
+                },
+                {
+                    "id": 2,
+                    "type": "hotel",
+                	"name": "北京饭店",
+                	"date": "2026-05-01",
+                	"check_in": "14:00",
+                	"check_out": "2026-05-02 12:00",
+                	"status": "confirmed"
+                }
+            ]
+        },
         "chats": [
             {
             	"id": 1,
