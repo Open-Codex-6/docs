@@ -20,8 +20,8 @@
 
 ```json
 {
-	"username": "testuser",
-	"password": "123456"
+ "username": "testuser",
+ "password": "123456"
 }
 ```
 
@@ -29,17 +29,17 @@
 
 ```json
 {
-	"code": "200",
-	"msg": "",
-	"data": 2
+ "code": "200",
+ "msg": "",
+ "data": 2
 }
 ```
 
 ```json
 {
-	"code": "400",
-	"msg": "创建失败",
-	"data": null
+ "code": "400",
+ "msg": "创建失败",
+ "data": null
 }
 ```
 
@@ -61,8 +61,8 @@
 
 ```json
 {
-	"username": "testuser",
-	"password": "123456"
+ "username": "testuser",
+ "password": "123456"
 }
 ```
 
@@ -70,17 +70,17 @@
 
 ```json
 {
-	"code": "200",
-	"msg": "",
-	"data": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1IiwiZXhwIjoxNzQyOTAwNDUwfQ.R_GtVrXmg8E_hGjUY4Gm_zFKVCg0Dy8jWreAAmJrvCM"
+ "code": "200",
+ "msg": "",
+ "data": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1IiwiZXhwIjoxNzQyOTAwNDUwfQ.R_GtVrXmg8E_hGjUY4Gm_zFKVCg0Dy8jWreAAmJrvCM"
 }
 ```
 
 ```json
 {
-	"code": "400",
-	"msg": "用户不存在/用户密码错误",
-	"data": null
+ "code": "400",
+ "msg": "用户不存在/用户密码错误",
+ "data": null
 }
 ```
 
@@ -91,7 +91,7 @@
 - 请求头
   - `Content-Type: application/json`
   - `Authorization: Bearer <token>`
-	- 说明：`token`来自于login返回的`data`，若第一次`update`成功而后续失败，则为`token`已过期需重新login获取`token`
+   	- 说明：`token`来自于login返回的`data`，若第一次`update`成功而后续失败，则为`token`已过期需重新login获取`token`
 
 #### 请求参数
 
@@ -104,8 +104,8 @@
 
 ```json
 {
-	"username": "testuser",
-	"password": "newpassword"
+ "username": "testuser",
+ "password": "newpassword"
 }
 ```
 
@@ -113,25 +113,25 @@
 
 ```json
 {
-	"code": "200",
-	"msg": "",
-	"data": "用户信息更新成功"
+ "code": "200",
+ "msg": "",
+ "data": "用户信息更新成功"
 }
 ```
 
 ```json
 {
-	"code": "400",
-	"msg": "token与输入的用户名不匹配",
-	"data": null
+ "code": "400",
+ "msg": "token与输入的用户名不匹配",
+ "data": null
 }
 ```
 
 ```json
 {
-	"code": "400",
-	"msg": "更新失败",
-	"data": null
+ "code": "400",
+ "msg": "更新失败",
+ "data": null
 }
 ```
 
@@ -168,21 +168,21 @@
 
 ```json
 {
-	"page": 1,
-	"pageSize": 10,
-	"startTime": "2026-04-01T00:00:00Z",
-	"endTime": "2026-04-14T23:59:59Z",
-	"username": "testuser",
-	"scoreMin": 70,
-	"scoreMax": 100,
-	"eprPassed": true,
-	"clprMin": 0.7,
-	"clprMax": 1.0,
-	"ragasMin": 0.6,
-	"ragasMax": 1.0,
-	"tag": "travel-agent",
-	"sortBy": "createdAt",
-	"order": "desc"
+ "page": 1,
+ "pageSize": 10,
+ "startTime": "2026-04-01T00:00:00Z",
+ "endTime": "2026-04-14T23:59:59Z",
+ "username": "testuser",
+ "scoreMin": 70,
+ "scoreMax": 100,
+ "eprPassed": true,
+ "clprMin": 0.7,
+ "clprMax": 1.0,
+ "ragasMin": 0.6,
+ "ragasMax": 1.0,
+ "tag": "travel-agent",
+ "sortBy": "createdAt",
+ "order": "desc"
 }
 ```
 
@@ -190,56 +190,56 @@
 
 ```json
 {
-	"code": "200",
-	"msg": "",
-	"data": {
-		"page": 1,
-		"pageSize": 10,
-		"total": 2,
-		"records": [
-			{
-				"id": "eval_202604140001",
-				"username": "testuser",
-				"createdAt": "2026-04-14T10:20:30Z",
-				"score": 86.5,
-				"eprStatus": "PASS",
-				"clpr": 0.84,
-				"ragas": {
-					"faithfulness": 0.88,
-					"answerRelevancy": 0.9,
-					"contextRecall": 0.79
-				},
-				"tags": [
-					"travel-agent",
-					"v1"
-				]
-			},
-			{
-				"id": "eval_202604140002",
-				"username": "testuser",
-				"createdAt": "2026-04-14T09:10:11Z",
-				"score": 82.1,
-				"eprStatus": "FAIL",
-				"clpr": 0.75,
-				"ragas": {
-					"faithfulness": 0.81,
-					"answerRelevancy": 0.86,
-					"contextRecall": 0.7
-				},
-				"tags": [
-					"travel-agent"
-				]
-			}
-		]
-	}
+ "code": "200",
+ "msg": "",
+ "data": {
+  "page": 1,
+  "pageSize": 10,
+  "total": 2,
+  "records": [
+   {
+    "id": "eval_202604140001",
+    "username": "testuser",
+    "createdAt": "2026-04-14T10:20:30Z",
+    "score": 86.5,
+    "eprStatus": "PASS",
+    "clpr": 0.84,
+    "ragas": {
+     "faithfulness": 0.88,
+     "answerRelevancy": 0.9,
+     "contextRecall": 0.79
+    },
+    "tags": [
+     "travel-agent",
+     "v1"
+    ]
+   },
+   {
+    "id": "eval_202604140002",
+    "username": "testuser",
+    "createdAt": "2026-04-14T09:10:11Z",
+    "score": 82.1,
+    "eprStatus": "FAIL",
+    "clpr": 0.75,
+    "ragas": {
+     "faithfulness": 0.81,
+     "answerRelevancy": 0.86,
+     "contextRecall": 0.7
+    },
+    "tags": [
+     "travel-agent"
+    ]
+   }
+  ]
+ }
 }
 ```
 
 ```json
 {
-	"code": "400",
-	"msg": "请求参数不合法",
-	"data": null
+ "code": "400",
+ "msg": "请求参数不合法",
+ "data": null
 }
 ```
 
@@ -260,7 +260,7 @@
 
 ```json
 {
-	"evaluationId": "eval_202604140001"
+ "evaluationId": "eval_202604140001"
 }
 ```
 
@@ -268,49 +268,49 @@
 
 ```json
 {
-	"code": "200",
-	"msg": "",
-	"data": {
-		"id": "eval_202604140001",
-		"username": "testuser",
-		"userQuestion": "请生成一份 3 天杭州旅行计划",
-		"agentAnswer": "已为你生成行程，并给出每日安排。",
-		"agentExecution": {
-			"tools": [
-				"search_flights",
-				"search_hotels",
-				"local_weather"
-			],
-			"traceId": "trace_abc123"
-		},
-		"createdAt": "2026-04-14T10:20:30Z",
-		"metrics": {
-			"score": 86.5,
-			"eprStatus": "FAIL",
-			"clpr": 0.84,
-			"ragas": {
-				"faithfulness": 0.88,
-				"answerRelevancy": 0.9,
-				"contextRecall": 0.79
-			}
-		},
-		"failureReasons": {
-			"eprFailedItems": [
-				"必须包含预算上限"
-			],
-			"lprUnmetConstraints": [
-				"酒店距离地铁站 1km 内"
-			]
-		}
-	}
+ "code": "200",
+ "msg": "",
+ "data": {
+  "id": "eval_202604140001",
+  "username": "testuser",
+  "userQuestion": "请生成一份 3 天杭州旅行计划",
+  "agentAnswer": "已为你生成行程，并给出每日安排。",
+  "agentExecution": {
+   "tools": [
+    "search_flights",
+    "search_hotels",
+    "local_weather"
+   ],
+   "traceId": "trace_abc123"
+  },
+  "createdAt": "2026-04-14T10:20:30Z",
+  "metrics": {
+   "score": 86.5,
+   "eprStatus": "FAIL",
+   "clpr": 0.84,
+   "ragas": {
+    "faithfulness": 0.88,
+    "answerRelevancy": 0.9,
+    "contextRecall": 0.79
+   }
+  },
+  "failureReasons": {
+   "eprFailedItems": [
+    "必须包含预算上限"
+   ],
+   "lprUnmetConstraints": [
+    "酒店距离地铁站 1km 内"
+   ]
+  }
+ }
 }
 ```
 
 ```json
 {
-	"code": "404",
-	"msg": "评测记录不存在",
-	"data": null
+ "code": "404",
+ "msg": "评测记录不存在",
+ "data": null
 }
 ```
 
@@ -335,40 +335,40 @@
 
 ```json
 {
-	"code": "200",
-	"msg": "",
-	"data": [
-		{
-			"name": "eprStatus",
-			"description": "硬约束规则是否满足",
-			"valueRange": [
-				"PASS",
-				"FAIL"
-			],
-			"betterDirection": "PASS",
-			"category": "硬约束"
-		},
-		{
-			"name": "clpr",
-			"description": "约束满足偏好程度",
-			"valueRange": [
-				0,
-				1
-			],
-			"betterDirection": "higher",
-			"category": "软偏好"
-		},
-		{
-			"name": "ragas.faithfulness",
-			"description": "回答忠实度",
-			"valueRange": [
-				0,
-				1
-			],
-			"betterDirection": "higher",
-			"category": "软偏好"
-		}
-	]
+ "code": "200",
+ "msg": "",
+ "data": [
+  {
+   "name": "eprStatus",
+   "description": "硬约束规则是否满足",
+   "valueRange": [
+    "PASS",
+    "FAIL"
+   ],
+   "betterDirection": "PASS",
+   "category": "硬约束"
+  },
+  {
+   "name": "clpr",
+   "description": "约束满足偏好程度",
+   "valueRange": [
+    0,
+    1
+   ],
+   "betterDirection": "higher",
+   "category": "软偏好"
+  },
+  {
+   "name": "ragas.faithfulness",
+   "description": "回答忠实度",
+   "valueRange": [
+    0,
+    1
+   ],
+   "betterDirection": "higher",
+   "category": "软偏好"
+  }
+ ]
 }
 ```
 
@@ -392,8 +392,8 @@
 
 ```json
 {
-	"metricName": "clpr",
-	"limit": 20
+ "metricName": "clpr",
+ "limit": 20
 }
 ```
 
@@ -401,32 +401,32 @@
 
 ```json
 {
-	"code": "200",
-	"msg": "",
-	"data": {
-		"metricName": "clpr",
-		"points": [
-			{
-				"timestamp": "2026-04-14T10:20:30Z",
-				"evaluationId": "eval_202604140001",
-				"value": 0.84,
-				"eprPassed": false
-			},
-			{
-				"timestamp": "2026-04-14T09:10:11Z",
-				"evaluationId": "eval_202604140002",
-				"value": 0.75,
-				"eprPassed": false
-			}
-		]
-	}
+ "code": "200",
+ "msg": "",
+ "data": {
+  "metricName": "clpr",
+  "points": [
+   {
+    "timestamp": "2026-04-14T10:20:30Z",
+    "evaluationId": "eval_202604140001",
+    "value": 0.84,
+    "eprPassed": false
+   },
+   {
+    "timestamp": "2026-04-14T09:10:11Z",
+    "evaluationId": "eval_202604140002",
+    "value": 0.75,
+    "eprPassed": false
+   }
+  ]
+ }
 }
 ```
 
 ```json
 {
-	"code": "400",
-	"msg": "metricName 不存在",
-	"data": null
+ "code": "400",
+ "msg": "metricName 不存在",
+ "data": null
 }
 ```
