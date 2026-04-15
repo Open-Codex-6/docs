@@ -60,15 +60,15 @@
   - 高并发, mq, 分布式事务, 分布式锁, 数据库主从备份（待资源充足后另行配置）
 - Agent：Python
 
-## 仓库
+## x项目
 
-|仓库用途|校内地址|Github 地址|
-|-|-|-|
-|Agent 本体|<http://172.29.4.49/2026seiii-016/agent-base>|<https://github.com/Open-Codex-6/agent-base>|
-|Agent 应用 前端|<http://172.29.4.49/2026seiii-016/agent-app-frontend/>|<https://github.com/Open-Codex-6/agent-app-frontend>|
-|Agent 应用 后端|<http://172.29.4.49/2026seiii-016/agent-app-backend>|<https://github.com/Open-Codex-6/agent-app-backend>|
-|Agent 评估平台 前端|<http://172.29.4.49/2026seiii-016/agent-evaluation-frontend>|<https://github.com/Open-Codex-6/agent-evaluation-frontend>|
-|Agent 评估平台 后端|<http://172.29.4.49/2026seiii-016/agent-evaluation-backend>|<https://github.com/Open-Codex-6/agent-evaluation-backend>|
+|项目|校内仓库|Github 仓库|校内网址|校外网址|
+|-|-|-|-|-|
+|Agent 本体|<http://172.29.4.49/2026seiii-016/agent-base>|<https://github.com/Open-Codex-6/agent-base>||<https://agent-base.cos.tg>|
+|Agent 应用 前端|<http://172.29.4.49/2026seiii-016/agent-app-frontend/>|<https://github.com/Open-Codex-6/agent-app-frontend>||<https://trip.cos.tg>|
+|Agent 应用 后端|<http://172.29.4.49/2026seiii-016/agent-app-backend>|<https://github.com/Open-Codex-6/agent-app-backend>|||
+|Agent 评估平台 前端|<http://172.29.4.49/2026seiii-016/agent-evaluation-frontend>|<https://github.com/Open-Codex-6/agent-evaluation-frontend>||<https://eval.cos.tg>|
+|Agent 评估平台 后端|<http://172.29.4.49/2026seiii-016/agent-evaluation-backend>|<https://github.com/Open-Codex-6/agent-evaluation-backend>|||
 
 - 每次 clone 新仓库前，请按照 <https://se3.cos.tg/#/rules/git?id=%e8%ae%be%e7%bd%ae%e7%94%a8%e6%88%b7%e5%90%8d%e9%82%ae%e7%ae%b1%e3%80%81gpg> 的要求配置好 git 用户名、邮箱和 GPG key。
 
