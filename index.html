@@ -13,6 +13,10 @@
       rel="stylesheet"
       href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/docsify-plugin-toc@1.3.1/dist/light.css"
+    />
   </head>
   <body>
     <div id="app"></div>
@@ -48,9 +52,15 @@
         alias: {
           "/.*/_sidebar.md": "/_sidebar.md",
         },
+        toc: {
+          tocMaxLevel: 3,
+          target: "h2, h3, h4, h5, h6",
+          ignoreHeaders: ["", ""],
+        },
       };
     </script>
     <!-- Docsify v4 -->
     <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+    <script src="https://unpkg.com/docsify-plugin-toc@1.3.1/dist/docsify-plugin-toc.min.js"></script>
   </body>
 </html>
