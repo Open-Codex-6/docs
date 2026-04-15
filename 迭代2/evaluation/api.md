@@ -5,7 +5,7 @@
 ### 创建用户
 
 - 功能说明：创建新用户。
-- 接口地址: `POST /api/accounts`
+- 接口地址: `POST /api/auth/register`
 - 请求头
   - `Content-Type: application/json`
 
@@ -46,7 +46,7 @@
 ### 登录
 
 - 功能说明：用户登录。
-- 接口地址: `POST /api/accounts/login`
+- 接口地址: `POST /api/auth/login`
 - 请求头
   - `Content-Type: application/json`
 
@@ -87,7 +87,7 @@
 ### 更新用户信息
 
 - 功能说明：更新用户信息。
-- 接口地址: `PUT /api/accounts`
+- 接口地址: `PUT /api/auth`
 - 请求头
   - `Content-Type: application/json`
   - `Authorization: Bearer <token>`
