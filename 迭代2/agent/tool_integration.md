@@ -52,34 +52,50 @@ def __init__(self):
 
 ## 外部 MCP 服务器 (MCP Tool)
 
-系统已完整支持通过 MCP (Model Context Protocol) 协议接入外部工具服务器。目前采用 `stdio` 通信模式，并实现了业务解耦。
+对于运行在独立进程、通过 MCP 协议暴露的第三方服务（如本地 Node.js 服务、云 API 包装器等），使用 MCP 工具可扩展系统能力。
 
-### 技术路线
+### 步骤
 
-1. **核心驱动层**: `src/services/tools/providers/mcp.py` 实现通用的 `MCPProvider`，负责进程管理、超时控制与 Schema 清洗。
-2. **业务适配层**: 如 `src/services/tools/providers/amap_mcp.py`，负责特定 MCP Server（如高德地图）的参数配置。
+1. **配置环境变量**：在 `.env` 中添加 MCP 服务器的启动命令与 API 密钥。
+2. **创建 MCP Provider 工厂**：在 `src/services/tools/providers/` 下创建一个 `{service_name}_mcp.py` 文件，包含工厂函数 `create_{service_name}_mcp_provider()`。
+3. **注册到系统**：在 `src/services/tools/__init__.py` 中调用工厂函数，将 Provider 加入注册表。
 
-### 接入示例：高德地图
+### 示例：高德地图
 
 **1. 配置环境变量**：
-在 `.env` 中添加：
 
-```env
-# 必填：高德地图 API Key
-AMAP_MAPS_API_KEY=你的高德Key
+> **具体情况具体分析**
+> 所有的参数请写入 configuration.md 以说明每个参数的用处
 
-# 可选：自定义启动命令及参数（默认如下）
-MCP_AMAP_COMMAND=npx
-MCP_AMAP_ARGS=-y @amap/amap-maps-mcp-server
+**2. 创建 MCP Provider 工厂**：
+在 `src/services/tools/providers/amap_mcp.py` 中实现：
+
+```python
+from .mcp_base import MCPProvider
+
+def create_amap_mcp_provider():
+    """创建高德地图 MCP Provider"""
+    command = os.getenv("MCP_AMAP_COMMAND", "npx")
+    args = os.getenv("MCP_AMAP_ARGS", "-y @amap/amap-maps-mcp-server").split()
+    
+    amap_provider = MCPProvider(
+        name="amap",
+        command=command,
+        args=args,
+        env={
+            "AMAP_MAPS_API_KEY": os.getenv("AMAP_MAPS_API_KEY", "")
+        }
+    )
+    return amap_provider if amap_provider.available() else None
 ```
 
-**2. 核心对接逻辑**：
-系统在 `src/services/tools/__init__.py` 中自动调用工厂函数进行注册：
+**3. 注册到系统**：
+在 `src/services/tools/__init__.py` 中：
 
 ```python
 from .providers.amap_mcp import create_amap_mcp_provider
 
-# 实例化高德专用 Provider
+# 实例化并注册高德 Provider
 amap_provider = create_amap_mcp_provider()
 if amap_provider:
     registry.add_provider(amap_provider)
@@ -92,4 +108,3 @@ if amap_provider:
 - **兼容性**: 自动清理 JSON Schema 中的 `$schema`、`title` 等 OpenAI 不支持的元数据字段。
 
 一切接入在后端完全解耦，编排层和模型将一视同仁地使用这些扩展能力。
-
