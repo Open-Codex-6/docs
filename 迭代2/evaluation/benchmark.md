@@ -77,4 +77,4 @@
 
 ### 已有外部参考 Benchmark
 
-<https://arxiv.org/pdf/2512.22673v1> Section 2.3
+- <https://arxiv.org/pdf/2512.22673v1> Section 2.3
