@@ -7,47 +7,72 @@
 ### 步骤
 
 1. **编写工具类**：在 `src/services/tools/providers/local.py` 中补充一个新的 `BaseTool` 子类。
-2. **注册到 Provider**：确保将它挂载到 `LocalProvider._tools` 数组中。
+2. **注册到 Provider**：确保将它挂载到 `LocalProvider` 的初始化集合中。
 
-### 示例
+### 示例代码
+
+以编写一个简单的天气查询工具为例：
 
 ```python
+import logging
+from typing import Any
 from ..base import BaseTool
 
-class CalculatorTool(BaseTool):
-    # 1. 设置名称和内部描述
-    name = "calculator"
-    description = "执行基础的加法运算"
-    
-    # 2. 提供符合 OpenAI 函数调用规范的 JSON Schema
+logger = logging.getLogger(__name__)
+
+class WeatherTool(BaseTool):
+    """一个本地的模拟天气工具"""
+
+    name = "get_weather_local"
+    description = "获取指定城市的当前实时天气情况及温度"
+
+    # 兼容 OpenAI Tools 定义的 Schema
     schema = {
         "type": "function",
         "function": {
-            "name": "calculator",
-            "description": "执行基础的加法运算",
+            "name": "get_weather_local",
+            "description": "获取指定城市的当前实时天气情况及温度",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "a": { "type": "number", "description": "左操作数" },
-                    "b": { "type": "number", "description": "右操作数" }
+                    "location": {
+                        "type": "string",
+                        "description": "需要查询的城市或地点名称，例如：北京、广州",
+                    }
                 },
-                "required": ["a", "b"]
-            }
-        }
+                "required": ["location"],
+            },
+        },
     }
 
-    # 3. 实现真正的核心逻辑 (支持异步)
-    async def execute(self, **kwargs):
-        a = kwargs.get("a", 0)
-        b = kwargs.get("b", 0)
-        return {"result": a + b}
+    async def execute(self, **kwargs) -> Any:
+        """执行天气查询"""
+        location = kwargs.get("location", "未知地点")
+        logger.debug("WeatherTool.execute called with location=%s", location)
+        
+        # ... 业务逻辑与第三方调用 ...
+        return {
+            "location": location,
+            "weather": "晴朗",
+            "temperature_c": 28,
+        }
 ```
 
 然后在 `LocalProvider` 的 `__init__` 里把它加进去：
 
 ```python
-def __init__(self):
-    self._tools: List[BaseTool] = [WeatherTool(), CalculatorTool()]
+from typing import List
+from ..base import ToolProvider
+
+class LocalProvider(ToolProvider):
+    name = "local"
+
+    def __init__(self):
+        # 初始化时加载指定的工具
+        self._tools: List[BaseTool] = [WeatherTool()]
+        
+    async def get_tools(self) -> List[BaseTool]:
+        return self._tools
 ```
 
 ## 外部 MCP 服务器 (MCP Tool)
@@ -62,48 +87,81 @@ def __init__(self):
 
 ### 示例：高德地图
 
-**1. 配置环境变量**：
+#### 1. 配置环境变量
 
 > **具体情况具体分析**
-> 所有的参数请写入 configuration.md 以说明每个参数的用处
+> 所有的参数请写入 `configuration.md` 以说明每个参数的用处
 
-**2. 创建 MCP Provider 工厂**：
+#### 2. 创建 MCP Provider 工厂
+
 在 `src/services/tools/providers/amap_mcp.py` 中实现：
 
 ```python
-from .mcp_base import MCPProvider
+import os
+import shlex
+import logging
+from typing import Optional
+from .mcp import MCPProvider
 
-def create_amap_mcp_provider():
+logger = logging.getLogger(__name__)
+
+def create_amap_mcp_provider() -> Optional[MCPProvider]:
     """创建高德地图 MCP Provider"""
-    command = os.getenv("MCP_AMAP_COMMAND", "npx")
-    args = os.getenv("MCP_AMAP_ARGS", "-y @amap/amap-maps-mcp-server").split()
+    amap_key = (os.getenv("AMAP_MAPS_API_KEY") or "").strip()
+    if not amap_key:
+        logger.debug("AMAP_MAPS_API_KEY not found, skipping AMap MCP provider")
+        return None
+
+    command = (os.getenv("MCP_AMAP_COMMAND") or "npx").strip()
+    args_raw = (os.getenv("MCP_AMAP_ARGS") or "-y @amap/amap-maps-mcp-server").strip()
     
-    amap_provider = MCPProvider(
-        name="amap",
+    try:
+        # 使用 shlex.split 保证带空格的命令参数被正确解析
+        args = shlex.split(args_raw)
+    except Exception as e:
+        logger.error("Failed to parse MCP_AMAP_ARGS: %s", e)
+        return None
+
+    env = {"AMAP_MAPS_API_KEY": amap_key}
+    
+    return MCPProvider(
+        provider_name="amap-maps",
         command=command,
         args=args,
-        env={
-            "AMAP_MAPS_API_KEY": os.getenv("AMAP_MAPS_API_KEY", "")
-        }
+        env=env,
+        tool_name_prefix="amap", # 防冲突命名前缀
     )
-    return amap_provider if amap_provider.available() else None
 ```
 
-**3. 注册到系统**：
+#### 3. 注册到系统
+
 在 `src/services/tools/__init__.py` 中：
 
 ```python
+import logging
+from .registry import ToolRegistry
+from .selectors import AllToolsSelector
+from .providers.local import LocalProvider
 from .providers.amap_mcp import create_amap_mcp_provider
 
-# 实例化并注册高德 Provider
+logger = logging.getLogger(__name__)
+
+registry = ToolRegistry(selector=AllToolsSelector())
+registry.add_provider(LocalProvider())
+
+# 实例化并尝试注册高德 Provider
 amap_provider = create_amap_mcp_provider()
 if amap_provider:
-    registry.add_provider(amap_provider)
+    try:
+        registry.add_provider(amap_provider)
+        logger.info("AMap MCP provider registered")
+    except Exception as e:
+        logger.error("Failed to register AMap MCP provider: %s", e)
 ```
 
 ### 运行机制说明
 
-- **防冲突命名**: MCP 工具会自动添加前缀（如 `amap_`），避免与本地工具重名。
+- **防冲突命名**: 利用 `tool_name_prefix` 参数，MCP 工具会自动添加前缀（如 `amap_`），避免与本地工具或其他 MCP 服务的工具重名。
 - **安全性**: 具备 30s 硬超时保护及子进程异常回滚机制。
 - **兼容性**: 自动清理 JSON Schema 中的 `$schema`、`title` 等 OpenAI 不支持的元数据字段。
 
