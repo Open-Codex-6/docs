@@ -12,6 +12,4 @@ OPENAI_MODEL=gpt-4o-mini  # Agent 将调用此模型进行推理
 
 ```plaintext
 AMAP_MAPS_API_KEY=your_amap_maps_api_key_here  # 高德地图 API 密钥
-MCP_AMAP_COMMAND=npx  # 启动高德 MCP 服务的命令（npx 用于运行 npm 全局包）
-MCP_AMAP_ARGS=-y @amap/amap-maps-mcp-server  # 高德 MCP 服务的启动参数（-y 自动确认安装，@amap/amap-maps-mcp-server 为包名）
 ```
