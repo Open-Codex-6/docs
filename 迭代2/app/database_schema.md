@@ -17,6 +17,8 @@
   - 行程名，最长50字符，非空，默认值为“默认行程名”
 - `current_version`：`int;not null`
   - 当前版本号，非空
+- `status`: `varchar(50);not null`
+  - 状态，分为`active`和`lock`以及`deciding`，由后端管理，防止用户和agent并发问题以及用于判断是否处于等待接受Agent建议的阶段  
 - `account_id`：`foreignKey;not null`
   - 归属用户的`id`，用于指向归属的用户，外键，非空
 - `OneToMany`

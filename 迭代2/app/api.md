@@ -265,7 +265,7 @@
 
 ### 获取行程详情
 
-- 功能说明：获取行程的详细信息
+- 功能说明：获取行程的详细信息，如果旅行计划处于待决策是否接受agent的建议的阶段，会返回两个`currentPlan`，版本新的为agent新生成的
 - 接口地址: `GET /api/schedule/{id}`
 - 请求头
   - `Authorization: Bearer <token>`
@@ -289,7 +289,7 @@
     "data": {
         "name": "默认行程名",
         "currentVersion": 1,
-        "currentPlan": {
+        "currentPlan": [{
             "version": 1,
             "updatedBy": "account",
             "items": [
@@ -312,7 +312,7 @@
                 	"status": "confirmed"
                 }
             ]
-        },
+        }],
         "chats": [
             {
             	"id": 1,
@@ -404,12 +404,10 @@
 }
 ```
 
-### 更新旅行计划(用户操作)
+### 更新旅行计划-增加计划项(用户操作)
 
-//TODO: 在一个方法里对`items`进行增删查改有点...奇怪?但是如果agent要指定只能调用一个接口的话,那这里也应该同步(可以进行封装)。如果可以提供多个接口给agent调用的话，那么这里就一个拆成增加、删除、更新`item`三个接口, 而且还要考虑一个问题就是如果删除独立出一个接口的话, 考虑到使用场景可能要一次性删除多个`item`, 但是按照`DELETE`类型的请求的规范,不应该使用请求体,查询参数使用列表的话也会收到URL长度限制应该简短, AI建议使用`POST`
-
-- 功能说明：更新旅行计划，由用户进行更新而非Agent
-- 接口地址: ` /api/`
+- 功能说明：更新旅行计划，增加计划项，返回新的计划项的`id`
+- 接口地址: ` POST /api/schedule/add`
 - 请求头
   - `Content-Type: application/json`
   - `Authorization: Bearer <token>`
@@ -418,12 +416,21 @@
 
 | 参数名 | 类型 | 是否必填 | 说明 |
 | --- | --- | --- | --- |
+| `id` | `int` | 是 | 旅行计划的`id` |
+| `name` | `string` | 是 | 计划项的名字 |
+| `date` | `date` | 是 | 计划的时间 |
+| `time_slot` | `string`，格式必须为HH:MM-HH:MM且合法 | 是 | 时间段 |
+| `notes` | `string` | 是 | 状态 |
 
 #### 请求示例
 
 ```json
 {
-    "": ""
+    "id": 1,
+    "name": "itemName",
+    "date": 2026-4-17,
+    "time_slot": "11:00-23:59",
+    "notes": "planned"
 }
 ```
 
@@ -433,42 +440,98 @@
 {
     "code": "200",
     "msg": "",
-    "data": ""
+    "data": 1
+}
+```
+
+### 更新旅行计划-删除计划项(用户操作)
+
+- 功能说明：更新旅行计划，删除计划项
+- 接口地址: ` POST /api/schedule/delete`
+- 请求头
+  - `Content-Type: application/json`
+  - `Authorization: Bearer <token>`
+
+#### 请求参数
+
+| 参数名        | 类型  | 是否必填 | 说明           |
+| ------------- | ----- | -------- | -------------- |
+| `schedule_id` | `int` | 是       | 旅行计划的`id` |
+| `item_id`     | `int` | 是       | 计划项的`id`   |
+
+#### 请求示例
+
+```json
+{
+    "schedule_id": 1,
+    "item_id": 2
+}
+```
+
+#### 响应示例
+
+```json
+{
+    "code": "200",
+    "msg": "",
+    "data": "删除成功"
+}
+```
+
+### 更新旅行计划(用户操作)
+
+- 功能说明：更新旅行计划，更新旅行计划中的计划项，返回更新后的item的`id`
+- 接口地址: ` POST /api/schedule/update`
+- 请求头
+  - `Content-Type: application/json`
+  - `Authorization: Bearer <token>`
+
+#### 请求参数
+
+| 参数名 | 类型 | 是否必填 | 说明 |
+| ------ | ---- | -------- | ---- |
+| `schedule_id` | `int` | 是 | 旅行计划的`id` |
+| `item_id` | `int` | 是 | 计划项的`id` |
+| `name` | `string` | 否 | 计划项的名字 |
+| `date` | `date` | 否 | 计划的时间 |
+| `time_slot` | `string`，格式必须为HH:MM-HH:MM且合法 | 否 | 时间段 |
+| `notes` | `string` | 否 | 状态 |
+
+#### 请求示例
+
+```json
+{
+    "schedule_id": 1,
+    "item_id": 3,
+    "name": "new_name"
+}
+```
+
+#### 响应示例
+
+```json
+{
+    "code": "200",
+    "msg": "",
+    "data": 4
 }
 ```
 
 ### 更新旅行计划(agent使用)
 
-//TODO:待定,理由同上
-
-- 功能说明：
-- 接口地址: ` /api/`
+- 功能说明：更新旅行计划，包含三个接口，除路径外均与用户使用的相同，只是后端在实现时会进行标注的区别
+- 接口地址: ` POST /api/schedule/agent/`+`add`或`delete`或`update`
 - 请求头
   - `Content-Type: application/json`
   - `Authorization: Bearer <token>`
 
 #### 请求参数
 
-| 参数名 | 类型 | 是否必填 | 说明 |
-| --- | --- | --- | --- |
-
 #### 请求示例
-
-```json
-{
-    "": ""
-}
-```
 
 #### 响应示例
 
-```json
-{
-    "code": "200",
-    "msg": "",
-    "data": ""
-}
-```
+三者均与用户使用的接口一致
 
 ### 获取旅行计划历史版本
 
