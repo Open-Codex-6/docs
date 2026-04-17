@@ -30,7 +30,7 @@
 ```json
 {
     "code": "200",
-    "msg": "",
+    "msg": "SUCCESS",
     "data": 2
 }
 ```
@@ -71,7 +71,7 @@
 ```json
 {
     "code": "200",
-    "msg": "",
+    "msg": "SUCCESS",
     "data": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1IiwiZXhwIjoxNzQyOTAwNDUwfQ.R_GtVrXmg8E_hGjUY4Gm_zFKVCg0Dy8jWreAAmJrvCM"
 }
 ```
@@ -114,7 +114,7 @@
 ```json
 {
     "code": "200",
-    "msg": "",
+    "msg": "SUCCESS",
     "data": "用户信息更新成功"
 }
 ```
@@ -164,7 +164,7 @@
 ```json
 {
     "code": "200",
-    "msg": "",
+    "msg": "SUCCESS",
     "data": 1//行程id
 }
 ```
@@ -198,7 +198,7 @@
 ```json
 {
     "code": "200",
-    "msg": "",
+    "msg": "SUCCESS",
     "data": "更新成功"
 }
 ```
@@ -223,7 +223,7 @@
 ```json
 {
     "code": "200",
-    "msg": "",
+    "msg": "SUCCESS",
     "data": [
         {
             "id": 1,
@@ -261,7 +261,7 @@
 ```json
 {
     "code": "200",
-    "msg": "",
+    "msg": "SUCCESS",
     "data": {
         "name": "默认行程名",
         "currentVersion": 1,
@@ -325,7 +325,7 @@
 ```json
 {
     "code": "200",
-    "msg": "",
+    "msg": "SUCCESS",
     "data": "删除成功"
 }
 ```
@@ -354,7 +354,7 @@
 ```json
 {
     "code": "200",
-    "msg": "",
+    "msg": "SUCCESS",
     "data": {
         "version": 1,
         "updatedBy": "account",
@@ -417,7 +417,7 @@
 ```json
 {
     "code": "200",
-    "msg": "",
+    "msg": "SUCCESS",
     "data": 1
 }
 ```
@@ -451,7 +451,7 @@
 ```json
 {
     "code": "200",
-    "msg": "",
+    "msg": "SUCCESS",
     "data": "删除成功"
 }
 ```
@@ -490,7 +490,7 @@
 ```json
 {
     "code": "200",
-    "msg": "",
+    "msg": "SUCCESS",
     "data": 4
 }
 ```
@@ -534,7 +534,7 @@
 ```json
 {
     "code": "200",
-    "msg": "",
+    "msg": "SUCCESS",
     "data": [
         {
             "id": 1,
@@ -572,7 +572,7 @@
 ```json
 {
     "code": "200",
-    "msg": "",
+    "msg": "SUCCESS",
     "data": {
         "version": 1,
         "updatedBy": "account",
@@ -629,7 +629,7 @@
 ```json
 {
     "code": "200",
-    "msg": "",
+    "msg": "SUCCESS",
     "data": {
         "version": 3,
         "updatedBy": "account",
@@ -687,7 +687,7 @@
 ```json
 {
     "code": "200",
-    "msg": "",
+    "msg": "SUCCESS",
     "data": 1
 }
 ```
@@ -721,7 +721,7 @@
 ```json
 {
     "code": "200",
-    "msg": "",
+    "msg": "SUCCESS",
     "data": "更新成功"
 }
 ```
@@ -759,7 +759,7 @@
 ```json
 {
     "code": "200",
-    "msg": "",
+    "msg": "SUCCESS",
     "data": ""
 }
 ```
@@ -788,7 +788,7 @@
 ```json
 {
     "code": "200",
-    "msg": "",
+    "msg": "SUCCESS",
     "data": ""
 }
 ```
@@ -821,7 +821,7 @@
 ```json
 {
     "code": "200",
-    "msg": "",
+    "msg": "SUCCESS",
     "data": ""
 }
 ```
