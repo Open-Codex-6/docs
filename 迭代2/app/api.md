@@ -1,29 +1,5 @@
 # Agent APP API 接口文档
 
-## 目录
-
-- [用户模块](#用户模块)
-  - [创建用户](#创建用户)
-  - [登录](#登录)
-  - [更新用户信息](#更新用户信息)
-- [Agent模块](#agent模块)
-  - [创建行程](#创建行程)
-  - [更改行程名](#更改行程名)
-  - [获取行程列表](#获取行程列表)
-  - [获取行程详情](#获取行程详情)
-  - [删除行程](#删除行程)
-  - [获取旅行计划详情](#获取旅行计划详情)
-  - [更新旅行计划(用户操作)](#更新旅行计划用户操作)
-  - [更新旅行计划(Agent使用)](#更新旅行计划agent使用)
-  - [获取旅行计划历史版本](#获取旅行计划历史版本)
-  - [获取旅行计划单个历史版本详情](#获取旅行计划单个历史版本详情)
-  - [旅行计划历史版本回退](#旅行计划历史版本回退)
-  - [新建会话](#新建会话)
-  - [更改会话名](#更改会话名)
-  - [发送消息](#发送消息)
-  - [获取历史消息](#获取历史消息)
-  - [终止生成](#终止生成)
-
 ## 用户模块
 
 ### 创建用户
@@ -159,7 +135,7 @@
 }
 ```
 
-## Agent模块
+## 行程模块
 
 ### 创建行程
 
@@ -212,7 +188,7 @@
 
 ```json
 {
-    "id": 1
+    "id": 1,
     "name": "神秘初始行程自定义名222"
 }
 ```
@@ -296,27 +272,27 @@
                 {
                     "id": 1,
                     "type": "attraction",
-                	"name": "故宫",
-            	    "date": "2026-05-01",
-            	    "time_slot": "09:00-12:00",
-            	    "notes": "需提前预约门票",
+                 "name": "故宫",
+                 "date": "2026-05-01",
+                 "time_slot": "09:00-12:00",
+                 "notes": "需提前预约门票",
                     "status": "planned"
                 },
                 {
                     "id": 2,
                     "type": "hotel",
-                	"name": "北京饭店",
-                	"date": "2026-05-01",
-                	"check_in": "14:00",
-                	"check_out": "2026-05-02 12:00",
-                	"status": "confirmed"
+                 "name": "北京饭店",
+                 "date": "2026-05-01",
+                 "check_in": "14:00",
+                 "check_out": "2026-05-02 12:00",
+                 "status": "confirmed"
                 }
             ]
         }],
         "chats": [
             {
-            	"id": 1,
-            	"name": "默认会话1"
+             "id": 1,
+             "name": "默认会话1"
             },
             {
                 "id": 2,
@@ -354,6 +330,8 @@
 }
 ```
 
+## 旅行计划模块
+
 ### 获取旅行计划详情
 
 - 功能说明：获取某行程下当前版本的信息
@@ -384,20 +362,20 @@
             {
                 "id": 1,
                 "type": "attraction",
-            	"name": "故宫",
-            	"date": "2026-05-01",
-            	"time_slot": "09:00-12:00",
-            	"notes": "需提前预约门票",
+             "name": "故宫",
+             "date": "2026-05-01",
+             "time_slot": "09:00-12:00",
+             "notes": "需提前预约门票",
                 "status": "planned"
             },
             {
                 "id": 2,
                 "type": "hotel",
-            	"name": "北京饭店",
-            	"date": "2026-05-01",
-            	"check_in": "14:00",
-            	"check_out": "2026-05-02 12:00",
-            	"status": "confirmed"
+             "name": "北京饭店",
+             "date": "2026-05-01",
+             "check_in": "14:00",
+             "check_out": "2026-05-02 12:00",
+             "status": "confirmed"
             }
         ]
     }
@@ -407,7 +385,7 @@
 ### 更新旅行计划-增加计划项(用户操作)
 
 - 功能说明：更新旅行计划，增加计划项，返回新的计划项的`id`
-- 接口地址: ` POST /api/schedule/add`
+- 接口地址: `POST /api/schedule/add`
 - 请求头
   - `Content-Type: application/json`
   - `Authorization: Bearer <token>`
@@ -447,7 +425,7 @@
 ### 更新旅行计划-删除计划项(用户操作)
 
 - 功能说明：更新旅行计划，删除计划项
-- 接口地址: ` POST /api/schedule/delete`
+- 接口地址: `POST /api/schedule/delete`
 - 请求头
   - `Content-Type: application/json`
   - `Authorization: Bearer <token>`
@@ -481,7 +459,7 @@
 ### 更新旅行计划(用户操作)
 
 - 功能说明：更新旅行计划，更新旅行计划中的计划项，返回更新后的item的`id`
-- 接口地址: ` POST /api/schedule/update`
+- 接口地址: `POST /api/schedule/update`
 - 请求头
   - `Content-Type: application/json`
   - `Authorization: Bearer <token>`
@@ -520,7 +498,7 @@
 ### 更新旅行计划(agent使用)
 
 - 功能说明：更新旅行计划，包含三个接口，除路径外均与用户使用的相同，只是后端在实现时会进行标注的区别
-- 接口地址: ` POST /api/schedule/agent/`+`add`或`delete`或`update`
+- 接口地址: `POST /api/schedule/agent/`+`add`或`delete`或`update`
 - 请求头
   - `Content-Type: application/json`
   - `Authorization: Bearer <token>`
@@ -602,20 +580,20 @@
             {
                 "id": 1,
                 "type": "attraction",
-            	"name": "故宫",
-            	"date": "2026-05-01",
-            	"time_slot": "09:00-12:00",
-            	"notes": "需提前预约门票",
+             "name": "故宫",
+             "date": "2026-05-01",
+             "time_slot": "09:00-12:00",
+             "notes": "需提前预约门票",
                 "status": "planned"
             },
             {
                 "id": 2,
                 "type": "hotel",
-            	"name": "北京饭店",
-            	"date": "2026-05-01",
-            	"check_in": "14:00",
-            	"check_out": "2026-05-02 12:00",
-            	"status": "confirmed"
+             "name": "北京饭店",
+             "date": "2026-05-01",
+             "check_in": "14:00",
+             "check_out": "2026-05-02 12:00",
+             "status": "confirmed"
             }
         ]
     }
@@ -659,25 +637,27 @@
             {
                 "id": 1,
                 "type": "attraction",
-            	"name": "故宫",
-            	"date": "2026-05-01",
-            	"time_slot": "09:00-12:00",
-            	"notes": "需提前预约门票",
+             "name": "故宫",
+             "date": "2026-05-01",
+             "time_slot": "09:00-12:00",
+             "notes": "需提前预约门票",
                 "status": "planned"
             },
             {
                 "id": 2,
                 "type": "hotel",
-            	"name": "北京饭店",
-            	"date": "2026-05-01",
-            	"check_in": "14:00",
-            	"check_out": "2026-05-02 12:00",
-            	"status": "confirmed"
+             "name": "北京饭店",
+             "date": "2026-05-01",
+             "check_in": "14:00",
+             "check_out": "2026-05-02 12:00",
+             "status": "confirmed"
             }
         ]
     }
 }
 ```
+
+## 会话模块
 
 ### 新建会话
 
@@ -845,4 +825,3 @@
     "data": ""
 }
 ```
-
