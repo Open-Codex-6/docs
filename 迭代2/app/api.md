@@ -1,5 +1,12 @@
 # Agent APP API 接口文档
 
+接口响应中的`msg`字段的类型说明
+| 内容 | 说明 |
+| -- | -- |
+| `SUCCESS` | 请求成功 |
+| `INVALID_REQUEST` | 参数不合法 |
+| `UNAUTHORIZED` | `token`失效 |
+
 ## 用户模块
 
 ### 创建用户
@@ -38,7 +45,7 @@
 ```json
 {
     "code": "400",
-    "msg": "创建失败",
+    "msg": "INVALID_REQUEST:创建失败",
     "data": null
 }
 ```
@@ -79,7 +86,7 @@
 ```json
 {
     "code": "400",
-    "msg": "用户不存在/用户密码错误",
+    "msg": "INVALID_REQUEST:用户不存在/用户密码错误",
     "data": null
 }
 ```
@@ -122,7 +129,7 @@
 ```json
 {
     "code": "400",
-    "msg": "token与输入的用户名不匹配",
+    "msg": "UNAUTHORIZED:token与输入的用户名不匹配",
     "data": null
 }
 ```
@@ -130,7 +137,7 @@
 ```json
 {
     "code": "400",
-    "msg": "更新失败",
+    "msg": "INVALID_REQUEST:更新失败",
     "data": null
 }
 ```
