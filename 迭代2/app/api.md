@@ -332,7 +332,7 @@
 
 ## 旅行计划模块
 
-### 获取旅行计划详情
+### 获取当前旅行计划详情
 
 - 功能说明：获取某行程下当前版本的信息
 - 接口地址: `GET /api/schedule/{schedule_id}/plan`
@@ -385,7 +385,7 @@
 ### 更新旅行计划-增加计划项(用户操作)
 
 - 功能说明：更新旅行计划，增加计划项，返回新的计划项的`id`
-- 接口地址: `POST /api/schedule/add`
+- 接口地址: `POST /api/plan/add`
 - 请求头
   - `Content-Type: application/json`
   - `Authorization: Bearer <token>`
@@ -425,7 +425,7 @@
 ### 更新旅行计划-删除计划项(用户操作)
 
 - 功能说明：更新旅行计划，删除计划项
-- 接口地址: `POST /api/schedule/delete`
+- 接口地址: `POST /api/plan/delete`
 - 请求头
   - `Content-Type: application/json`
   - `Authorization: Bearer <token>`
@@ -459,7 +459,7 @@
 ### 更新旅行计划(用户操作)
 
 - 功能说明：更新旅行计划，更新旅行计划中的计划项，返回更新后的item的`id`
-- 接口地址: `POST /api/schedule/update`
+- 接口地址: `POST /api/plan/update`
 - 请求头
   - `Content-Type: application/json`
   - `Authorization: Bearer <token>`
@@ -498,7 +498,7 @@
 ### 更新旅行计划(agent使用)
 
 - 功能说明：更新旅行计划，包含三个接口，除路径外均与用户使用的相同，只是后端在实现时会进行标注的区别
-- 接口地址: `POST /api/schedule/agent/`+`add`或`delete`或`update`
+- 接口地址: `POST /api/plan/agent/`+`add`或`delete`或`update`
 - 请求头
   - `Content-Type: application/json`
   - `Authorization: Bearer <token>`
