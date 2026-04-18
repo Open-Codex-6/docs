@@ -738,12 +738,10 @@
 
 ### 发送消息
 
-//TODO:由于需要流式输出,文档暂时无法完善,需要调研如何流式输出
-
-- 功能说明：发送消息并返回回复
+- 功能说明：发送消息并返回回复。后端会调用 Agent API 的 /chat/completions 接口，并将流式响应转发给前端。支持多模态输入（文本 + 文件）。终止后后端也会终止向agent的请求。
 - 接口地址: `POST /api/chat/send`
 - 请求头
-  - `Content-Type: application/json`
+  - `Content-Type: multipart/form-data`(支持文件上传)
   - `Authorization: Bearer <token>`
 
 #### 请求参数
@@ -752,25 +750,52 @@
 | --- | --- | --- | --- |
 | `id` | `int` | 是 | 会话`id` |
 | `message` | `String` | 是 | 发送的内容 |
+| `files` |	`File[]` | 否 | 上传的文件数组（支持图片、文档等，支持多文件） |
 
 #### 请求示例
 
-```json
-{
-    "id": 1,
-    "message": "那我问你?"
-}
-```
+使用 `multipart/form-data` 上传：
+- `id`: 1
+- `message`: "帮我分析这个行程文件"
+- `files`: [file1.jpg, file2.pdf]
 
 #### 响应示例
 
-//TODO:待定,应为流式输出
+- 使用 Server-Sent Events (SSE) 进行流式输出，实时推送 Agent 的状态和内容。
+- 常见事件类型：
+  - thought: Agent 的内部思考过程增量输出（delta 模式）。
+  - tool_call: 触发工具调用，携带 call_id。
+  - tool_result: 工具调用结果，携带对应 call_id。
+  - message_delta: 最终消息增量。
+  - error: 错误信息。
+  - done: 完成，包含 Token 使用统计。
+
+- SSE 示例：
+
+```json
+event: thought
+data: {"content": "用户上传了文件，正在分析行程。"}
+
+event: tool_call
+data: {"call_id": "call_123", "tool_name": "analyze_file", "params": {"file_id": "file_456"}}
+
+event: tool_result
+data: {"call_id": "call_123", "result": "分析完成，建议调整时间。"}
+
+event: message_delta
+data: {"content": "根据文件分析，建议将出发时间提前。"}
+
+event: done
+data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens": 100}}
+```
+
+- 响应示例（非流式，错误时）
 
 ```json
 {
-    "code": "200",
-    "msg": "SUCCESS",
-    "data": ""
+    "code": "400",
+    "msg": "INVALID_REQUEST:文件格式不支持",
+    "data": null
 }
 ```
 
@@ -793,38 +818,52 @@
 
 #### 响应示例
 
-//TODO:内容暂定,取决于agent的输出形式
-
 ```json
 {
     "code": "200",
     "msg": "SUCCESS",
-    "data": ""
+    "data": [
+        {
+            "id": 1,
+            "role": "user",
+            "content": "帮我规划行程",
+            "files": [{"id": 1, "name": "trip.pdf", "url": "/files/1"}],
+            "timestamp": "2026-04-18T10:00:00Z"
+        },
+        {
+            "id": 2,
+            "role": "assistant",
+            "content": "好的，我来帮你规划。",
+            "files": [],
+            "timestamp": "2026-04-18T10:01:00Z"
+        }
+    ]
 }
 ```
 
-### 终止生成
+## 文件模块
 
-//TODO:也涉及流式输出,待定
+### 上传文件
 
-- 功能说明：终止正在输出的内容
-- 接口地址: `POST /api/chat/stop`
+- 功能说明：上传文件用于多模态输入，返回文件`id`和访问URL。
+- 接口地址: `POST /api/files/upload`
 - 请求头
-  - `Content-Type: application/json`
+  - `Content-Type: multipart/form-data`
   - `Authorization: Bearer <token>`
 
 #### 请求参数
 
 | 参数名 | 类型 | 是否必填 | 说明 |
 | --- | --- | --- | --- |
+| `file` | `File` | 是 | 上传的文件（支持常见格式，如图片、PDF、文档） |
+| `chat_id` | `int` | 否 | 关联的会话`id`，用于权限校验 |
 
 #### 请求示例
 
-```json
-{
-    "": ""
-}
-```
+使用 `multipart/form-data`：
+
+- `file`: itinerary.jpg
+- `chat_id`: 1
 
 #### 响应示例
 
@@ -832,6 +871,40 @@
 {
     "code": "200",
     "msg": "SUCCESS",
-    "data": ""
+    "data": {
+        "id": 1,
+        "name": "itinerary.jpg",
+        "url": "/files/1",
+        "size": 1024000
+    }
 }
 ```
+
+```json
+{
+    "code": "400",
+    "msg": "INVALID_REQUEST:文件大小超过限制",
+    "data": null
+}
+```
+
+### 下载文件
+
+- 功能说明：下载指定文件。
+- 接口地址: `GET /api/files/{id}`
+- 请求头
+  - `Authorization: Bearer <token>`
+
+#### 请求参数
+
+| 参数名 | 类型 | 是否必填 | 说明 |
+| --- | --- | --- | --- |
+| `id` | `int` | 是 | 文件`id` |
+
+#### 请求示例
+
+无
+
+#### 响应示例
+
+返回文件二进制流，Content-Type 根据文件类型设置。

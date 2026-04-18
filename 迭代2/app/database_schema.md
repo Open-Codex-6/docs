@@ -59,4 +59,38 @@
   - 会话名，最长20字符，非空
 - `schedule_id`：`foreignKey;not null`
   - 归属行程的`id`，用于指向归属的行程，外键，非空
-<!-- 需要和agent对接，具体内容待定 -->
+- `OneToMany`
+  - `messages` 会话下的消息历史
+
+## messages消息
+
+- `role`：`enum('user','assistant','system');not null`
+  - 消息角色，限定为`user`、`assistant`或`system`，非空
+- `content`：`text;not null`
+  - 消息文本内容，非空
+- `chat_id`：`foreignKey;not null`
+  - 归属会话的`id`，用于指向归属的会话，外键，非空
+- `OneToMany`
+  - `message_files` 消息关联的文件
+
+## message_files消息文件关联
+
+- `message_id`：`foreignKey;not null`
+  - 归属消息的`id`，外键，非空
+- `file_id`：`foreignKey;not null`
+  - 关联文件的`id`，外键，非空
+
+## files文件
+
+- `name`：`varchar(100);not null`
+  - 文件名，最长100字符，非空
+- `path`：`varchar(255);not null`
+  - 文件存储路径，最长255字符，非空
+- `size`：`bigint;not null`
+  - 文件大小（字节），非空
+- `mime_type`：`varchar(50);not null`
+  - MIME类型，最长50字符，非空
+- `account_id`：`foreignKey;not null`
+  - 上传用户的`id`，外键，非空，用于权限控制
+- `OneToMany`
+  - `message_files` 文件关联的消息
