@@ -407,6 +407,7 @@
 | `date` | `date` | 是 | 计划的时间 |
 | `time_slot` | `string`，格式必须为HH:MM-HH:MM且合法 | 是 | 时间段 |
 | `notes` | `string` | 是 | 状态 |
+| 待定 | | | 可选项，根据`type`判断 |
 
 #### 请求示例
 
@@ -482,6 +483,7 @@
 | `date` | `date` | 否 | 计划的时间 |
 | `time_slot` | `string`，格式必须为HH:MM-HH:MM且合法 | 否 | 时间段 |
 | `notes` | `string` | 否 | 状态 |
+| 待定 | | | 可选项，根据`type`判断 |
 
 #### 请求示例
 
