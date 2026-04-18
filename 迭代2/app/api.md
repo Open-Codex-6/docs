@@ -1,6 +1,7 @@
 # Agent APP API 接口文档
 
 接口响应中的`msg`字段的类型说明
+
 | 内容 | 说明 |
 | -- | -- |
 | `SUCCESS` | 请求成功 |
@@ -279,27 +280,27 @@
                 {
                     "id": 1,
                     "type": "attraction",
-                 "name": "故宫",
-                 "date": "2026-05-01",
-                 "time_slot": "09:00-12:00",
-                 "notes": "需提前预约门票",
+                    "name": "故宫",
+                    "date": "2026-05-01",
+                    "time_slot": "09:00-12:00",
+                    "notes": "需提前预约门票",
                     "status": "planned"
                 },
                 {
                     "id": 2,
                     "type": "hotel",
-                 "name": "北京饭店",
-                 "date": "2026-05-01",
-                 "check_in": "14:00",
-                 "check_out": "2026-05-02 12:00",
-                 "status": "confirmed"
+                    "name": "北京饭店",
+                    "date": "2026-05-01",
+                    "check_in": "14:00",
+                    "check_out": "2026-05-02 12:00",
+                    "status": "confirmed"
                 }
             ]
         }],
         "chats": [
             {
-             "id": 1,
-             "name": "默认会话1"
+                "id": 1,
+                "name": "默认会话1"
             },
             {
                 "id": 2,
@@ -369,20 +370,20 @@
             {
                 "id": 1,
                 "type": "attraction",
-             "name": "故宫",
-             "date": "2026-05-01",
-             "time_slot": "09:00-12:00",
-             "notes": "需提前预约门票",
+                "name": "故宫",
+                "date": "2026-05-01",
+                "time_slot": "09:00-12:00",
+                "notes": "需提前预约门票",
                 "status": "planned"
             },
             {
                 "id": 2,
                 "type": "hotel",
-             "name": "北京饭店",
-             "date": "2026-05-01",
-             "check_in": "14:00",
-             "check_out": "2026-05-02 12:00",
-             "status": "confirmed"
+                "name": "北京饭店",
+                "date": "2026-05-01",
+                "check_in": "14:00",
+                "check_out": "2026-05-02 12:00",
+                "status": "confirmed"
             }
         ]
     }
@@ -587,20 +588,20 @@
             {
                 "id": 1,
                 "type": "attraction",
-             "name": "故宫",
-             "date": "2026-05-01",
-             "time_slot": "09:00-12:00",
-             "notes": "需提前预约门票",
+                "name": "故宫",
+                "date": "2026-05-01",
+                "time_slot": "09:00-12:00",
+                "notes": "需提前预约门票",
                 "status": "planned"
             },
             {
                 "id": 2,
                 "type": "hotel",
-             "name": "北京饭店",
-             "date": "2026-05-01",
-             "check_in": "14:00",
-             "check_out": "2026-05-02 12:00",
-             "status": "confirmed"
+                "name": "北京饭店",
+                "date": "2026-05-01",
+                "check_in": "14:00",
+                "check_out": "2026-05-02 12:00",
+                "status": "confirmed"
             }
         ]
     }
@@ -644,20 +645,20 @@
             {
                 "id": 1,
                 "type": "attraction",
-             "name": "故宫",
-             "date": "2026-05-01",
-             "time_slot": "09:00-12:00",
-             "notes": "需提前预约门票",
+                "name": "故宫",
+                "date": "2026-05-01",
+                "time_slot": "09:00-12:00",
+                "notes": "需提前预约门票",
                 "status": "planned"
             },
             {
                 "id": 2,
                 "type": "hotel",
-             "name": "北京饭店",
-             "date": "2026-05-01",
-             "check_in": "14:00",
-             "check_out": "2026-05-02 12:00",
-             "status": "confirmed"
+                "name": "北京饭店",
+                "date": "2026-05-01",
+                "check_in": "14:00",
+                "check_out": "2026-05-02 12:00",
+                "status": "confirmed"
             }
         ]
     }
