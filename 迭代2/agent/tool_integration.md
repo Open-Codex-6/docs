@@ -97,39 +97,37 @@ class LocalProvider(ToolProvider):
 在 `src/services/tools/providers/amap_mcp.py` 中实现：
 
 ```python
-import os
-import shlex
-import logging
-from typing import Optional
-from .mcp import MCPProvider
+COMMAND = "npx"
+ARGS = "-y @amap/amap-maps-mcp-server"
 
-logger = logging.getLogger(__name__)
 
 def create_amap_mcp_provider() -> Optional[MCPProvider]:
-    """创建高德地图 MCP Provider"""
+    """
+    工厂函数：根据环境变量创建高德地图 MCP Provider。
+    保持 MCPProvider 类的通用性，将具体业务（高德）逻辑抽离到此处。
+    """
     amap_key = (os.getenv("AMAP_MAPS_API_KEY") or "").strip()
     if not amap_key:
         logger.debug("AMAP_MAPS_API_KEY not found, skipping AMap MCP provider")
         return None
 
-    command = (os.getenv("MCP_AMAP_COMMAND") or "npx").strip()
-    args_raw = (os.getenv("MCP_AMAP_ARGS") or "-y @amap/amap-maps-mcp-server").strip()
-    
+    command = COMMAND.strip()
+    args_raw = ARGS.strip()
+
     try:
-        # 使用 shlex.split 保证带空格的命令参数被正确解析
         args = shlex.split(args_raw)
     except Exception as e:
         logger.error("Failed to parse MCP_AMAP_ARGS: %s", e)
         return None
 
     env = {"AMAP_MAPS_API_KEY": amap_key}
-    
+
     return MCPProvider(
         provider_name="amap-maps",
         command=command,
         args=args,
         env=env,
-        tool_name_prefix="amap", # 防冲突命名前缀
+        tool_name_prefix="amap",
     )
 ```
 
