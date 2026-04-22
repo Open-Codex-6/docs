@@ -6,8 +6,7 @@
   - [Agent 应用](/迭代2/app/README.md)
   - [Agent 评估平台](/迭代2/evaluation/README.md)
 - 会议纪要
-  - [260408](/迭代2/meeting/260408.md)
-  - [260415](/迭代2/meeting/260415.md)
+  - [260422](/迭代2/meeting/260422.md)
   - [过去会议归档](/迭代2/meeting/README.md)
 - 规范
   - [Git 规范](rules/git.md)
