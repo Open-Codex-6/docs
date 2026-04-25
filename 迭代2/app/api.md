@@ -757,7 +757,6 @@
 使用 `multipart/form-data` 上传：
 - `id`: 1
 - `message`: "帮我分析这个行程文件"
-- `files`: [file1.jpg, file2.pdf]
 
 #### 响应示例
 
@@ -827,14 +826,12 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
             "id": 1,
             "role": "user",
             "content": "帮我规划行程",
-            "files": [{"id": 1, "name": "trip.pdf", "url": "/files/1"}],
             "timestamp": "2026-04-18T10:00:00Z"
         },
         {
             "id": 2,
             "role": "assistant",
             "content": "好的，我来帮你规划。",
-            "files": [],
             "timestamp": "2026-04-18T10:01:00Z"
         }
     ]
