@@ -180,7 +180,7 @@
 ### 更改行程名
 
 - 功能说明：同接口名
-- 接口地址：`UPDATE /api/schedule`
+- 接口地址：`PUT /api/schedule`
 - 请求头
   - `Content-Type: application/json`
   - `Authorization: Bearer <token>`
@@ -613,7 +613,7 @@
 ### 旅行计划历史版本回退
 
 - 功能说明：回退到历史版本，返回回到的版本的详情
-- 接口地址: `UPDATE /api/note/version/back`
+- 接口地址: `PUT /api/note/version/back`
 - 请求头
   - `Content-Type: application/json`
   - `Authorization: Bearer <token>`
@@ -705,7 +705,7 @@
 ### 更改会话名
 
 - 功能说明：同接口名
-- 接口地址: `UPDATE /api/chat`
+- 接口地址: `PUT /api/chat`
 - 请求头
   - `Content-Type: application/json`
   - `Authorization: Bearer <token>`
