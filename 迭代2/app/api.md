@@ -343,7 +343,7 @@
 ### 获取当前旅行计划详情
 
 - 功能说明：获取某行程下当前版本的信息
-- 接口地址: `GET /api/schedule/{schedule_id}/plan`
+- 接口地址: `GET /api/schedule/plan/{schedule_id}`
 - 请求头
   - `Authorization: Bearer <token>`
 
@@ -524,7 +524,7 @@
 ### 获取旅行计划历史版本
 
 - 功能说明：获取当前行程下的所有旅行计划历史版本
-- 接口地址: `GET /api/schedule/{id}/allVersions`
+- 接口地址: `GET /api/schedule/allVersions/{id}`
 - 请求头
   - `Content-Type: application/json`
   - `Authorization: Bearer <token>`
