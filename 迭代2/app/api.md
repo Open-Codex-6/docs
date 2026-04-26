@@ -213,7 +213,7 @@
 
 ### 获取行程列表
 
-- 功能说明：获取当前登录下的token的行程列表，按照时间排序，最新的在最上面
+- 功能说明：获取当前登录下的token的行程列表，按照时间排序，最新的在最上面，考虑迭代三加入分页，需要提供页的大小和第几页两个信息，暂定
 - 接口地址: `GET /api/schedule`
 - 请求头
   - `Authorization: Bearer <token>`
@@ -236,12 +236,12 @@
         {
             "id": 1,
             "name": "行程1",
-            "updatedAt": "2026-4-1 10:00:00"
+            "updatedAt": "2026-04-01T10:00:00Z"
         },
         {
             "id": 2,
             "name": "行程2",
-            "updatedAt": "2025-4-1 09:00:00"
+            "updatedAt": "2025-04-01T09:00:00Z"
         }
     ]
 }
@@ -273,10 +273,11 @@
     "data": {
         "name": "默认行程名",
         "currentVersion": 1,
-        "currentPlan": [{
+        "currentPlan": {
             "version": 1,
             "updatedBy": "account",
-            "items": [
+            "items": //以下item内容待更改
+            [
                 {
                     "id": 1,
                     "type": "attraction",
@@ -296,7 +297,8 @@
                     "status": "confirmed"
                 }
             ]
-        }],
+        },
+        "suggestedPlan": null,//存在时格式与currentPlan保持一致
         "chats": [
             {
                 "id": 1,
@@ -442,7 +444,7 @@
 
 - SSE 示例：
 
-```json
+```text
 event: thought
 data: {"content": "用户上传了文件，正在分析行程。"}
 
