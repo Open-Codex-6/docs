@@ -236,12 +236,12 @@
         {
             "id": 1,
             "name": "行程1",
-            "updatedAt": "2026-04-01T10:00:00Z"
+            "updatedAt": "2026-04-01T10:00:00+08:00"
         },
         {
             "id": 2,
             "name": "行程2",
-            "updatedAt": "2025-04-01T09:00:00Z"
+            "updatedAt": "2025-04-01T09:00:00+08:00"
         }
     ]
 }
@@ -499,13 +499,13 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
             "id": 1,
             "role": "user",
             "content": "帮我规划行程",
-            "timestamp": "2026-04-18T10:00:00Z"
+            "timestamp": "2026-04-18T10:00:00+08:00"
         },
         {
             "id": 2,
             "role": "assistant",
             "content": "好的，我来帮你规划。",
-            "timestamp": "2026-04-18T10:01:00Z"
+            "timestamp": "2026-04-18T10:01:00+08:00"
         }
     ]
 }
