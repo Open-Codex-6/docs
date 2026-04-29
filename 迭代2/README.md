@@ -65,6 +65,7 @@
 |项目|校内仓库|Github 仓库|校内网址|校外网址|
 |-|-|-|-|-|
 |Agent 本体|<http://172.29.4.49/2026seiii-016/agent-base>|<https://github.com/Open-Codex-6/agent-base>|<http://172.29.5.12:8000>|<https://agent-base.cos.tg>|
+|Agent 评估计算平台|<http://172.29.4.49/2026seiii-016/evaluation_compute>|<https://github.com/Open-Codex-6/evaluation_compute>|待部署|<https://eval-compute.cos.tg>|
 |Agent 应用 前端|<http://172.29.4.49/2026seiii-016/agent-app-frontend/>|<https://github.com/Open-Codex-6/agent-app-frontend>|<http://172.29.5.12:3000>|<https://trip.cos.tg>|
 |Agent 应用 后端|<http://172.29.4.49/2026seiii-016/agent-app-backend>|<https://github.com/Open-Codex-6/agent-app-backend>|<http://172.29.5.12:18151>|<https://trip-api.cos.tg/>|
 |Agent 评估平台 前端|<http://172.29.4.49/2026seiii-016/agent-evaluation-frontend>|<https://github.com/Open-Codex-6/agent-evaluation-frontend>|<http://172.29.5.12:3001>|<https://eval.cos.tg>|
