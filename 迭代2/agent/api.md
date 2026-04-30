@@ -92,6 +92,9 @@ data: {"node": "TrafficAgent", "call_id": "call_1", "result": "航班列表..."}
 event: node_finish
 data: {"node": "TrafficAgent", "msg": "交通提案已提交"}
 
+event: node_finish
+data: {"node": "HotelAgent", "msg": "酒店提案已提交"}
+
 event: plan_update
 data: {"node": "Supervisor", "schedule_id": 1001, "content": "### Day 1\n- 抵达北京首都机场..."}
 
