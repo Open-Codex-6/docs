@@ -423,11 +423,12 @@
 | --- | --- | --- | --- |
 | `id` | `int` | 是 | 会话`id` |
 | `message` | `String` | 是 | 发送的内容 |
-| `files` |	`File[]` | 否 | 上传的文件数组（支持图片、文档等，支持多文件） |
+| `files` | `File[]` | 否 | 上传的文件数组（支持图片、文档等，支持多文件） |
 
 #### 请求示例
 
 使用 `multipart/form-data` 上传：
+
 - `id`: 1
 - `message`: "帮我分析这个行程文件"
 
@@ -508,5 +509,547 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
             "timestamp": "2026-04-18T10:01:00+08:00"
         }
     ]
+}
+```
+
+## 旅行计划模块
+
+### 获取当前旅行计划详情
+
+- 功能说明：获取某行程下当前版本的信息
+- 接口地址: `GET /api/schedule/plan/{schedule_id}`
+- 请求头
+  - `Authorization: Bearer <token>`
+
+#### 请求参数
+
+| 参数名        | 类型  | 是否必填 | 说明     |
+| ------------- | ----- | -------- | -------- |
+| `schedule_id` | `int` | 是       | 行程`id` |
+
+#### 请求示例
+
+无
+
+#### 响应示例
+
+```json
+{
+    "code": "200",
+    "msg": "SUCCESS",
+    "data": {
+        "version": 1,
+        "updatedBy": "account",
+        "items": [
+            {
+                "id": 1,
+                "type": "hotel",
+                "name": "旅馆1",
+                "start_time": "2026-4-30T11:11:11+8:00",
+                "end_time": "2026-4-31T11:11:11+8:00",
+                "notes": "需提前预约门票",
+                "status": "planned",
+                "isConfirmed": true,
+                "cost": 11,
+                "details": {
+                    "type": "hotel",
+                    "data": {
+                        "location":{
+                            "poi_id": "asdf",//just demo
+                            "poi_name": "a name",
+                            "address": "nanjing",
+                            "lng": 1,
+                            "lat": 12
+                        },
+                        "tags": ["tag1","tag2"],
+                        "roomtype": "双人房",
+                        "contact_phone": "12345678901",
+                        "booking_reference": "123"
+                    }
+                }
+            },
+            {
+                "id": 2,
+                "type": "transport_long'",
+                "name": "航班1",
+                "start_time": "2026-4-30T11:11:11+8:00",
+                "end_time": "2026-4-31T11:11:11+8:00",
+                "notes": "需提前预约门票",
+                "status": "planned",
+                "isConfirmed": true,
+                "cost": 11111,
+                "details": {
+                    "type": "transport_long'",
+                    "data": {
+                        "departure_location":{
+                            "poi_id": "asdf",//just demo
+                            "poi_name": "a name",
+                            "address": "nanjing",
+                            "lng": 1,
+                            "lat": 12
+                        },
+                        "arrival_location":{
+                            "poi_id": "asdf",//just demo
+                            "poi_name": "a name",
+                            "address": "nanjing",
+                            "lng": 1,
+                            "lat": 12
+                        },
+                        "transport_mode": "train",
+                        "departure_station": "航站楼1",
+                        "arrival_station": "航站楼2",
+                        "vehicle_number": 123,
+                        "seat_info": "02车 12A",
+                        "booking_reference": "预定号"
+                    }
+                }
+            }
+        ]
+    }
+}
+```
+
+### 更新旅行计划-增加计划项(用户操作)
+
+- 功能说明：更新旅行计划，增加计划项，返回新的计划项的`id`
+- 接口地址: `POST /api/plan/add`
+- 请求头
+  - `Content-Type: application/json`
+  - `Authorization: Bearer <token>`
+
+#### 请求参数
+
+| 参数名               | 类型                                  | 是否必填 | 说明                                                         |
+| -------------------- | ------------------------------------- | -------- | ------------------------------------------------------------ |
+| `id`                 | `int`                                 | 是       | 旅行计划的`id`                                               |
+| `name`               | `string`                              | 是       | 计划项的名字                                                 |
+| `start_time`         | `date`,格式为YYYY-MM-DDTHH:mm:ss+8:00 | 是       | 开始时间                                                     |
+| `end_time`           | `date`,格式为YYYY-MM-DDTHH:mm:ss+8:00 | 是       | 结束时间                                                     |
+| `notes`              | `string`                              | 是       | 说明                                                         |
+| `status`             | `string`                              | 是       | 状态,只能为`planned`或`booked`或`completed`或`cancelled`     |
+| `cost`               | `int`                                 | 是       | 花费                                                         |
+| `type`               | `stirng`                              | 是       | 类型,只能为`hotel`,`transport_long`,`transport_short`,`food`,`attraction`中选择 |
+| `location`           | `Location`                            | 否       | 单点类的地点字段                                             |
+| `tags`               | `string[]`                            | 否       | 单点类,标签                                                  |
+| `departure_location` | `Location`                            | 否       | 两点类,起点坐标                                              |
+| `arrival_location`   | `Location`                            | 否       | 两点类终点坐标                                               |
+| `room_type`          | `string`                              | 否       | `hotel`专属,房型                                             |
+| `contact_phone`      | `string`                              | 否       | `hotel`专属,电话                                             |
+| `booking_reference`  | `string`                              | 否       | `hotel`,`attraction`,`transport_long`专属,预留自动预定的号码等 |
+| `recommend_dishes`   | `string[]`                            | 否       | `food`专属,美食                                              |
+| `opening_hours`      | `string`                              | 否       | `food`,`attraction`专属,开放时间                             |
+| `suggested_duration` | `int`                                 | 否       | `attraction`专属,建议游玩时长                                |
+| `transport_mode`     | `string`                              | 否       | `transport_long`专属,只能为:`flight`,`train`,`coach`,`ferry` |
+| `departure_station`  | `string`                              | 否       | `transport_long`专属,起点站简称                              |
+| `arrival_station`    | `string`                              | 否       | `transport_long`专属,终点站简称`                             |
+| `vehicle_number`     | `string`                              | 否       | `transport_long`专属,航班号/车次                             |
+| `seat_info`          | `string`                              | 否       | `transport_long`专属,座位信息                                |
+| `routes`             | `Routes`                              | 否       | `transport_short`专属,路线信息                               |
+
+其中,`Location`类型
+
+| 参数名     | 类型     | 是否必填 | 说明 |
+| ---------- | -------- | -------- | ---- |
+| `poi_id`   | `string` | 是       |      |
+| `poi_name` | `string` | 是       |      |
+| `address`  | `string` | 是       |      |
+| `lng`      | `int`    | 是       |      |
+| `lat`      | `int`    | 是       |      |
+
+`Routes`类型
+
+| 参数名               | 类型     | 是否必填 | 说明         |
+| -------------------- | -------- | -------- | ------------ |
+| `estimated_duration` | `int`    | 是       | 预估耗时     |
+| `route_description`  | `string` | 是       | 简要路线描述 |
+| `navigation_link`    | `string` | 是       | 高德地图链接 |
+
+#### 请求示例
+
+```json
+{
+    "id": 1,
+ "type": "transport_long'",
+    "name": "航班1",
+    "start_time": "2026-4-30T11:11:11+8:00",
+    "end_time": "2026-4-31T11:11:11+8:00",
+    "notes": "需提前预约门票",
+    "status": "planned",
+    "isConfirmed": true,
+    "cost": 11111,
+    "departure_location":{
+     "poi_id": "asdf",//just demo
+        "poi_name": "a name",
+        "address": "nanjing",
+        "lng": 1,
+        "lat": 12
+    },
+    "arrival_location":{
+        "poi_id": "asdf",//just demo
+        "poi_name": "a name",
+        "address": "nanjing",
+        "lng": 1,
+        "lat": 12
+   },
+   "transport_mode": "train",
+   "departure_station": "航站楼1",
+   "arrival_station": "航站楼2",
+   "vehicle_number": 123,
+   "seat_info": "02车 12A",
+   "booking_reference": "预定号"
+}
+```
+
+#### 响应示例
+
+```json
+{
+    "code": "200",
+    "msg": "SUCCESS",
+    "data": 1
+}
+```
+
+### 更新旅行计划-删除计划项(用户操作)
+
+- 功能说明：更新旅行计划，删除计划项
+- 接口地址: `POST /api/plan/delete`
+- 请求头
+  - `Content-Type: application/json`
+  - `Authorization: Bearer <token>`
+
+#### 请求参数
+
+| 参数名        | 类型  | 是否必填 | 说明           |
+| ------------- | ----- | -------- | -------------- |
+| `schedule_id` | `int` | 是       | 旅行计划的`id` |
+| `item_id`     | `int` | 是       | 计划项的`id`   |
+
+#### 请求示例
+
+```json
+{
+    "schedule_id": 1,
+    "item_id": 2
+}
+```
+
+#### 响应示例
+
+```json
+{
+    "code": "200",
+    "msg": "SUCCESS",
+    "data": "删除成功"
+}
+```
+
+### 更新旅行计划-更新计划项(用户操作)
+
+- 功能说明：更新旅行计划，更新旅行计划中的计划项，返回更新后的item的`id`
+- 接口地址: `POST /api/plan/update`
+- 请求头
+  - `Content-Type: application/json`
+  - `Authorization: Bearer <token>`
+
+#### 请求参数
+
+| 参数名               | 类型                                  | 是否必填 | 说明                                                         |
+| -------------------- | ------------------------------------- | -------- | ------------------------------------------------------------ |
+| `schedule_id`        | `int`                                 | 是       | 旅行计划的`id`                                               |
+| `item_id`            | `int`                                 | 是       | 计划项的`id`                                                 |
+| `name`               | `string`                              | 否       | 计划项的名字                                                 |
+| `start_time`         | `date`,格式为YYYY-MM-DDTHH:mm:ss+8:00 | 否       | 开始时间                                                     |
+| `end_time`           | `date`,格式为YYYY-MM-DDTHH:mm:ss+8:00 | 否       | 结束时间                                                     |
+| `notes`              | `string`                              | 否       | 说明                                                         |
+| `status`             | `string`                              | 否       | 状态,只能为`planned`或`booked`或`completed`或`cancelled`     |
+| `cost`               | `int`                                 | 否       | 花费                                                         |
+| `type`               | `stirng`                              | 否       | 类型,只能为`hotel`,`transport_long`,`transport_short`,`food`,`attraction`中选择 |
+| `location`           | `Location`                            | 否       | 单点类的地点字段                                             |
+| `tags`               | `string[]`                            | 否       | 单点类,标签                                                  |
+| `departure_location` | `Location`                            | 否       | 两点类,起点坐标                                              |
+| `arrival_location`   | `Location`                            | 否       | 两点类终点坐标                                               |
+| `room_type`          | `string`                              | 否       | `hotel`专属,房型                                             |
+| `contact_phone`      | `string`                              | 否       | `hotel`专属,电话                                             |
+| `booking_reference`  | `string`                              | 否       | `hotel`,`attraction`,`transport_long`专属,预留自动预定的号码等 |
+| `recommend_dishes`   | `string[]`                            | 否       | `food`专属,美食                                              |
+| `opening_hours`      | `string`                              | 否       | `food`,`attraction`专属,开放时间                             |
+| `suggested_duration` | `int`                                 | 否       | `attraction`专属,建议游玩时长                                |
+| `transport_mode`     | `string`                              | 否       | `transport_long`专属,只能为:`flight`,`train`,`coach`,`ferry` |
+| `departure_station`  | `string`                              | 否       | `transport_long`专属,起点站简称                              |
+| `arrival_station`    | `string`                              | 否       | `transport_long`专属,终点站简称`                             |
+| `vehicle_number`     | `string`                              | 否       | `transport_long`专属,航班号/车次                             |
+| `seat_info`          | `string`                              | 否       | `transport_long`专属,座位信息                                |
+| `routes`             | `Routes`                              | 否       | `transport_short`专属,路线信息                               |
+
+#### 请求示例
+
+```json
+{
+    "schedule_id": 1,
+    "item_id": 3,
+    "name": "new_name"
+}
+```
+
+#### 响应示例
+
+```json
+{
+    "code": "200",
+    "msg": "SUCCESS",
+    "data": 4
+}
+```
+
+### 更新旅行计划(agent使用)
+
+- 功能说明：更新旅行计划，包含三个接口，除路径外均与用户使用的相同，只是后端在实现时会进行标注的区别
+- 接口地址: `POST /api/plan/agent/`+`add`或`delete`或`update`
+- 请求头
+  - `Content-Type: application/json`
+  - `Authorization: Bearer <token>`
+
+#### 请求参数
+
+#### 请求示例
+
+#### 响应示例
+
+三者均与用户使用的接口一致
+
+### 获取旅行计划历史版本
+
+- 功能说明：获取当前行程下的所有旅行计划历史版本
+- 接口地址: `GET /api/schedule/allVersions/{id}`
+- 请求头
+  - `Content-Type: application/json`
+  - `Authorization: Bearer <token>`
+
+#### 请求参数
+
+| 参数名 | 类型  | 是否必填 | 说明     |
+| ------ | ----- | -------- | -------- |
+| `id`   | `int` | 是       | 行程`id` |
+
+#### 请求示例
+
+无
+
+#### 响应示例
+
+```json
+{
+    "code": "200",
+    "msg": "SUCCESS",
+    "data": [
+        {
+            "id": 1,
+            "updatedBy": "account",
+            "version": 1
+        },
+        {
+            "id": 2,
+            "updatedBy": "agent",
+            "version": 2
+        }
+    ]
+}
+```
+
+### 获取旅行计划单个历史版本详情
+
+- 功能说明：见接口名
+- 接口地址: `GET /api/plan/{id}`
+- 请求头
+  - `Authorization: Bearer <token>`
+
+#### 请求参数
+
+| 参数名 | 类型  | 是否必填 | 说明         |
+| ------ | ----- | -------- | ------------ |
+| `id`   | `int` | 是       | 旅行计划`id` |
+
+#### 请求示例
+
+无
+
+#### 响应示例
+
+```json
+{
+    "code": "200",
+    "msg": "SUCCESS",
+    "data": {
+        "version": 1,
+        "updatedBy": "account",
+        "items": [
+            {
+                "id": 1,
+                "type": "hotel",
+                "name": "旅馆1",
+                "start_time": "2026-4-30T11:11:11+8:00",
+                "end_time": "2026-4-31T11:11:11+8:00",
+                "notes": "需提前预约门票",
+                "status": "planned",
+                "isConfirmed": true,
+                "cost": 11,
+                "details": {
+                    "type": "hotel",
+                    "data": {
+                        "location":{
+                            "poi_id": "asdf",//just demo
+                            "poi_name": "a name",
+                            "address": "nanjing",
+                            "lng": 1,
+                            "lat": 12
+                        },
+                        "tags": ["tag1","tag2"],
+                        "roomtype": "双人房",
+                        "contact_phone": "12345678901",
+                        "booking_reference": "123"
+                    }
+                }
+            },
+            {
+                "id": 2,
+                "type": "transport_long'",
+                "name": "航班1",
+                "start_time": "2026-4-30T11:11:11+8:00",
+                "end_time": "2026-4-31T11:11:11+8:00",
+                "notes": "需提前预约门票",
+                "status": "planned",
+                "isConfirmed": true,
+                "cost": 11111,
+                "details": {
+                    "type": "transport_long'",
+                    "data": {
+                        "departure_location":{
+                            "poi_id": "asdf",//just demo
+                            "poi_name": "a name",
+                            "address": "nanjing",
+                            "lng": 1,
+                            "lat": 12
+                        },
+                        "arrival_location":{
+                            "poi_id": "asdf",//just demo
+                            "poi_name": "a name",
+                            "address": "nanjing",
+                            "lng": 1,
+                            "lat": 12
+                        },
+                        "transport_mode": "train",
+                        "departure_station": "航站楼1",
+                        "arrival_station": "航站楼2",
+                        "vehicle_number": 123,
+                        "seat_info": "02车 12A",
+                        "booking_reference": "预定号"
+                    }
+                }
+            }
+        ]
+    }
+}
+```
+
+### 旅行计划历史版本回退
+
+- 功能说明：回退到历史版本，返回回到的版本的详情
+- 接口地址: `PUT /api/note/version/back`
+- 请求头
+  - `Content-Type: application/json`
+  - `Authorization: Bearer <token>`
+
+#### 请求参数
+
+| 参数名    | 类型  | 是否必填 | 说明                         |
+| --------- | ----- | -------- | ---------------------------- |
+| `id`      | `int` | 是       | 行程`id`                     |
+| `version` | `int` | 是       | 想要回退的版本号，一定要存在 |
+
+#### 请求示例
+
+```json
+{
+    "id": 1,
+    "version": 3
+}
+```
+
+#### 响应示例
+
+```json
+{
+    "code": "200",
+    "msg": "SUCCESS",
+    "data": {
+        "version": 1,
+        "updatedBy": "account",
+        "items": [
+            {
+                "id": 1,
+                "type": "hotel",
+                "name": "旅馆1",
+                "start_time": "2026-4-30T11:11:11+8:00",
+                "end_time": "2026-4-31T11:11:11+8:00",
+                "notes": "需提前预约门票",
+                "status": "planned",
+                "isConfirmed": true,
+                "cost": 11,
+                "details": {
+                    "type": "hotel",
+                    "data": {
+                        "location":{
+                            "poi_id": "asdf",//just demo
+                            "poi_name": "a name",
+                            "address": "nanjing",
+                            "lng": 1,
+                            "lat": 12
+                        },
+                        "tags": ["tag1","tag2"],
+                        "roomtype": "双人房",
+                        "contact_phone": "12345678901",
+                        "booking_reference": "123"
+                    }
+                }
+            },
+            {
+                "id": 2,
+                "type": "transport_long'",
+                "name": "航班1",
+                "start_time": "2026-4-30T11:11:11+8:00",
+                "end_time": "2026-4-31T11:11:11+8:00",
+                "notes": "需提前预约门票",
+                "status": "planned",
+                "isConfirmed": true,
+                "cost": 11111,
+                "details": {
+                    "type": "transport_long'",
+                    "data": {
+                        "departure_location":{
+                            "poi_id": "asdf",//just demo
+                            "poi_name": "a name",
+                            "address": "nanjing",
+                            "lng": 1,
+                            "lat": 12
+                        },
+                        "arrival_location":{
+                            "poi_id": "asdf",//just demo
+                            "poi_name": "a name",
+                            "address": "nanjing",
+                            "lng": 1,
+                            "lat": 12
+                        },
+                        "transport_mode": "train",
+                        "departure_station": "航站楼1",
+                        "arrival_station": "航站楼2",
+                        "vehicle_number": 123,
+                        "seat_info": "02车 12A",
+                        "booking_reference": "预定号"
+                    }
+                }
+            }
+        ]
+    }
 }
 ```

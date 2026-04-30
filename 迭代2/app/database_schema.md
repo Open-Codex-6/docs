@@ -42,14 +42,23 @@
   - 类型，最长20字符，非空
 - `name`： `varchar(20);not null`
   - 名字，最长20字符，非空
-- `date`： `date;not null`
-  - 日期，格式限定为YYYY-MM-DD，非空
-- `time_slot`：`varchar(20);;not null;check:schedule REGEXP '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]-([0-1]?[0-9]|2[0-3]):[0-5][0-9]$'`
-  - 时间段，格式限定为HH:MM-HH:MM，非空
+- `start_time`： `date;not null`
+  - 开始时间，格式限定为YYYY-MM-DDTHH:mm:ss+8:00，非空
+- `end_time`： `date;not null`
+  - 结束时间，格式限定为YYYY-MM-DDTHH:mm:ss+8:00，非空
 - `notes`：`varchar(100)`
   - 说明，最长100字符
 - `status`：`varchar(20);not null`
   - 当前状态，最长20字符，非空
+- `isConfirmed`：`boolean; not null`
+  - 是否被接收
+- `cost`：`int; not null`
+  - 预估花费  
+- `details`：`json; not null`
+  - `type`：`not null`
+    - 类型，最长20字符，非空  
+  - `data`：`not null`
+    - 内容详见`item_types.pdf`，内含不同字段  
 - `plan_id`：`foreignKey;not null`
   - 归属旅行计划的`id`，用于指向归属的旅行计划，外键，非空
 
