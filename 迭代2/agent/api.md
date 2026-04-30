@@ -8,9 +8,7 @@
 
 ### 发起对话
 
-- 功能说明：将 Agent 作为一个无状态的推理服务调用。
-  - 主业务后端需要将完整的历史上下文通过 `messages` 数组全量传入。
-  - 若需要与旅行计划联动，请传入 `schedule_id` 以绑定黑板。
+- 功能说明：将 Agent 作为一个无状态的推理服务调用。主业务后端需要将完整的历史上下文通过 `messages` 数组全量传入；若需要与旅行计划联动，请传入 `schedule_id` 以绑定旅行计划。
 - 接口地址: `POST /chat/completions`
 - 请求头
   - `Content-Type: application/json`
@@ -21,9 +19,9 @@
 | 字段名 | 类型 | 必填 | 描述 |
 | --- | --- | --- | --- |
 | `messages` | Array | 是 | 完整的对话上下文历史，严格参考 OpenAI 规范（支持 `system`, `user`, `assistant`, `tool` 等 role）。 |
-| `stream` | Boolean | 否 | 是否开启流式输出，默认为 `true`，建议设为 `true` 以获取状态反馈 |
+| `stream` | Boolean | 否 | 是否开启流式输出，目前仅支持 `true` |
 | `agent_id` | String | 否 | 指定使用的智能体应用 ID（用于加载后端写死的系统 Prompt 和默认工具集） |
-| `schedule_id` | Integer | 否 | 旅行计划标识，用于读取与写入黑板；若不提供则仅作临时对话，不更改旅行计划 |
+| `schedule_id` | Integer | 否 | 旅行计划标识，用于读取与写入旅行计划；若不提供则仅作临时对话，不更改旅行计划 |
 | `metadata` | Object | 否 | 业务透传上下文（如地理位置、语言偏好、时区、请求来源等），方便注入到内部大模型请求和工具逻辑中 |
 
 #### 请求示例
@@ -55,7 +53,7 @@
   - `thought`: 对应 `node` 的内部思考过程的增量输出（delta 支持并行复用展示）
   - `tool_call`: 某个 `node` 触发了工具调用，且携带全局唯一的 `call_id`
   - `tool_result`: 工具调用的结果返回
-  - `plan_update`: Supervisor 决定更新全局黑板 (Blackboard) 行程时的事件，告知前端刷新展示（`content` 为全量 Markdown）
+  - `plan_update`: Supervisor 决定更新旅行计划行程时的事件，告知前端刷新展示（`content` 为全量 Markdown）
   - `message_delta`: Supervisor 组装并呈现给用户的最终文本增量响应
   - `node_finish`: 某个 Agent 节点执行完毕，可包含 `status`（`success` | `timeout` | `failed`）
   - `error`: 系统或工具报错、超时异常时触发的结构化错误信息（包含 `node`，用于前端定位）
