@@ -92,6 +92,9 @@ data: {"node": "TrafficAgent", "call_id": "call_1", "result": "航班列表..."}
 event: node_finish
 data: {"node": "TrafficAgent", "msg": "交通提案已提交"}
 
+event: tool_result
+data: {"node": "HotelAgent", "call_id": "call_2", "result": "天安门附近酒店列表..."}
+
 event: node_finish
 data: {"node": "HotelAgent", "msg": "酒店提案已提交"}
 
