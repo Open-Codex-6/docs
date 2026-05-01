@@ -58,7 +58,109 @@
   - `type`：`not null`
     - 类型，最长20字符，非空  
   - `data`：`not null`
-    - 内容详见`item_types.pdf`，内含不同字段  
+    - 有以下五种
+
+    ```json
+    {
+      "type": "attraction",
+      "suggested_duration": 1,//int
+      "opening_hours": "string",
+      "booking_reference": "string",
+      "location": {
+        "poi_id": "string",
+        "poi_name": "string",
+        "address": "string",
+        "lng": "double",
+        "lat": "double"
+      },
+      "tags": ["string[]"]
+    }
+    ```
+
+    ```json
+    {
+      "type": "hotel",
+      "contact_phone": "string",
+      "room_type": "string",
+      "booking_reference": "string",
+      "location": {
+        "poi_id": "string",
+        "poi_name": "string",
+        "address": "string",
+        "lng": "double",
+        "lat": "double"
+      },
+      "tags": ["string[]"]
+    }
+    ```
+
+    ```json
+    {
+      "type": "food",
+      "recommend_dishes": ["string[]"],
+      "opening_hours": "string",
+      "location": {
+        "poi_id": "string",
+        "poi_name": "string",
+        "address": "string",
+        "lng": "double",
+        "lat": "double"
+      },
+      "tags": ["string[]"]
+    }
+    ```
+
+    ```json
+    {
+      "type": "transport_long",
+      "transport_mode": "string",
+      "departure_station": "string",
+      "arrival_station": "string",
+      "vehicle_number": "string",
+      "seat_info": "string",
+      "booking_reference": "string",
+      "departure_location": {
+        "poi_id": "string",
+        "poi_name": "string",
+        "address": "string",
+        "lng": "double",
+        "lat": "double"
+      },
+      "arrival_location": {
+        "poi_id": "string",
+        "poi_name": "string",
+        "address": "string",
+        "lng": "double",
+        "lat": "double"
+      }
+    }
+    ```
+
+    ```json
+    {
+      "type": "transport_short",
+      "routes": [{
+        "estimated_duration": 1,//int
+        "route_description": "string",
+        "navigation_link": "string",
+      }],
+      "departure_location": {
+        "poi_id": "string",
+        "poi_name": "string",
+        "address": "string",
+        "lng": "double",
+        "lat": "double"
+      },
+      "arrival_location": {
+        "poi_id": "string",
+        "poi_name": "string",
+        "address": "string",
+        "lng": "double",
+        "lat": "double"
+      }
+    }
+    ```
+
 - `plan_id`：`foreignKey;not null`
   - 归属旅行计划的`id`，用于指向归属的旅行计划，外键，非空
 
@@ -81,25 +183,3 @@
   - 归属会话的`id`，用于指向归属的会话，外键，非空
 - `OneToMany`
   - `message_files` 消息关联的文件
-
-## message_files消息文件关联
-
-- `message_id`：`foreignKey;not null`
-  - 归属消息的`id`，外键，非空
-- `file_id`：`foreignKey;not null`
-  - 关联文件的`id`，外键，非空
-
-## files文件
-
-- `name`：`varchar(100);not null`
-  - 文件名，最长100字符，非空
-- `path`：`varchar(255);not null`
-  - 文件存储路径，最长255字符，非空
-- `size`：`bigint;not null`
-  - 文件大小（字节），非空
-- `mime_type`：`varchar(50);not null`
-  - MIME类型，最长50字符，非空
-- `account_id`：`foreignKey;not null`
-  - 上传用户的`id`，外键，非空，用于权限控制
-- `OneToMany`
-  - `message_files` 文件关联的消息
