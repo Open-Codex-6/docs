@@ -641,7 +641,7 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
 | `suggested_duration` | `int`                                 | 否       | `attraction`专属,建议游玩时长                                |
 | `transport_mode`     | `string`                              | 否       | `transport_long`专属,只能为:`flight`,`train`,`coach`,`ferry` |
 | `departure_station`  | `string`                              | 否       | `transport_long`专属,起点站简称                              |
-| `arrival_station`    | `string`                              | 否       | `transport_long`专属,终点站简称`                             |
+| `arrival_station`    | `string`                              | 否       | `transport_long`专属,终点站简称                              |
 | `vehicle_number`     | `string`                              | 否       | `transport_long`专属,航班号/车次                             |
 | `seat_info`          | `string`                              | 否       | `transport_long`专属,座位信息                                |
 | `routes`             | `Routes`                              | 否       | `transport_short`专属,路线信息                               |
@@ -653,8 +653,8 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
 | `poi_id`   | `string` | 是       |      |
 | `poi_name` | `string` | 是       |      |
 | `address`  | `string` | 是       |      |
-| `lng`      | `int`    | 是       |      |
-| `lat`      | `int`    | 是       |      |
+| `lng`      | `double` | 是       |      |
+| `lat`      | `double` | 是       |      |
 
 `Routes`类型
 
@@ -777,7 +777,7 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
 | `suggested_duration` | `int`                                 | 否       | `attraction`专属,建议游玩时长                                |
 | `transport_mode`     | `string`                              | 否       | `transport_long`专属,只能为:`flight`,`train`,`coach`,`ferry` |
 | `departure_station`  | `string`                              | 否       | `transport_long`专属,起点站简称                              |
-| `arrival_station`    | `string`                              | 否       | `transport_long`专属,终点站简称`                             |
+| `arrival_station`    | `string`                              | 否       | `transport_long`专属,终点站简称                              |
 | `vehicle_number`     | `string`                              | 否       | `transport_long`专属,航班号/车次                             |
 | `seat_info`          | `string`                              | 否       | `transport_long`专属,座位信息                                |
 | `routes`             | `Routes`                              | 否       | `transport_short`专属,路线信息                               |
