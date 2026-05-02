@@ -621,7 +621,7 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
 
 | 参数名               | 类型                                  | 是否必填 | 说明                                                         |
 | -------------------- | ------------------------------------- | -------- | ------------------------------------------------------------ |
-| `id`                 | `int`                                 | 是       | 旅行计划的`id`                                               |
+| `id`                 | `int`                                 | 是       | 行程的`id`                                               |
 | `name`               | `string`                              | 是       | 计划项的名字                                                 |
 | `start_time`         | `date`,格式为YYYY-MM-DDTHH:mm:ss+8:00 | 是       | 开始时间                                                     |
 | `end_time`           | `date`,格式为YYYY-MM-DDTHH:mm:ss+8:00 | 是       | 结束时间                                                     |
@@ -722,7 +722,7 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
 
 | 参数名        | 类型  | 是否必填 | 说明           |
 | ------------- | ----- | -------- | -------------- |
-| `schedule_id` | `int` | 是       | 旅行计划的`id` |
+| `schedule_id` | `int` | 是       | 行程的`id` |
 | `item_id`     | `int` | 是       | 计划项的`id`   |
 
 #### 请求示例
@@ -756,7 +756,7 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
 
 | 参数名               | 类型                                  | 是否必填 | 说明                                                         |
 | -------------------- | ------------------------------------- | -------- | ------------------------------------------------------------ |
-| `schedule_id`        | `int`                                 | 是       | 旅行计划的`id`                                               |
+| `schedule_id`        | `int`                                 | 是       | 行程的`id`                                               |
 | `item_id`            | `int`                                 | 是       | 计划项的`id`                                                 |
 | `name`               | `string`                              | 否       | 计划项的名字                                                 |
 | `start_time`         | `date`,格式为YYYY-MM-DDTHH:mm:ss+8:00 | 否       | 开始时间                                                     |
