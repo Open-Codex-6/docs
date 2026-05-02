@@ -669,10 +669,10 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
 ```json
 {
     "id": 1,
- "type": "transport_long'",
+ "type": "transport_long",
     "name": "航班1",
-    "start_time": "2026-4-30T11:11:11+8:00",
-    "end_time": "2026-4-31T11:11:11+8:00",
+    "start_time": "2026-04-30T11:11:11+8:00",
+    "end_time": "2026-05-01T11:11:11+8:00",
     "notes": "需提前预约门票",
     "status": "planned",
     "isConfirmed": true,
@@ -694,7 +694,7 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
    "transport_mode": "train",
    "departure_station": "航站楼1",
    "arrival_station": "航站楼2",
-   "vehicle_number": 123,
+   "vehicle_number": "123",
    "seat_info": "02车 12A",
    "booking_reference": "预定号"
 }
@@ -888,8 +888,8 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
                 "id": 1,
                 "type": "hotel",
                 "name": "旅馆1",
-                "start_time": "2026-4-30T11:11:11+8:00",
-                "end_time": "2026-4-31T11:11:11+8:00",
+                "start_time": "2026-04-30T11:11:11+8:00",
+                "end_time": "2026-05-01T11:11:11+8:00",
                 "notes": "需提前预约门票",
                 "status": "planned",
                 "isConfirmed": true,
@@ -913,10 +913,10 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
             },
             {
                 "id": 2,
-                "type": "transport_long'",
+                "type": "transport_long",
                 "name": "航班1",
-                "start_time": "2026-4-30T11:11:11+8:00",
-                "end_time": "2026-4-31T11:11:11+8:00",
+                "start_time": "2026-04-30T11:11:11+8:00",
+                "end_time": "2026-05-01T11:11:11+8:00",
                 "notes": "需提前预约门票",
                 "status": "planned",
                 "isConfirmed": true,
