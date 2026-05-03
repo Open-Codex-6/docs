@@ -30,9 +30,7 @@
 {
   "messages": [
     {"role": "system", "content": "你是一个助理"},
-    {"role": "user", "content": "我是张三"},
-    {"role": "assistant", "content": "你好张三，有什么可以帮你的？"},
-    {"role": "user", "content": "帮我查一下外面的天气"}
+    {"role": "user", "content": "帮我规划北京3天行程"}
   ],
   "stream": true,
   "schedule_id": 1001,
@@ -46,64 +44,83 @@
 
 #### 响应说明
 
-- 为了实时返回当前状态，适应 Multi-Agent 图结构并发，系统会通过 SSE 推送不同 `event`，所有事件体中均新增 `node` 字段标明发出该事件的 Agent 节点；若是全局事件则由 `Orchestrator` 作为节点名。
-- 常见的事件类型
-  - `node_start`: 某个 Agent 节点（如 Supervisor, TrafficAgent）开始执行任务
-  - `task_delegated`: Supervisor 成功进行任务拆解并下发给各个 Worker 时触发
-  - `thought`: 对应 `node` 的内部思考过程的增量输出（delta 支持并行复用展示）
-  - `tool_call`: 某个 `node` 触发了工具调用，且携带全局唯一的 `call_id`
-  - `tool_result`: 工具调用的结果返回
-  - `plan_update`: Supervisor 决定更新旅行计划行程时的事件，告知前端刷新展示（`content` 为全量 Markdown）
-  - `message_delta`: Supervisor 组装并呈现给用户的最终文本增量响应
-  - `node_finish`: 某个 Agent 节点执行完毕，可包含 `status`（`success` | `timeout` | `failed`）
-  - `error`: 系统或工具报错、超时异常时触发的结构化错误信息（包含 `node`，用于前端定位）
-  - `done`: 整个图流转执行完毕，返回全局 Token 损耗
-- 超时处理说明：若某个 Worker 超时，服务会先返回 `node_finish` 并标记 `status=timeout`，必要时追加 `error` 事件用于排错。
-- 参考文档
-  - <https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events>
-  - <https://en.wikipedia.org/wiki/Server-sent_events>
-- SSE 响应示例（展示并发流转）
+系统通过 SSE 推送事件。所有事件体包含 `node` 字段标明发出该事件的 Agent 节点，全局事件由 `Orchestrator` 作为节点名。
+
+LLM 的调用存在嵌套关系，Supervisor 调用 SubAgent（如交通专家）时，SubAgent 的事件会通过 `parent` 字段指向调用它的 Supervisor Agent，从而形成事件树结构，便于追踪整个推理过程和工具调用链路。
+
+以下是常见事件类型说明：
+
+| 事件 | node | 说明 |
+| ------ | ------ | ------ |
+| `node_start` | Agent 名 | Agent 开始执行。`id` 唯一标识，可选 `parent` 指向父 Agent |
+| `node_finish` | Agent 名 | Agent 执行完毕。含 `status`：`success` / `timeout` / `failed` |
+| `thought` | Agent 名 | Agent 内部思考过程的增量输出（delta） |
+| `tool_call` | Agent 名 | 工具调用。SubAgent 调用通过 `delegate_*` 工具名表达 |
+| `tool_result` | Agent 名 | 工具调用结果返回 |
+| `message_delta` | Supervisor | 呈现给用户的最终文本增量 |
+| `error` | 任意 | 系统或工具报错、超时异常的结构化错误信息 |
+| `done` | Orchestrator | 整个流程执行完毕，含 `usage`（prompt/completion/total tokens） |
+
+#### SSE 响应示例
 
 ```text
 event: node_start
-data: {"node": "Supervisor", "msg": "主管节点开始接收任务"}
+data: {"node": "Supervisor", "id": "s_1", "msg": "start"}
 
 event: thought
-data: {"node": "Supervisor", "content": "用户需要北京3天行程。我需要下发给交通和酒店Agent。"}
-
-event: task_delegated
-data: {"node": "Supervisor", "tasks": [{"agent": "TrafficAgent", "task": "查北京往返航班"}, {"agent": "HotelAgent", "task": "查天安门附近的酒店"}]}
-
-event: node_start
-data: {"node": "TrafficAgent", "msg": "开始执行"}
-
-event: node_start
-data: {"node": "HotelAgent", "msg": "开始执行"}
+data: {"node": "Supervisor", "content": "用户需要北京3天行程，先查看已有计划再决定分配哪些专家。"}
 
 event: tool_call
-data: {"node": "TrafficAgent", "call_id": "call_1", "tool_name": "get_flights", "params": {"dest": "PEK"}}
+data: {"node": "Supervisor", "call_id": "call_1", "tool_name": "get_travel_plan", "params": {"schedule_id": 1001}}
+
+event: tool_result
+data: {"node": "Supervisor", "call_id": "call_1", "result": "{\"schedule_id\": 1001, \"content\": \"\"}"}
+
+event: thought
+data: {"node": "Supervisor", "content": "尚无计划，需要交通和酒店专家协助。"}
 
 event: tool_call
-data: {"node": "HotelAgent", "call_id": "call_2", "tool_name": "search_hotels", "params": {"poi": "天安门"}}
+data: {"node": "Supervisor", "call_id": "call_2", "tool_name": "delegate_traffic", "params": {"task": "规划北京往返交通"}}
+
+event: tool_call
+data: {"node": "Supervisor", "call_id": "call_3", "tool_name": "delegate_hotel", "params": {"task": "推荐北京酒店"}}
+
+event: node_start
+data: {"node": "traffic", "id": "t_1", "parent": "s_1", "msg": "start"}
+
+event: tool_call
+data: {"node": "traffic", "call_id": "call_4", "tool_name": "variflight_search", "params": {"dest": "PEK"}}
 
 event: tool_result
-data: {"node": "TrafficAgent", "call_id": "call_1", "result": "航班列表..."}
+data: {"node": "traffic", "call_id": "call_4", "result": "..."}
 
 event: node_finish
-data: {"node": "TrafficAgent", "msg": "交通提案已提交"}
+data: {"node": "traffic", "id": "t_1", "status": "success"}
 
 event: tool_result
-data: {"node": "HotelAgent", "call_id": "call_2", "result": "天安门附近酒店列表..."}
+data: {"node": "Supervisor", "call_id": "call_2", "result": "交通方案：..."}
 
 event: node_finish
-data: {"node": "HotelAgent", "msg": "酒店提案已提交"}
+data: {"node": "hotel", "id": "h_1", "parent": "s_1", "status": "success"}
 
-event: plan_update
-data: {"node": "Supervisor", "schedule_id": 1001, "content": "### Day 1\n- 抵达北京首都机场..."}
+event: tool_result
+data: {"node": "Supervisor", "call_id": "call_3", "result": "酒店方案：..."}
+
+event: thought
+data: {"node": "Supervisor", "content": "交通和酒店方案已就绪，整合写入黑板。"}
+
+event: tool_call
+data: {"node": "Supervisor", "call_id": "call_5", "tool_name": "write_travel_plan", "params": {"schedule_id": 1001, "content": "# 北京3日游\n..."}}
+
+event: tool_result
+data: {"node": "Supervisor", "call_id": "call_5", "result": "{\"schedule_id\": 1001, \"status\": \"ok\"}"}
 
 event: message_delta
-data: {"node": "Supervisor", "content": "我已经为您规划好了大致的北京行程，安排了..."}
+data: {"node": "Supervisor", "content": "已为您规划好北京3天行程，包括往返交通和酒店住宿..."}
+
+event: node_finish
+data: {"node": "Supervisor", "id": "s_1", "status": "success"}
 
 event: done
-data: {"node": "Orchestrator", "status": "success", "usage": {"prompt_tokens": 1500, "completion_tokens": 400, "total_tokens": 1900}}
+data: {"node": "Orchestrator", "status": "success", "usage": {"prompt_tokens": 3200, "completion_tokens": 800, "total_tokens": 4000}}
 ```
