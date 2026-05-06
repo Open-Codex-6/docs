@@ -5,9 +5,7 @@
   - [Agent 本体](/迭代2/agent/README.md)
   - [Agent 应用](/迭代2/app/README.md)
   - [Agent 评估平台](/迭代2/evaluation/README.md)
-- 会议纪要
-  - [260506](/迭代2/meeting/260506.md)
-  - [过去会议归档](/迭代2/meeting/README.md)
+  - [会议纪要](/迭代2/meeting/README.md)
 - 规范
   - [Git 规范](rules/git.md)
   - [文档撰写规范](rules/docs.md)
