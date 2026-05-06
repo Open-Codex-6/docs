@@ -53,7 +53,7 @@
 
 ### 登录
 
-- 功能说明：用户登录。
+- 功能说明：用户登录，返回 JWT token。
 - 接口地址: `POST /api/auth/login`
 - 请求头
   - `Content-Type: application/json`
@@ -116,28 +116,27 @@
 }
 ```
 
-### 更新用户信息
+### 更新用户密码
 
-- 功能说明：更新用户信息。
+- 功能说明：验证旧密码后将密码更新为新密码。
 - 接口地址: `PUT /api/auth`
 - 请求头
   - `Content-Type: application/json`
   - `Authorization: Bearer <token>`
-   	- 说明：`token`来自于login返回的`data`，若第一次`update`成功而后续失败，则为`token`已过期需重新login获取`token`
 
 #### 请求参数
 
 | 参数名 | 类型 | 是否必填 | 说明 |
 | --- | --- | --- | --- |
-| `username` | `String` | 是 | 用户名（须与 token 中的用户名一致） |
-| `password` | `String` | 是 | 新密码，至少 6 位 |
+| `oldPassword` | `String` | 是 | 当前密码 |
+| `newPassword` | `String` | 是 | 新密码，至少 6 位 |
 
 #### 请求示例
 
 ```json
 {
- "username": "testuser",
- "password": "newpassword"
+ "oldPassword": "123456",
+ "newPassword": "newpassword"
 }
 ```
 
@@ -154,7 +153,7 @@
 ```json
 {
  "code": "400",
- "msg": "token与输入的用户名不匹配",
+ "msg": "旧密码错误",
  "data": null
 }
 ```
@@ -162,174 +161,19 @@
 ```json
 {
  "code": "400",
- "msg": "更新失败",
+ "msg": "参数错误",
  "data": null
 }
 ```
 
-## 评测记录模块
+## 系统指标模块
 
-### 获取评测记录列表
+系统指标由管理员预先配置，前端只读，不提供创建、修改、删除接口。
 
-- 功能说明：获取所有评测记录，支持筛选、排序、分页。
-- 接口地址: `GET /api/evaluations`
-- 请求头
-  - `Authorization: Bearer <token>`
+### 获取系统指标列表
 
-#### 请求参数
-
-| 参数名 | 类型 | 是否必填 | 说明 |
-| --- | --- | --- | --- |
-| `page` | `Integer` | 是 | 页号，从 1 开始 |
-| `pageSize` | `Integer` | 否 | 每页条数，默认 10 |
-| `startTime` | `String` | 否 | 时间范围起点，ISO 8601 时间字符串 |
-| `endTime` | `String` | 否 | 时间范围终点，ISO 8601 时间字符串 |
-| `username` | `String` | 否 | 发起用户名称 |
-| `scoreMin` | `Number` | 否 | 综合评估分数下限 |
-| `scoreMax` | `Number` | 否 | 综合评估分数上限 |
-| `eprPassed` | `Boolean` | 否 | EPR 是否通过 |
-| `clprMin` | `Number` | 否 | C-LPR 下限 |
-| `clprMax` | `Number` | 否 | C-LPR 上限 |
-| `ragasMin` | `Number` | 否 | Ragas 指标下限 |
-| `ragasMax` | `Number` | 否 | Ragas 指标上限 |
-| `tag` | `String` | 否 | 评测 Tag |
-| `sortBy` | `String` | 否 | 排序字段，可选 `createdAt`、`score`、`eprStatus`、`clpr`、`ragas`，默认 `createdAt` |
-| `order` | `String` | 否 | 排序方向，可选 `asc`、`desc`，默认 `desc` |
-
-#### 请求示例
-
-```
-GET /api/evaluations?page=1&pageSize=10&startTime=2026-04-01T00:00:00Z&endTime=2026-04-14T23:59:59Z&username=testuser&scoreMin=70&scoreMax=100&eprPassed=true&clprMin=0.7&clprMax=1.0&ragasMin=0.6&ragasMax=1.0&tag=travel-agent&sortBy=createdAt&order=desc
-```
-
-#### 响应示例
-
-```json
-{
- "code": "200",
- "msg": "",
- "data": {
-  "page": 1,
-  "pageSize": 10,
-  "total": 2,
-  "records": [
-   {
-    "id": "eval_202604140001",
-    "username": "testuser",
-    "createdAt": "2026-04-14T10:20:30Z",
-    "score": 86.5,
-    "eprStatus": "PASS",
-    "clpr": 0.84,
-    "ragas": {
-     "faithfulness": 0.88,
-     "answerRelevancy": 0.9,
-     "contextRecall": 0.79
-    },
-    "tags": [
-     "travel-agent",
-     "v1"
-    ]
-   },
-   {
-    "id": "eval_202604140002",
-    "username": "testuser",
-    "createdAt": "2026-04-14T09:10:11Z",
-    "score": 82.1,
-    "eprStatus": "FAIL",
-    "clpr": 0.75,
-    "ragas": {
-     "faithfulness": 0.81,
-     "answerRelevancy": 0.86,
-     "contextRecall": 0.7
-    },
-    "tags": [
-     "travel-agent"
-    ]
-   }
-  ]
- }
-}
-```
-
-```json
-{
- "code": "400",
- "msg": "请求参数不合法",
- "data": null
-}
-```
-
-### 获取评测记录详情
-
-- 功能说明：获取某一次评测记录的详细信息。
-- 接口地址: `GET /api/evaluations/:evaluationId`
-- 请求头
-  - `Authorization: Bearer <token>`
-
-#### 请求参数
-
-| 参数名 | 类型 | 是否必填 | 说明 |
-| --- | --- | --- | --- |
-| `evaluationId` | `String` | 是 | 评测记录 ID（路径参数） |
-
-#### 响应示例
-
-```json
-{
- "code": "200",
- "msg": "",
- "data": {
-  "id": "eval_202604140001",
-  "username": "testuser",
-  "userQuestion": "请生成一份 3 天杭州旅行计划",
-  "agentAnswer": "已为你生成行程，并给出每日安排。",
-  "agentExecution": {
-   "tools": [
-    "search_flights",
-    "search_hotels",
-    "local_weather"
-   ],
-   "traceId": "trace_abc123"
-  },
-  "createdAt": "2026-04-14T10:20:30Z",
-  "metrics": {
-   "score": 86.5,
-   "eprStatus": "FAIL",
-   "clpr": 0.84,
-   "ragas": {
-    "faithfulness": 0.88,
-    "answerRelevancy": 0.9,
-    "contextRecall": 0.79
-   }
-  },
-  "failureReasons": {
-   "eprFailedItems": [
-    "必须包含预算上限"
-   ],
-   "lprUnmetConstraints": [
-    "酒店距离地铁站 1km 内"
-   ]
-  },
-  "tags": [
-   "travel-agent",
-   "v1"
-  ]
- }
-}
-```
-
-```json
-{
- "code": "404",
- "msg": "评测记录不存在",
- "data": null
-}
-```
-
-### 获取评估指标元数据
-
-- 功能说明：获取所有评估指标定义及属性。
-- 接口地址: `GET /api/evaluation-metrics/meta`
+- 功能说明：获取所有系统预置评测指标的定义及属性。
+- 接口地址: `GET /api/system-metrics`
 - 请求头
   - `Authorization: Bearer <token>`
 
@@ -345,32 +189,26 @@ GET /api/evaluations?page=1&pageSize=10&startTime=2026-04-01T00:00:00Z&endTime=2
  "msg": "",
  "data": [
   {
-   "name": "eprStatus",
-   "description": "硬约束规则是否满足",
-   "valueRange": [
-    "PASS",
-    "FAIL"
-   ],
+   "name": "avg_latency",
+   "brief": "平均响应延迟",
+   "description": "计算 Session 内所有轮次 latency_ms 的平均值，单位毫秒",
+   "valueRange": [0, null],
+   "betterDirection": "lower",
+   "category": "性能"
+  },
+  {
+   "name": "epr",
+   "brief": "硬约束通过率",
+   "description": "硬约束规则是否全部满足",
+   "valueRange": ["PASS", "FAIL"],
    "betterDirection": "PASS",
    "category": "硬约束"
   },
   {
    "name": "clpr",
-   "description": "约束满足偏好程度",
-   "valueRange": [
-    0,
-    1
-   ],
-   "betterDirection": "higher",
-   "category": "软偏好"
-  },
-  {
-   "name": "ragas.faithfulness",
-   "description": "回答忠实度",
-   "valueRange": [
-    0,
-    1
-   ],
+   "brief": "软偏好满足度",
+   "description": "约束满足偏好程度，取值 0~1",
+   "valueRange": [0, 1],
    "betterDirection": "higher",
    "category": "软偏好"
   }
@@ -378,63 +216,9 @@ GET /api/evaluations?page=1&pageSize=10&startTime=2026-04-01T00:00:00Z&endTime=2
 }
 ```
 
-### 获取指标历史趋势
-
-- 功能说明：按指标维度查询历史趋势数据，用于绘制曲线。
-- 接口地址: `GET /api/evaluation-metrics/trends`
-- 请求头
-  - `Authorization: Bearer <token>`
-
-#### 请求参数
-
-| 参数名 | 类型 | 是否必填 | 说明 |
-| --- | --- | --- | --- |
-| `metricName` | `String` | 是 | 指标名称，可选 `score`、`clpr`、`ragas.faithfulness`、`ragas.answerRelevancy`、`ragas.contextRecall` |
-| `limit` | `Integer` | 否 | 近 N 次记录，和时间范围二选一 |
-| `startTime` | `String` | 否 | 时间范围起点，ISO 8601 时间字符串 |
-| `endTime` | `String` | 否 | 时间范围终点，ISO 8601 时间字符串 |
-
-#### 请求示例
-
-```
-GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
-```
-
-#### 响应示例
-
-```json
-{
- "code": "200",
- "msg": "",
- "data": {
-  "metricName": "clpr",
-  "points": [
-   {
-    "timestamp": "2026-04-14T10:20:30Z",
-    "evaluationId": "eval_202604140001",
-    "value": 0.84,
-    "eprPassed": false
-   },
-   {
-    "timestamp": "2026-04-14T09:10:11Z",
-    "evaluationId": "eval_202604140002",
-    "value": 0.75,
-    "eprPassed": false
-   }
-  ]
- }
-}
-```
-
-```json
-{
- "code": "400",
- "msg": "metricName 不存在",
- "data": null
-}
-```
-
 ## 自定义指标模块
+
+用户可在系统指标之外创建自己的评测指标，每个指标属于创建它的用户，其他用户不可见、不可修改。
 
 ### 创建自定义指标
 
@@ -449,7 +233,8 @@ GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
 | 参数名 | 类型 | 是否必填 | 说明 |
 | --- | --- | --- | --- |
 | `name` | `String` | 是 | 指标名称，最长 64 位，同一用户下唯一 |
-| `description` | `String` | 否 | 指标描述 |
+| `brief` | `String` | 否 | 指标简介，最长 255 位 |
+| `description` | `String` | 否 | 指标详细描述 |
 | `scoreDesc` | `Array` | 否 | 评分说明列表，最多 20 项，每项包含 `score`（整数）和 `description`（字符串） |
 
 #### 请求示例
@@ -457,7 +242,8 @@ GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
 ```json
 {
  "name": "response_completeness",
- "description": "衡量回答的完整性",
+ "brief": "回答完整性",
+ "description": "衡量 Agent 回答是否覆盖了用户问题的所有要点",
  "scoreDesc": [
   {"score": 1, "description": "回答完全不完整"},
   {"score": 3, "description": "回答部分完整"},
@@ -475,7 +261,8 @@ GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
  "data": {
   "id": 1,
   "name": "response_completeness",
-  "description": "衡量回答的完整性",
+  "brief": "回答完整性",
+  "description": "衡量 Agent 回答是否覆盖了用户问题的所有要点",
   "scoreDesc": [
    {"score": 1, "description": "回答完全不完整"},
    {"score": 3, "description": "回答部分完整"},
@@ -516,7 +303,8 @@ GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
   {
    "id": 1,
    "name": "response_completeness",
-   "description": "衡量回答的完整性",
+   "brief": "回答完整性",
+   "description": "衡量 Agent 回答是否覆盖了用户问题的所有要点",
    "scoreDesc": [
     {"score": 1, "description": "回答完全不完整"},
     {"score": 5, "description": "回答完全完整"}
@@ -542,7 +330,8 @@ GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
 | --- | --- | --- | --- |
 | `metricId` | `Integer` | 是 | 指标 ID（路径参数） |
 | `name` | `String` | 是 | 指标名称，最长 64 位 |
-| `description` | `String` | 否 | 指标描述 |
+| `brief` | `String` | 否 | 指标简介，最长 255 位 |
+| `description` | `String` | 否 | 指标详细描述 |
 | `scoreDesc` | `Array` | 否 | 评分说明列表，最多 20 项 |
 
 #### 请求示例
@@ -550,7 +339,8 @@ GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
 ```json
 {
  "name": "response_completeness",
- "description": "衡量回答完整性（已更新）",
+ "brief": "回答完整性（已修订）",
+ "description": "衡量回答完整性，修订版",
  "scoreDesc": [
   {"score": 1, "description": "完全不完整"},
   {"score": 5, "description": "非常完整"}
@@ -633,9 +423,11 @@ GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
 
 ## 任务评测模块
 
+任务是评测的基本单元，绑定若干指标（创建后不可更改指标列表）。每次提交对话数据后，系统调用评测计算服务完成指标计算并保存结果。
+
 ### 创建任务
 
-- 功能说明：创建一个评测任务，绑定若干评测指标。
+- 功能说明：创建一个评测任务，同时绑定评测指标列表（创建后指标列表不可修改）。
 - 接口地址: `POST /api/tasks`
 - 请求头
   - `Content-Type: application/json`
@@ -647,16 +439,19 @@ GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
 | --- | --- | --- | --- |
 | `title` | `String` | 是 | 任务标题，最长 255 位 |
 | `description` | `String` | 否 | 任务描述 |
-| `metrics` | `Array` | 否 | 绑定的指标列表，每项包含 `id`（指标 ID 字符串）、`type`（`"system"` 或 `"custom"`）、`name`（指标名称） |
+| `metrics` | `Array` | 是 | 绑定的指标列表，至少 1 项 |
+| `metrics[].id` | `String` | 是 | 指标 ID（系统指标填指标名如 `avg_latency`，自定义指标填数字 ID 的字符串形式如 `"1"`） |
+| `metrics[].type` | `String` | 是 | 指标类型，`"system"` 或 `"custom"` |
+| `metrics[].name` | `String` | 是 | 指标名称（冗余存储，用于展示） |
 
 #### 请求示例
 
 ```json
 {
  "title": "旅行助手评测",
- "description": "测试旅行规划场景",
+ "description": "测试旅行规划场景下 Agent 的延迟与完整性",
  "metrics": [
-  {"id": "avg_latency", "type": "system", "name": "平均延迟"},
+  {"id": "avg_latency", "type": "system", "name": "平均响应延迟"},
   {"id": "1", "type": "custom", "name": "response_completeness"}
  ]
 }
@@ -674,9 +469,17 @@ GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
 }
 ```
 
+```json
+{
+ "code": "400",
+ "msg": "参数错误",
+ "data": null
+}
+```
+
 ### 获取任务列表
 
-- 功能说明：获取当前用户创建的所有任务。
+- 功能说明：获取当前用户创建的所有任务（概览信息，不含评测历史）。
 - 接口地址: `GET /api/tasks`
 - 请求头
   - `Authorization: Bearer <token>`
@@ -684,6 +487,18 @@ GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
 #### 请求参数
 
 无
+
+#### 响应字段说明
+
+| 字段名 | 类型 | 说明 |
+| --- | --- | --- |
+| `id` | `Integer` | 任务 ID |
+| `title` | `String` | 任务标题 |
+| `description` | `String` | 任务描述 |
+| `metrics` | `Array` | 绑定的指标列表 |
+| `evalCount` | `Integer` | 累计评测次数 |
+| `lastEvaluatedAt` | `String \| null` | 最近一次评测时间（ISO 8601），从未评测时为 `null` |
+| `createdAt` | `String` | 任务创建时间（ISO 8601） |
 
 #### 响应示例
 
@@ -695,13 +510,25 @@ GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
   {
    "id": 1,
    "title": "旅行助手评测",
-   "description": "测试旅行规划场景",
+   "description": "测试旅行规划场景下 Agent 的延迟与完整性",
    "metrics": [
-    {"id": "avg_latency", "type": "system", "name": "平均延迟"},
+    {"id": "avg_latency", "type": "system", "name": "平均响应延迟"},
     {"id": "1", "type": "custom", "name": "response_completeness"}
    ],
    "evalCount": 3,
+   "lastEvaluatedAt": "2026-05-01T11:00:00Z",
    "createdAt": "2026-05-01T10:00:00Z"
+  },
+  {
+   "id": 2,
+   "title": "客服助手评测",
+   "description": "",
+   "metrics": [
+    {"id": "avg_latency", "type": "system", "name": "平均响应延迟"}
+   ],
+   "evalCount": 0,
+   "lastEvaluatedAt": null,
+   "createdAt": "2026-05-02T09:00:00Z"
   }
  ]
 }
@@ -709,7 +536,7 @@ GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
 
 ### 更新任务
 
-- 功能说明：更新任务标题、描述或绑定的指标（只能操作自己的任务）。
+- 功能说明：更新任务标题或描述（指标列表不可修改）。
 - 接口地址: `PUT /api/tasks/:taskId`
 - 请求头
   - `Content-Type: application/json`
@@ -722,17 +549,13 @@ GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
 | `taskId` | `Integer` | 是 | 任务 ID（路径参数） |
 | `title` | `String` | 是 | 任务标题，最长 255 位 |
 | `description` | `String` | 否 | 任务描述 |
-| `metrics` | `Array` | 否 | 绑定的指标列表 |
 
 #### 请求示例
 
 ```json
 {
  "title": "旅行助手评测 v2",
- "description": "更新后的描述",
- "metrics": [
-  {"id": "avg_latency", "type": "system", "name": "平均延迟"}
- ]
+ "description": "更新后的描述"
 }
 ```
 
@@ -764,7 +587,7 @@ GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
 
 ### 删除任务
 
-- 功能说明：删除指定任务（只能操作自己的任务）。
+- 功能说明：删除指定任务及其所有评测历史（只能操作自己的任务）。
 - 接口地址: `DELETE /api/tasks/:taskId`
 - 请求头
   - `Authorization: Bearer <token>`
@@ -801,10 +624,10 @@ GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
 }
 ```
 
-### 获取任务评测历史
+### 获取任务详情
 
-- 功能说明：获取指定任务的所有历史评测结果。
-- 接口地址: `GET /api/tasks/:taskId/evaluations`
+- 功能说明：获取指定任务的完整信息，包括任务基本信息、绑定的指标列表，以及全部评测历史记录。
+- 接口地址: `GET /api/tasks/:taskId`
 - 请求头
   - `Authorization: Bearer <token>`
 
@@ -814,38 +637,82 @@ GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
 | --- | --- | --- | --- |
 | `taskId` | `Integer` | 是 | 任务 ID（路径参数） |
 
+#### 响应字段说明
+
+| 字段名 | 类型 | 说明 |
+| --- | --- | --- |
+| `id` | `Integer` | 任务 ID |
+| `title` | `String` | 任务标题 |
+| `description` | `String` | 任务描述 |
+| `metrics` | `Array` | 绑定的指标列表 |
+| `evalCount` | `Integer` | 累计评测次数 |
+| `lastEvaluatedAt` | `String \| null` | 最近一次评测时间，从未评测时为 `null` |
+| `createdAt` | `String` | 任务创建时间 |
+| `evaluations` | `Array` | 评测历史列表，按 `seqNum` 升序排列 |
+| `evaluations[].seqNum` | `Integer` | 该任务下的评测序号，从 1 开始递增 |
+| `evaluations[].createdAt` | `String` | 本次评测时间 |
+| `evaluations[].metricResults` | `Array` | 本次各指标计算结果 |
+| `metricResults[].metric_name` | `String` | 指标名称 |
+| `metricResults[].score` | `Number \| null` | 指标得分，计算失败时为 `null` |
+| `metricResults[].reason` | `String` | 计算说明或失败原因 |
+| `metricResults[].status` | `String` | `"success"` / `"skipped"` / `"error"` |
+
 #### 响应示例
 
 ```json
 {
  "code": "200",
  "msg": "",
- "data": [
-  {
-   "seqNum": 1,
-   "createdAt": "2026-05-01T10:30:00Z",
-   "metricResults": [
-    {
-     "metric_name": "avg_latency",
-     "score": 312.5,
-     "reason": "全局共有 2 个有效轮次记录耗时，Session平均延迟为 312.50 ms",
-     "status": "success"
-    }
-   ]
-  },
-  {
-   "seqNum": 2,
-   "createdAt": "2026-05-01T11:00:00Z",
-   "metricResults": [
-    {
-     "metric_name": "avg_latency",
-     "score": 280.0,
-     "reason": "全局共有 2 个有效轮次记录耗时，Session平均延迟为 280.00 ms",
-     "status": "success"
-    }
-   ]
-  }
- ]
+ "data": {
+  "id": 1,
+  "title": "旅行助手评测",
+  "description": "测试旅行规划场景下 Agent 的延迟与完整性",
+  "metrics": [
+   {"id": "avg_latency", "type": "system", "name": "平均响应延迟"},
+   {"id": "1", "type": "custom", "name": "response_completeness"}
+  ],
+  "evalCount": 2,
+  "lastEvaluatedAt": "2026-05-01T11:00:00Z",
+  "createdAt": "2026-05-01T10:00:00Z",
+  "evaluations": [
+   {
+    "seqNum": 1,
+    "createdAt": "2026-05-01T10:30:00Z",
+    "metricResults": [
+     {
+      "metric_name": "avg_latency",
+      "score": 312.5,
+      "reason": "全局共有 2 个有效轮次记录耗时，Session平均延迟为 312.50 ms",
+      "status": "success"
+     },
+     {
+      "metric_name": "response_completeness",
+      "score": null,
+      "reason": "自定义指标暂不支持自动计算",
+      "status": "skipped"
+     }
+    ]
+   },
+   {
+    "seqNum": 2,
+    "createdAt": "2026-05-01T11:00:00Z",
+    "metricResults": [
+     {
+      "metric_name": "avg_latency",
+      "score": 280.0,
+      "reason": "全局共有 2 个有效轮次记录耗时，Session平均延迟为 280.00 ms",
+      "status": "success"
+     },
+     {
+      "metric_name": "response_completeness",
+      "score": null,
+      "reason": "自定义指标暂不支持自动计算",
+      "status": "skipped"
+     }
+    ]
+   }
+  ]
+ }
 }
 ```
 
@@ -867,7 +734,7 @@ GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
 
 ### 执行任务评测
 
-- 功能说明：对指定任务提交一轮对话数据，调用评测计算系统完成指标计算，并保存评测结果。
+- 功能说明：对指定任务提交一次对话数据，系统调用评测计算服务完成各项指标计算并保存结果，返回本次评测序号及计算结果。
 - 接口地址: `POST /api/tasks/:taskId/evaluate`
 - 请求头
   - `Content-Type: application/json`
@@ -881,8 +748,14 @@ GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
 | `rounds` | `Array` | 是 | 对话轮次列表，至少 1 项 |
 | `rounds[].user_query` | `String` | 是 | 用户输入 |
 | `rounds[].agent_response` | `String` | 是 | Agent 回复 |
-| `rounds[].tools` | `Array` | 否 | 工具调用列表，每项包含 `name`、`inputs`（对象）、`observation`、`thought` |
-| `rounds[].metadata` | `Object` | 否 | 元数据，包含 `latency_ms`（浮点数，本轮耗时毫秒）和 `tokens_used`（整数，本轮 token 数） |
+| `rounds[].tools` | `Array` | 否 | 工具调用列表 |
+| `rounds[].tools[].name` | `String` | 是 | 工具名称 |
+| `rounds[].tools[].inputs` | `Object` | 是 | 工具入参（任意 JSON 对象） |
+| `rounds[].tools[].observation` | `String` | 是 | 工具返回结果 |
+| `rounds[].tools[].thought` | `String` | 是 | 调用前的思考过程 |
+| `rounds[].metadata` | `Object` | 否 | 元数据 |
+| `rounds[].metadata.latency_ms` | `Number` | 否 | 本轮耗时（毫秒），用于计算 `avg_latency` |
+| `rounds[].metadata.tokens_used` | `Integer` | 否 | 本轮消耗的 token 数 |
 
 #### 请求示例
 
@@ -896,8 +769,8 @@ GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
     {
      "name": "search_attractions",
      "inputs": {"city": "杭州"},
-     "observation": "返回景点列表",
-     "thought": "需要先查询景点"
+     "observation": "返回景点列表：西湖、灵隐寺……",
+     "thought": "需要先查询景点信息"
     }
    ],
    "metadata": {
@@ -932,6 +805,12 @@ GET /api/evaluation-metrics/trends?metricName=clpr&limit=20
     "score": 312.25,
     "reason": "全局共有 2 个有效轮次记录耗时，Session平均延迟为 312.25 ms",
     "status": "success"
+   },
+   {
+    "metric_name": "response_completeness",
+    "score": null,
+    "reason": "自定义指标暂不支持自动计算",
+    "status": "skipped"
    }
   ]
  }
