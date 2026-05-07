@@ -611,7 +611,7 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
 
 ### 更新旅行计划-增加计划项(用户操作)
 
-- 功能说明：更新旅行计划，增加计划项，返回新的计划项的`id`
+- 功能说明：更新旅行计划，增加计划项，返回新的plan的`id`
 - 接口地址: `POST /api/plan/add`
 - 请求头
   - `Content-Type: application/json`
@@ -625,9 +625,9 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
 | `name`               | `string`                              | 是       | 计划项的名字                                                 |
 | `start_time`         | `date`,格式为YYYY-MM-DDTHH:mm:ss+8:00 | 是       | 开始时间                                                     |
 | `end_time`           | `date`,格式为YYYY-MM-DDTHH:mm:ss+8:00 | 是       | 结束时间                                                     |
-| `notes`              | `string`                              | 是       | 说明                                                         |
+| `notes`              | `string`                              | 否       | 说明                                                         |
 | `status`             | `string`                              | 是       | 状态,只能为`planned`或`booked`或`completed`或`cancelled`     |
-| `cost`               | `int`                                 | 是       | 花费                                                         |
+| `cost`               | `int`                                 | 否       | 花费，注：在目前的逻辑中，为非零值之后无法改成零值                    |
 | `type`               | `stirng`                              | 是       | 类型,只能为`hotel`,`transport_long`,`transport_short`,`food`,`attraction`中选择 |
 | `location`           | `Location`                            | 否       | 单点类的地点字段                                             |
 | `tags`               | `string[]`                            | 否       | 单点类,标签                                                  |
@@ -712,7 +712,7 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
 
 ### 更新旅行计划-删除计划项(用户操作)
 
-- 功能说明：更新旅行计划，删除计划项
+- 功能说明：更新旅行计划，删除计划项，返回更新后的plan的`id`
 - 接口地址: `POST /api/plan/delete`
 - 请求头
   - `Content-Type: application/json`
@@ -740,13 +740,13 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
 {
     "code": "200",
     "msg": "SUCCESS",
-    "data": "删除成功"
+    "data": 2
 }
 ```
 
 ### 更新旅行计划-更新计划项(用户操作)
 
-- 功能说明：更新旅行计划，更新旅行计划中的计划项，返回更新后的item的`id`
+- 功能说明：更新旅行计划，更新旅行计划中的计划项，返回更新后的plan的`id`
 - 接口地址: `POST /api/plan/update`
 - 请求头
   - `Content-Type: application/json`
