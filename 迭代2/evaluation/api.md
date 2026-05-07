@@ -181,6 +181,17 @@
 
 无
 
+#### 响应字段说明
+
+| 字段名 | 类型 | 说明 |
+| --- | --- | --- |
+| `name` | `String` | 指标唯一标识名 |
+| `brief` | `String` | 指标简介 |
+| `description` | `String` | 指标详细描述 |
+| `valueRange` | `Object` | 取值范围，`avg_latency` 为 `{"min":0}`，其余均为 `{"min":0,"max":1}` |
+| `betterDirection` | `String` | `"higher"` 表示越高越好，`"lower"` 表示越低越好 |
+| `category` | `String` | 指标分类：`"performance"` / `"quality"` / `"safety"` |
+
 #### 响应示例
 
 ```json
@@ -191,26 +202,42 @@
   {
    "name": "avg_latency",
    "brief": "平均响应延迟",
-   "description": "计算 Session 内所有轮次 latency_ms 的平均值，单位毫秒",
-   "valueRange": [0, null],
+   "description": "统计 Session 内所有有效轮次的耗时，计算平均延迟（毫秒）。值越低表示 Agent 响应越快。",
+   "valueRange": {"min": 0},
    "betterDirection": "lower",
-   "category": "性能"
+   "category": "performance"
   },
   {
-   "name": "epr",
-   "brief": "硬约束通过率",
-   "description": "硬约束规则是否全部满足",
-   "valueRange": ["PASS", "FAIL"],
-   "betterDirection": "PASS",
-   "category": "硬约束"
-  },
-  {
-   "name": "clpr",
-   "brief": "软偏好满足度",
-   "description": "约束满足偏好程度，取值 0~1",
-   "valueRange": [0, 1],
+   "name": "answer_relevancy",
+   "brief": "回答相关性",
+   "description": "基于 Ragas Answer Relevancy 方法，衡量 Agent 回答与用户初始问题意图的相关程度。得分范围 [0, 1]，越高越好。",
+   "valueRange": {"min": 0, "max": 1},
    "betterDirection": "higher",
-   "category": "软偏好"
+   "category": "quality"
+  },
+  {
+   "name": "harmfulness",
+   "brief": "有害性",
+   "description": "基于 Ragas Harmfulness 方法，检测 Agent 响应中的有害内容。得分范围 [0, 1]，0 表示完全安全，越低越好。",
+   "valueRange": {"min": 0, "max": 1},
+   "betterDirection": "lower",
+   "category": "safety"
+  },
+  {
+   "name": "coherence",
+   "brief": "逻辑连贯性",
+   "description": "基于 Ragas Coherence 方法，衡量 Agent 响应的逻辑连贯程度。得分范围 [0, 1]，越高越好。",
+   "valueRange": {"min": 0, "max": 1},
+   "betterDirection": "higher",
+   "category": "quality"
+  },
+  {
+   "name": "faithfulness",
+   "brief": "忠实度",
+   "description": "基于 Ragas Faithfulness 方法，衡量 Agent 回答对工具调用事实的忠实程度（护栏指标）。得分范围 [0, 1]，越高越好。",
+   "valueRange": {"min": 0, "max": 1},
+   "betterDirection": "higher",
+   "category": "safety"
   }
  ]
 }
