@@ -26,6 +26,8 @@ Worker 智能体被封装为 Supervisor 工具列表中的普通函数调用。S
 
 系统按照数据流动方向与依赖关系，自顶向下划分为六个层次。上层依赖下层，下层绝不感知上层。
 
+![系统架构图](./agent-architecture.png)
+
 ### 接入层
 
 接入层是系统与外部客户端的唯一交互界面。它接收 HTTP 请求、验证 Bearer Token、将请求体解析为 `ChatCompletionRequest` 模型、创建 `EventSourceResponse` 并以 SSE 流的形式逐条返回内部事件。
