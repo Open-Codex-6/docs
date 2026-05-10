@@ -1,90 +1,64 @@
 # 迭代 2
 
-## 任务
+尊敬的助教老师，以下是我们小组在迭代 2 中的主要中间产物介绍：
 
-1. 选题
-2. Base Agent：文档/Agent 仅提供基础 Agent 功能，无需特别复杂的前端
-3. Agent 应用：文档/前端/后端
-4. Agent 评估平台：文档/前端/后端
-5. 文档
-6. 视频演示
+## 演示视频
 
-## 时间安排
+- TODO
 
-- 4/1 初步确定选题；确定 Base Agent 的接口规范；确定 Agent 应用和 Agent 评估平台的架构/功能
-- 4/8 完成 Base Agent 的核心功能开发
-- 4/22 完成 Agent 应用和 Agent 评估平台的核心功能开发
-- 5/11 ddl，6 周
+## 访问链接
 
-### 依赖关系
+- Agent 应用：<https://trip.cos.tg>
+- Agent 评估平台：<https://eval.cos.tg>
 
-- 1 2 可同时推进
-- 3 4 可同时推进，但需在 2 的接口规范确定后才能开始
-- 5 6 最后再说也来得及
+## 仓库 & CI/CD
 
-## 选题：旅游规划 Agent
+- 所有仓库均已搭建完成，且已配置 CI/CD 并成功运行。
 
-- 每一次旅行对应一个旅行计划，后续的旅行相关操作都基于旅行计划进行
-- 旅行前
-  - 基于用户的预算、需求和过往画像生成初始旅游计划
-  - 基于生成的计划进行购票、酒店预订、景点预约等自动化操作
-  - 基于生成的计划推荐合适的旅行装备、套票等
-- 旅行中
-  - 基于现场的突发情况（恶劣天气、堵车、场馆闭馆）动态调整计划：语音？
-  - 和地图、导航等集成
-  - 实时介绍展品、地点历史
-- 旅行后
-  - 生成旅行报告
-  - 基于用户的选择、反馈，更新记忆和用户画像，用于后续旅行的规划：景点偏好、体力情况
-  - 分享旅行计划，供其他用户调用 Agent 时参考
-- 参考竞品：<https://www.imean.ai/>
-- Benchmark：<https://arxiv.org/abs/2412.13682>
+|项目|仓库|
+|-|-|
+|Agent 本体|<http://172.29.4.49/2026seiii-016/agent-base>|
+|Agent 评估计算平台|<http://172.29.4.49/2026seiii-016/evaluation_compute>|
+|Agent 应用 前端|<http://172.29.4.49/2026seiii-016/agent-app-frontend/>|
+|Agent 应用 后端|<http://172.29.4.49/2026seiii-016/agent-app-backend>|
+|Agent 评估平台 前端|<http://172.29.4.49/2026seiii-016/agent-evaluation-frontend>|
+|Agent 评估平台 后端|<http://172.29.4.49/2026seiii-016/agent-evaluation-backend>|
 
-## 分工
+## 文档
 
-- Base Agent
-  - @zjh @hzx
-  - @hzx 还需完成评估平台的评估部分的开发
-- 前端：@cyy @wh
-- 后端：@zyf @kyt
-- Agent 应用
-  - 组长 @zjh
-- Agent 评估平台
-  - 组长 @hzx
-- CI/CD @wh @zjh
+- 要求的**需求分析文档**和 **Agent 详细设计文档**均在迭代 2 的目录下。
+- 以下是我们小组在迭代 2 的过程中产生的其余文档：
 
-## 技术选型
-
-- 前端：React + TS + MUI
-- 后端：Go + Redis + MySQL
-  - 高并发, mq, 分布式事务, 分布式锁, 数据库主从备份（待资源充足后另行配置）
-- Agent：Python
-
-## 项目
-
-|项目|校内仓库|Github 仓库|校内网址|校外网址|
-|-|-|-|-|-|
-|Agent 本体|<http://172.29.4.49/2026seiii-016/agent-base>|<https://github.com/Open-Codex-6/agent-base>|<http://172.29.5.12:8000>|<https://agent-base.cos.tg>|
-|Agent 评估计算平台|<http://172.29.4.49/2026seiii-016/evaluation_compute>|<https://github.com/Open-Codex-6/evaluation_compute>|待部署|<https://eval-compute.cos.tg>|
-|Agent 应用 前端|<http://172.29.4.49/2026seiii-016/agent-app-frontend/>|<https://github.com/Open-Codex-6/agent-app-frontend>|<http://172.29.5.12:3000>|<https://trip.cos.tg>|
-|Agent 应用 后端|<http://172.29.4.49/2026seiii-016/agent-app-backend>|<https://github.com/Open-Codex-6/agent-app-backend>|<http://172.29.5.12:18151>|<https://trip-api.cos.tg/>|
-|Agent 评估平台 前端|<http://172.29.4.49/2026seiii-016/agent-evaluation-frontend>|<https://github.com/Open-Codex-6/agent-evaluation-frontend>|<http://172.29.5.12:3001>|<https://eval.cos.tg>|
-|Agent 评估平台 后端|<http://172.29.4.49/2026seiii-016/agent-evaluation-backend>|<https://github.com/Open-Codex-6/agent-evaluation-backend>|<http://172.29.5.12:18152>|<https://eval-api.cos.tg/>|
-
-- 每次 clone 新仓库前，请按照 <https://se3.cos.tg/#/rules/git?id=%e8%ae%be%e7%bd%ae%e7%94%a8%e6%88%b7%e5%90%8d%e9%82%ae%e7%ae%b1%e3%80%81gpg> 的要求配置好 git 用户名、邮箱和 GPG key。
-
-## 后端所需资源
-
-## 评估
-
-- 指标：可以自己想指标
-  - 性能：响应时间、延迟、Token 消耗
-  - 输出质量：路径规划的合理性、用户满意度
-  - 其余自定义指标
-- 自行构建 Benchmark
-- 想法：消融掉不同的工具 / Memory，同时看看不同范式下性能的变化
-
-## 进一步拓展项目
-
-- Agent：Context Engineering/Memory，工具集选取，MCP，Agentic RL，上下文压缩……
-- 应用功能本身
+```text
+迭代2
+├── introduction.md # 项目分工、介绍
+├── agent # Agent 本体
+│   ├── api.md # Agent API 接口文档
+│   ├── configuration.md # Agent 配置文档
+│   ├── README.md # Agent 文档目录
+│   ├── subagent_onboarding.md # SubAgent 集成文档
+│   ├── tool_integration.md # 工具集成文档
+│   └── tools.md # 工具列表文档
+├── app # Agent 应用（旅行规划）
+│   ├── api.md # Agent 应用 API 接口文档
+│   ├── database_schema.md # 数据库模式文档
+│   ├── README.md # Agent 应用文档目录
+│   ├── requirements.md # Agent 应用需求文档
+│   └── UI.md # 用户界面文档
+├── evaluation # Agent 评估平台
+│   ├── api.md # 评估平台 API 文档
+│   ├── benchmark.md # 评估方案
+│   ├── eval_comp_sys_api.md # 评估计算系统 API 文档
+│   ├── README.md # 评估平台文档目录
+│   └── requirements.md # 评估平台需求文档
+├── meeting # 每周会议记录
+│   ├── 260325.md
+│   ├── 260401.md
+│   ├── 260408.md
+│   ├── 260415.md
+│   ├── 260422.md
+│   ├── 260429.md
+│   ├── 260506.md
+│   └── README.md
+└── README.md
+```
