@@ -1,0 +1,60 @@
+sequenceDiagram
+    autonumber
+    actor Client as 客户端
+    participant Access as 接入层
+    participant Orchestration as 编排层
+    participant Data as 数据层
+    participant Agent as Agent层
+    participant Inference as 推理层
+    participant Tool as 工具层
+    Client->>Access: 发起请求
+    activate Access
+    Note right of Access: 验证 Token、解析请求体
+
+    Access->>Orchestration: 转发请求
+    deactivate Access
+    activate Orchestration
+    Note right of Orchestration: 创建 EventBus、ToolRegistry
+
+    Orchestration->>Data: PlanStore 从后端加载行程计划
+    activate Data
+    Data-->>Orchestration: 返回行程计划
+    deactivate Data
+
+    Orchestration->>Agent: 创建 SupervisorAgent、SubAgentTool 列表
+    activate Agent
+    Agent-->>Orchestration: 返回实例
+    deactivate Agent
+
+    Note right of Orchestration: 启动后台 runner 任务
+
+    Orchestration->>Inference: Supervisor LLM 循环
+    activate Inference
+    Note right of Inference: think → call tools
+
+    loop 工具调用与子 Agent 循环
+        Inference->>Tool: ToolRegistry 分发执行 (SubAgentTool.execute)
+        activate Tool
+
+        Tool->>Agent: 创建 Worker 实例
+        activate Agent
+        Agent-->>Tool: 返回 Worker 实例
+        deactivate Agent
+
+        Tool->>Inference: 触发 Worker LLM 循环
+        activate Inference
+        Inference->>Tool: Worker 调用 MCP 工具
+        Tool-->>Inference: 返回工具执行结果
+        deactivate Inference
+
+        Tool-->>Inference: 结果回填到 Supervisor 消息
+        deactivate Tool
+    end
+
+    Inference-->>Orchestration: Supervisor 输出最终回复
+    deactivate Inference
+
+    Note right of Orchestration: 发射 done 事件、关闭 EventBus
+
+    Orchestration-->>Client: 前台协程逐条 yield SSE 事件 (SSE 流)
+    deactivate Orchestration

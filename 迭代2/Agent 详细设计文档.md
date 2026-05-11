@@ -26,7 +26,7 @@ Worker 智能体被封装为 Supervisor 工具列表中的普通函数调用。S
 
 系统按照数据流动方向与依赖关系，自顶向下划分为六个层次。上层依赖下层，下层绝不感知上层。
 
-![系统架构图](./agent-architecture.png)
+![系统架构图](./img/agent-architecture.png)
 
 ### 接入层
 
@@ -56,24 +56,7 @@ Agent 层定义了 Supervisor 与 Worker 的类层次。`BaseAgent` 从 `tool_al
 
 一次典型的用户请求穿越全部六层，其完整时序如下。
 
-```text
-客户端 → [接入层] 验证 Token、解析请求体
-  → [编排层] 创建 EventBus、ToolRegistry
-  → [数据层] PlanStore 从后端加载行程计划
-  → [Agent层] 创建 SupervisorAgent、SubAgentTool 列表
-  → [编排层] 启动后台 runner 任务
-  → [推理层] Supervisor LLM 循环：think → call tools
-      → [工具层] ToolRegistry 分发执行
-          → SubAgentTool.execute()
-          → [Agent层] 创建 Worker 实例
-          → [推理层] Worker LLM 循环
-          → [工具层] Worker 调用 MCP 工具
-      → [推理层] 结果回填到 Supervisor 消息
-  → [推理层] Supervisor 输出最终回复
-  → [编排层] 发射 done 事件、关闭 EventBus
-  → [编排层] 前台协程逐条 yield SSE 事件
-→ 客户端 SSE 流
-```
+![时序图](./img/agent-sequence.png)
 
 ## 接入层：API 与 SSE 协议
 
