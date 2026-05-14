@@ -219,6 +219,19 @@ Agent 执行的元数据。
   "results": [
     {
       "metric_name": "avg_latency",
+      "score": 1500,
+      "reason": "全局共有 1 个有效轮次记录耗时, Session平均延迟为 1500.00 ms",
+      "status": "success"
+    }
+  ]
+}
+```
+
+```json
+{
+  "results": [
+    {
+      "metric_name": "avg_latency",
       "score": null,
       "reason": "评估计算超时 (Timeout)",
       "status": "timeout"
