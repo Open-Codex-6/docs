@@ -22,6 +22,7 @@
 | `stream` | Boolean | 否 | 是否开启流式输出，目前仅支持 `true` |
 | `agent_id` | String | 否 | 指定使用的智能体应用 ID（用于加载后端写死的系统 Prompt 和默认工具集） |
 | `schedule_id` | Integer | 否 | 旅行计划标识，用于读取与写入旅行计划；若不提供则仅作临时对话，不更改旅行计划 |
+| `callback_path` | String | 否 | 回调接口路径，用于在请求结束后， Agent 向请求者回调该轮对话的轨迹，只需提供相对路径，域名在配置文件中确定 |
 | `metadata` | Object | 否 | 业务透传上下文（如地理位置、语言偏好、时区、请求来源等），方便注入到内部大模型请求和工具逻辑中 |
 
 #### 请求示例
@@ -34,6 +35,7 @@
   ],
   "stream": true,
   "schedule_id": 1001,
+  "callback_path": "/xxx/yyy/111",
   "metadata": {
     "user_id": "u_1001",
     "location": "北京",
