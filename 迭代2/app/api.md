@@ -1070,7 +1070,7 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
 | --- | --- | --- | --- |
 | `data` | `String` | 是 | 记录本身 |
 | `question_id` | `int` | 是 | 问的`id` |
-| `answer_id` | `int` | 是 | 问的`id` |
+| `answer_id` | `int` | 是 | 答的`id` |
 | `schedule_id` | `int` | 是 | 所属行程的`id` |
 
 #### 请求示例
