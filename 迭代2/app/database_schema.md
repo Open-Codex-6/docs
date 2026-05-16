@@ -187,8 +187,8 @@
 
 ## records记录
 
-- `data`: `TEXT;not null`
-  - 具体内容，后端不负责，只存储，最长65535字节（如有需要可使用更大的类型）
+- `data`: `MEDIUMTEXT;not null`
+  - 具体内容，后端不负责，只存储，最长16,777,215 字节 (16 MB)（如有需要可使用更大的类型）
 - `OneToOne`
   - `question` 对应的问的`message`
 - `ManyToOne`
