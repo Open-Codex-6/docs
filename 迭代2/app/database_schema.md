@@ -191,6 +191,5 @@
   - 具体内容，后端不负责，只存储，最长65535字节（如有需要可使用更大的类型）
 - `OneToOne`
   - `question` 对应的问的`message`
-  - `answer` 对应的答的`message`
 - `ManyToOne`
   - `schedule` 所属行程
