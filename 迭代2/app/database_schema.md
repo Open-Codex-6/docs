@@ -24,6 +24,7 @@
 - `OneToMany`
   - `plans` 行程下的各个版本的旅行计划
   - `chats` 行程下的各个会话
+  - `records` 行程下的所有记录
 
 ## plans旅行计划
 
@@ -183,3 +184,13 @@
   - 归属会话的`id`，用于指向归属的会话，外键，非空
 - `OneToMany`
   - `message_files` 消息关联的文件
+
+## records记录
+
+- `data`: `TEXT;not null`
+  - 具体内容，后端不负责，只存储，最长65535字节（如有需要可使用更大的类型）
+- `OneToOne`
+  - `question` 对应的问的`message`
+  - `answer` 对应的答的`message`
+- `ManyToOne`
+  - `schedule` 所属行程
