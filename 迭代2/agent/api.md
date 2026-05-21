@@ -129,6 +129,53 @@ event: done
 data: {"node": "Orchestrator", "status": "success", "usage": {"prompt_tokens": 3200, "completion_tokens": 800, "total_tokens": 4000}}
 ```
 
+### 简易聊天
+
+- 功能说明：轻量级对话接口，用户传入一段纯文本输入，Agent 处理后以纯文本字符串返回结果。不支持流式输出，适合一次性问答、命令行工具、脚本集成等简单场景。
+- 接口地址: `POST /chat/simple`
+- 请求头
+  - `Content-Type: application/json`
+  - `Authorization: Bearer <token>`（目前 `token` 无限制，填写任意字符串即可）
+
+#### 请求Body
+
+| 字段名 | 类型 | 必填 | 描述 |
+| --- | --- | --- | --- |
+| `content` | String | 是 | 用户输入的聊天内容，以纯文本字符串形式传入。 |
+
+#### 请求示例
+
+```json
+{
+  "content": "帮我规划北京3天行程"
+}
+```
+
+#### 响应Body
+
+| 字段名 | 类型 | 描述 |
+| --- | --- | --- |
+| `content` | String | Agent 返回的回复内容。 |
+
+#### 响应示例
+
+**成功：**
+
+```json
+{
+  "content": "已为您规划好北京3天行程，包括往返交通和酒店住宿..."
+}
+```
+
+**错误：**
+
+```json
+{
+  "detail": "Internal error: Backend API error: 401"
+}
+```
+
+
 #### 错误响应示例
 
 当 setup 阶段（如计划读取失败）或 LLM 循环中发生异常时，流以 `error` + `done` 结束，不会中断 SSE 连接：
