@@ -483,14 +483,12 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
 
 | 参数名 | 类型 | 是否必填 | 说明 |
 | --- | --- | --- | --- |
-| `id` | `int` | 是 | 会话`id` |
 | `message` | `String` | 是 | 发送的内容 |
 
 #### 请求示例
 
 ```json
 {
-    "id": 1,
     "message": "这是一个测试用例"
 }
 ```
