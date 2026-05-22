@@ -472,6 +472,39 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
 }
 ```
 
+### 轻量级发送消息
+
+- 功能说明：轻量级的发送消息
+- 接口地址: `POST /api/chat/simple`
+  - `Content-Type: application/json`
+  - `Authorization: Bearer <token>`
+
+#### 请求参数
+
+| 参数名 | 类型 | 是否必填 | 说明 |
+| --- | --- | --- | --- |
+| `message` | `String` | 是 | 发送的内容 |
+
+#### 请求示例
+
+```json
+{
+    "message": "这是一个测试用例"
+}
+```
+
+#### 响应示例
+
+```json
+{
+    "code": "200",
+    "msg": "SUCCESS",
+    "data": {
+        "content": "已为您规划好北京3天行程，包括往返交通和酒店住宿..."
+    }
+}
+```
+
 ### 获取历史消息
 
 - 功能说明：获取当前会话下的历史消息
