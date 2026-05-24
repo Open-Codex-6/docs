@@ -8,6 +8,7 @@
 
 1. **编写工具模块**：在 `src/services/tools/local/` 下新建一个 `xxx.py` 文件，实现 `BaseTool` 子类，并提供 `create_tool()` 工厂函数。
 2. **注册到工厂列表**：在 `local/discovery.py` 中导入工厂函数，追加到 `FACTORIES` 列表。
+3. **配置显示名称（可选但推荐）**：在 `src/agents/display_names.yaml` 的 `tools` 节中添加该工具的显示名，用于 SSE 前端展示。
 
 ### 示例代码
 
@@ -73,6 +74,17 @@ FACTORIES = [_create_read_tool, _create_write_tool, _create_weather_tool]
 
 `_load_tools()` 会遍历 `FACTORIES` 列表，依次调用每个工厂函数完成工具加载。`provider.py` 无需修改。
 
+#### 配置显示名称
+
+在 `src/agents/display_names.yaml` 中添加：
+
+```yaml
+tools:
+  get_weather: "天气查询"  # 精确匹配
+```
+
+> 若跳过此步，SSE 事件中的 `tool_name` 将直接展示原始名称 `"get_weather"`。
+
 ## 外部 MCP 服务器
 
 对于运行在独立进程、通过 MCP 协议暴露的第三方服务，使用 MCP 工具可扩展系统能力。
@@ -82,10 +94,11 @@ FACTORIES = [_create_read_tool, _create_write_tool, _create_weather_tool]
 1. **配置环境变量**：在 `.env` 中添加 MCP 服务器所需的 API 密钥。
 2. **创建 MCP Provider 模块**：在 `src/services/tools/mcp/` 下新建 `xxx.py`，提供 `create_provider()` 工厂函数。
 3. **注册到工厂列表**：在 `mcp/discovery.py` 中导入工厂函数，追加到 `FACTORIES` 列表。
+4. **配置显示名称（可选但推荐）**：在 `src/agents/display_names.yaml` 的 `tools` 节中添加前缀映射（以 `_` 结尾的 key 自动做前缀匹配），如 `amap_: "地图服务"`。
 
 ### 示例：高德地图
 
-#### 1. 配置环境变量
+#### 配置环境变量
 
 ```bash
 AMAP_MAPS_API_KEY=your_api_key_here
@@ -93,7 +106,7 @@ AMAP_MAPS_API_KEY=your_api_key_here
 
 > 所有参数请写入 `configuration.md` 以说明每个参数的用处。
 
-#### 2. 创建 MCP Provider 模块
+#### 创建 MCP Provider 模块
 
 在 `src/services/tools/mcp/amap.py` 中实现：
 
@@ -137,7 +150,7 @@ def create_provider() -> Optional[MCPProvider]:
     )
 ```
 
-#### 3. 在 `mcp/discovery.py` 中注册
+#### 在 `mcp/discovery.py` 中注册
 
 ```python
 from .amap import create_provider as _create_amap
@@ -148,6 +161,17 @@ FACTORIES = [_create_amap, _create_railway, _create_variflight]
 ```
 
 `load_mcp_providers()` 遍历 `FACTORIES`，调用每个工厂函数。`provider.py` 无需修改。
+
+#### 配置显示名称
+
+在 `src/agents/display_names.yaml` 中添加前缀映射（MCP 工具名运行时才能确定，用前缀匹配）：
+
+```yaml
+tools:
+  amap_: "地图服务"  # 以 _ 结尾的 key 自动做前缀匹配
+```
+
+> 配置后，SSE 事件中的 `amap_poi_search`、`amap_route_planning` 等工具名将统一显示为「地图服务」。
 
 ## 运行机制说明
 
