@@ -116,3 +116,17 @@ WORKER_CLASSES: Dict[str, type] = {
 ```
 
 Orchestrator 启动时读取 `tool_allocation.yaml` 中 `supervisor.subagents` 列表，对每个 key 在 `WORKER_CLASSES` 中查找对应的 Worker 类，动态生成 `SubAgentTool`（`delegate_weather`）并注入 Supervisor 的工具列表。
+
+### 6. 配置显示名称（可选但推荐）
+
+在 `src/agents/display_names.yaml` 中新增 Agent 和 delegate 工具的用户友好显示名，用于 SSE 前端展示：
+
+```yaml
+agents:
+  weather: "天气查询专家"       # ← 新增
+
+tools:
+  delegate_weather: "委托天气专家"  # ← 新增
+```
+
+若不为 Agent 配置显示名，SSE 事件中的 `node` 字段将直接使用内部 key（如 `"weather"`）。`delegate_*` 工具同理。
