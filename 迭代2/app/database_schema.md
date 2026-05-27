@@ -25,6 +25,7 @@
   - `plans` 行程下的各个版本的旅行计划
   - `chats` 行程下的各个会话
   - `records` 行程下的所有记录
+  - `items` 计划项
 
 ## plans旅行计划
 
@@ -34,8 +35,6 @@
   - 操作来源/更新者，限定内容只能为`account`或者`agent`，非空
 - `schedule_id`：`foreignKey;not null`
   - 归属行程的`id`，用于指向归属的行程，外键，非空
-- `OneToMany`
-  - `items` 计划项
 
 ## items计划项
 
@@ -55,6 +54,10 @@
   - 是否被接收
 - `cost`：`int; not null`
   - 预估花费  
+- `CreatedInVersion`: `int; not null`
+  - 创建的版本
+- `RemovedInVersion`: `int`
+  - 移除的版本
 - `details`：`json; not null`
   - `type`：`not null`
     - 类型，最长20字符，非空  
@@ -162,8 +165,8 @@
     }
     ```
 
-- `plan_id`：`foreignKey;not null`
-  - 归属旅行计划的`id`，用于指向归属的旅行计划，外键，非空
+- `schedule_id`：`foreignKey;not null`
+  - 归属行程的`id`，用于指向归属的行程，外键，非空
 
 ## chats会话
 
