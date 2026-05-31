@@ -19,6 +19,169 @@
 | :--- | :--- | :--- | :--- |
 | `target_metrics` | `Array[String]` | 是 | 要触发的评价指标列表 (例如: `["avg_latency"]`)。 |
 | `rounds` | `Array[Round]` | 是 | 会话内的多轮对话交互与执行记录，Agent 后端在一次问答结束后，记录该次问答对应的 `Round` 数据，评测平台可从 Agent 数据库中导出对话的 `rounds` |
+| `current_plan` | `CurrentPlan` | 否 | 当前行程计划快照。包含计划版本、更新来源及条目列表。用于评测计划相关的指标 |
+
+#### `CurrentPlan`（当前计划）
+
+计划快照，记录一次会话中的行程状态。
+
+| 参数名 | 类型 | 是否必填 | 说明 |
+| :--- | :--- | :--- | :--- |
+| `version` | `Integer` | 是 | 计划版本号 |
+| `updated_by` | `Enum(account,agent)` | 是 | 更新来源：`account`=用户手动修改，`agent`=Agent 自动更新 |
+| `items` | `Array[PlanItem]` | 是 | 计划条目列表 |
+
+#### `PlanItem`（计划条目）
+
+计划中的一个条目，可以是景点、酒店、餐饮、长途交通或短途交通。
+
+| 参数名 | 类型 | 是否必填 | 说明 |
+| :--- | :--- | :--- | :--- |
+| `type` | `String(20)` | 是 | 条目类型，最长 20 字符 |
+| `name` | `String(20)` | 是 | 条目名称，最长 20 字符 |
+| `start_time` | `String` | 是 | 开始时间，格式 `YYYY-MM-DDTHH:mm:ss+8:00` |
+| `end_time` | `String` | 是 | 结束时间，格式 `YYYY-MM-DDTHH:mm:ss+8:00` |
+| `notes` | `String(100)` | 否 | 说明，最长 100 字符 |
+| `status` | `String(20)` | 是 | 当前状态，最长 20 字符 |
+| `isConfirmed` | `Boolean` | 是 | 是否已被用户接收 |
+| `cost` | `Integer` | 是 | 预估花费（元） |
+| `CreatedInVersion` | `Integer` | 是 | 条目创建的版本号 |
+| `RemovedInVersion` | `Integer` | 否 | 条目移除的版本号，`null` 表示尚未移除 |
+| `details` | `PlanItemDetail` | 是 | 条目详情（type + data 结构） |
+
+#### `PlanItemDetail`（条目详情）
+
+| 参数名 | 类型 | 是否必填 | 说明 |
+| :--- | :--- | :--- | :--- |
+| `type` | `Enum` | 是 | 详情类型：`attraction` / `hotel` / `food` / `transport_long` / `transport_short` |
+| `data` | `Object` | 是 | 详情数据，结构由 `type` 决定（见下方五种 data 结构） |
+
+#### `Location`（地理位置）
+
+五种 data 共用字段，内嵌在 `data.location`、`data.departure_location`、`data.arrival_location` 中。
+
+| 参数名 | 类型 | 是否必填 | 说明 |
+| :--- | :--- | :--- | :--- |
+| `poi_id` | `String` | 否 | POI 唯一标识 |
+| `poi_name` | `String` | 否 | POI 名称 |
+| `address` | `String` | 否 | 详细地址 |
+| `lng` | `Double` | 否 | 经度 |
+| `lat` | `Double` | 否 | 纬度 |
+
+#### data 结构：`attraction`（景点）
+
+```json
+{
+  "type": "attraction",
+  "suggested_duration": 1,
+  "opening_hours": "string",
+  "booking_reference": "string",
+  "location": { ... },
+  "tags": ["string[]"]
+}
+```
+
+| 参数名 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `suggested_duration` | `Integer` | 建议游览时间（小时） |
+| `opening_hours` | `String` | 开放时间描述 |
+| `booking_reference` | `String` | 预订参考号 |
+| `location` | `Location` | 景点位置 |
+| `tags` | `Array[String]` | 标签列表 |
+
+#### data 结构：`hotel`（酒店）
+
+```json
+{
+  "type": "hotel",
+  "contact_phone": "string",
+  "room_type": "string",
+  "booking_reference": "string",
+  "location": { ... },
+  "tags": ["string[]"]
+}
+```
+
+| 参数名 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `contact_phone` | `String` | 联系电话 |
+| `room_type` | `String` | 房型 |
+| `booking_reference` | `String` | 预订参考号 |
+| `location` | `Location` | 酒店位置 |
+| `tags` | `Array[String]` | 标签列表 |
+
+#### data 结构：`food`（餐饮）
+
+```json
+{
+  "type": "food",
+  "recommend_dishes": ["string[]"],
+  "opening_hours": "string",
+  "location": { ... },
+  "tags": ["string[]"]
+}
+```
+
+| 参数名 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `recommend_dishes` | `Array[String]` | 推荐菜品 |
+| `opening_hours` | `String` | 营业时间 |
+| `location` | `Location` | 餐厅位置 |
+| `tags` | `Array[String]` | 标签列表 |
+
+#### data 结构：`transport_long`（长途交通）
+
+```json
+{
+  "type": "transport_long",
+  "transport_mode": "string",
+  "departure_station": "string",
+  "arrival_station": "string",
+  "vehicle_number": "string",
+  "seat_info": "string",
+  "booking_reference": "string",
+  "departure_location": { ... },
+  "arrival_location": { ... }
+}
+```
+
+| 参数名 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `transport_mode` | `String` | 交通方式（train / flight） |
+| `departure_station` | `String` | 出发站 |
+| `arrival_station` | `String` | 到达站 |
+| `vehicle_number` | `String` | 车次/航班号 |
+| `seat_info` | `String` | 座位信息 |
+| `booking_reference` | `String` | 预订参考号 |
+| `departure_location` | `Location` | 出发站点位置 |
+| `arrival_location` | `Location` | 到达站点位置 |
+
+#### data 结构：`transport_short`（短途交通）
+
+```json
+{
+  "type": "transport_short",
+  "routes": [{
+    "estimated_duration": 1,
+    "route_description": "string",
+    "navigation_link": "string"
+  }],
+  "departure_location": { ... },
+  "arrival_location": { ... }
+}
+```
+
+| 参数名 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `routes` | `Array[Route]` | 路线列表 |
+| `departure_location` | `Location` | 出发位置 |
+| `arrival_location` | `Location` | 到达位置 |
+
+| `Route` 子字段 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `estimated_duration` | `Integer` | 预估耗时（分钟） |
+| `route_description` | `String` | 路线描述 |
+| `navigation_link` | `String` | 导航链接 |
 
 #### `Round`（一轮对话）
 
