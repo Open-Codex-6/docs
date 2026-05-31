@@ -45,7 +45,7 @@
 | `status` | `String(20)` | 是 | 当前状态，最长 20 字符 |
 | `isConfirmed` | `Boolean` | 是 | 是否已被用户接收 |
 | `cost` | `Integer` | 是 | 预估花费（元） |
-| `CreatedInVersion` | `Integer` | 是 | 条目创建的版本号 |
+| `CreatedInVersion` | `Integer` | 否 | 条目创建的版本号 |
 | `RemovedInVersion` | `Integer` | 否 | 条目移除的版本号，`null` 表示尚未移除 |
 | `details` | `PlanItemDetail` | 是 | 条目详情（type + data 结构） |
 
