@@ -25,6 +25,18 @@
 | `callback_path` | String | 否 | 回调接口路径，用于在请求结束后， Agent 向请求者回调该轮对话的轨迹，只需提供相对路径，域名在配置文件中确定，若不提供则不调用接口并回传会话数据 |
 | `callback_id` | Integer | 否 | 回调 id，用于在请求结束后， Agent 向请求者回调该轮对话的轨迹，若不提供则不调用接口并回传会话数据 |
 | `metadata` | Object | 否 | 业务透传上下文（如地理位置、语言偏好、时区、请求来源等），方便注入到内部大模型请求和工具逻辑中 |
+| `tool_ids` | Array\<String\> | 否 | 允许本次对话使用的工具名称白名单（如 `["amap_search_poi", "variflight_query_flight"]`）。提供时仅有列表中的工具会暴露给 LLM；不提供或传 `null` 则默认开放全部工具。与后端 YAML 配置的 per-agent 工具过滤取交集，名单中不存在的工具名会被静默忽略。 |
+| `files` | Array\<FileAttachment\> | 否 | 随本次对话附带的文件（图片或 PDF），以 Base64 编码传入，内容会注入到最后一条 `user` 消息中。支持的格式：`image/jpeg`、`image/png`、`image/webp`、`image/gif`、`application/pdf`；传入不支持的 `media_type` 将返回 HTTP 400。 |
+
+
+#### FileAttachment 对象
+
+| 字段名 | 类型 | 必填 | 描述 |
+| --- | --- | --- | --- |
+| `data` | String | 是 | 文件内容的 Base64 编码字符串。 |
+| `media_type` | String | 是 | 文件 MIME 类型，支持 `image/jpeg`、`image/png`、`image/webp`、`image/gif`、`application/pdf`。 |
+| `filename` | String | 否 | 文件名，用于日志记录；PDF 上传时作为 OpenAI Files API 的文件名（默认 `document.pdf`）。 |
+
 
 #### 请求示例
 
@@ -42,7 +54,16 @@
     "user_id": "u_1001",
     "location": "北京",
     "timezone": "Asia/Shanghai"
-  }
+  },
+  "tool_ids": ["amap_search_poi", "variflight_query_flight"],
+  "files": [
+    {
+      "data": "<base64编码内容>",
+      "media_type": "image/jpeg",
+      "filename": "photo.jpg"
+    }
+  ]
+
 }
 ```
 
@@ -188,4 +209,40 @@ data: {"node": "Orchestrator", "code": 500, "message": "Backend API error: 401"}
 
 event: done
 data: {"node": "Orchestrator", "status": "error", "message": "Backend API error: 401"}
+```
+
+## 工具查询接口
+
+### 查询可禁用工具
+
+- 功能说明：返回当前系统中所有支持被禁用的工具列表。可禁用工具均为 MCP 外部工具，前端可据此渲染开关控件，供用户按需关闭对应服务。
+- 接口地址: `GET /tools/disableable`
+- 请求头
+  - `Authorization: Bearer <token>`
+
+#### 响应Body
+
+返回一个列表，每项包含以下字段：
+
+| 字段名 | 类型 | 描述 |
+| --- | --- | --- |
+| `id` | String | 工具标识前缀（如 `variflight_`、`12306_`），对应 `tool_ids` 传参时使用的前缀 |
+| `name` | String | 工具显示名称，取自 `display_names.yaml` 配置（如"航班查询"） |
+| `description` | String | 工具功能描述 |
+
+#### 响应示例
+
+```json
+[
+  {
+    "id": "variflight_",
+    "name": "航班查询",
+    "description": "航班信息查询"
+  },
+  {
+    "id": "12306_",
+    "name": "火车票查询",
+    "description": "高铁/火车票信息查询"
+  }
+]
 ```
