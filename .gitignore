@@ -1,2 +1,3 @@
 *.pdf
 !**/pdfs/**/*.pdf
+./docs/迭代2/agent/display_names.yaml

@@ -226,8 +226,8 @@ data: {"node": "Orchestrator", "status": "error", "message": "Backend API error:
 
 | 字段名 | 类型 | 描述 |
 | --- | --- | --- |
-| `id` | Integer | 工具唯一标识 |
-| `name` | String | 工具名称前缀（如 `variflight_`、`12306_`） |
+| `id` | String | 工具标识前缀（如 `variflight_`、`12306_`），对应 `tool_ids` 传参时使用的前缀 |
+| `name` | String | 工具显示名称，取自 `display_names.yaml` 配置（如"航班查询"） |
 | `description` | String | 工具功能描述 |
 
 #### 响应示例
@@ -235,13 +235,13 @@ data: {"node": "Orchestrator", "status": "error", "message": "Backend API error:
 ```json
 [
   {
-    "id": 1,
-    "name": "variflight_",
+    "id": "variflight_",
+    "name": "航班查询",
     "description": "航班信息查询"
   },
   {
-    "id": 2,
-    "name": "12306_",
+    "id": "12306_",
+    "name": "火车票查询",
     "description": "高铁/火车票信息查询"
   }
 ]
