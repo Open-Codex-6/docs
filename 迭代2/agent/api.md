@@ -222,14 +222,27 @@ data: {"node": "Orchestrator", "status": "error", "message": "Backend API error:
 
 #### 响应Body
 
+返回一个列表，每项包含以下字段：
+
 | 字段名 | 类型 | 描述 |
 | --- | --- | --- |
-| `tools` | Array\<String\> | 可禁用工具的名称前缀列表 |
+| `id` | Integer | 工具唯一标识 |
+| `name` | String | 工具名称前缀（如 `variflight_`、`12306_`） |
+| `description` | String | 工具功能描述 |
 
 #### 响应示例
 
 ```json
-{
-  "tools": ["variflight_", "12306_"]
-}
+[
+  {
+    "id": 1,
+    "name": "variflight_",
+    "description": "航班信息查询"
+  },
+  {
+    "id": 2,
+    "name": "12306_",
+    "description": "高铁/火车票信息查询"
+  }
+]
 ```
