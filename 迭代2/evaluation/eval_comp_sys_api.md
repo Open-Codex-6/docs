@@ -19,7 +19,7 @@
 | :--- | :--- | :--- | :--- |
 | `target_metrics` | `Array[String]` | 是 | 要触发的评价指标列表 (例如: `["avg_latency"]`)。内置指标见下方说明，自定义指标需同时提供 `custom_metrics` 配置 |
 | `rounds` | `Array[Round]` | 是 | 会话内的多轮对话交互与执行记录，Agent 后端在一次问答结束后，记录该次问答对应的 `Round` 数据，评测平台可从 Agent 数据库中导出对话的 `rounds` |
-| `current_plan` | `CurrentPlan` | 否 | 当前行程计划快照。包含计划版本、更新来源及条目列表。用于评测计划相关的指标 |
+| `currentPlan` | `CurrentPlan` | 否 | 当前行程计划快照。包含计划版本、更新来源及条目列表。用于评测计划相关的指标 |
 | `custom_metrics` | `Array[CustomMetricConfig]` | 否 | 用户自定义评分量规。当 `target_metrics` 中包含自定义指标名时，需在此提供对应的评分标准 |
 
 #### 内置指标
@@ -136,7 +136,7 @@
 | 参数名 | 类型 | 是否必填 | 说明 |
 | :--- | :--- | :--- | :--- |
 | `version` | `Integer` | 否 | 计划版本号 |
-| `updated_by` | `Enum(account,agent)` | 是 | 更新来源：`account`=用户手动修改，`agent`=Agent 自动更新 |
+| `updatedBy` | `Enum(account,agent)` | 是 | 更新来源：`account`=用户手动修改，`agent`=Agent 自动更新 |
 | `items` | `Array[PlanItem]` | 是 | 计划条目列表 |
 
 #### `PlanItem`（计划条目）
