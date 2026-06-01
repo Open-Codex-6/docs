@@ -36,32 +36,32 @@
 
 **本地工具**（固定可用，不依赖外部服务）
 
-| 工具名 | 说明 |
-| --- | --- |
-| `get_travel_plan` | 读取当前旅行计划（返回结构化 JSON） |
-| `save_attraction` | 保存景点类计划项 |
-| `save_hotel` | 保存酒店类计划项 |
-| `save_food` | 保存餐饮类计划项 |
-| `save_transport_long` | 保存长途交通类计划项（航班/火车/客车/轮渡） |
-| `save_transport_short` | 保存市内交通类计划项 |
+| 工具名 | 说明 | 是否可禁用 |
+| --- | --- | --- |
+| `get_travel_plan` | 读取当前旅行计划（返回结构化 JSON） | 否 |
+| `save_attraction` | 保存景点类计划项 | 否 |
+| `save_hotel` | 保存酒店类计划项 | 否 |
+| `save_food` | 保存餐饮类计划项 | 否 |
+| `save_transport_long` | 保存长途交通类计划项（航班/火车/客车/轮渡） | 否 |
+| `save_transport_short` | 保存市内交通类计划项 | 否 |
 
 **子 Agent 委托工具**（Supervisor 层可用，触发后由对应 Worker Agent 执行）
 
-| 工具名 | 说明 |
-| --- | --- |
-| `delegate_traffic` | 委托交通规划专家（查长途航班、火车等） |
-| `delegate_local_transport` | 委托市内出行专家（查市内路线、导航等） |
-| `delegate_hotel` | 委托酒店住宿专家 |
-| `delegate_attraction` | 委托景点游玩专家 |
-| `delegate_food` | 委托美食餐饮专家 |
+| 工具名 | 说明 | 是否可禁用 |
+| --- | --- | --- |
+| `delegate_traffic` | 委托交通规划专家（查长途航班、火车等） | 否 |
+| `delegate_local_transport` | 委托市内出行专家（查市内路线、导航等） | 否 |
+| `delegate_hotel` | 委托酒店住宿专家 | 否 |
+| `delegate_attraction` | 委托景点游玩专家 | 否 |
+| `delegate_food` | 委托美食餐饮专家 | 否 |
 
 **MCP 外部工具**（名称由 MCP Server 动态提供，以固定前缀区分来源）
 
-| 前缀 | 来源 | 说明 |
-| --- | --- | --- |
-| `amap_` | 高德地图 MCP | POI 搜索、路线规划、地理编码等地图服务 |
-| `variflight_` | Variflight MCP | 航班信息查询 |
-| `12306_` | 12306 MCP | 高铁/火车票信息查询 |
+| 前缀 | 来源 | 说明 | 是否可禁用 |
+| --- | --- | --- | --- |
+| `amap_` | 高德地图 MCP | POI 搜索、路线规划、地理编码等地图服务 | 否 |
+| `variflight_` | Variflight MCP | 航班信息查询 | 是 |
+| `12306_` | 12306 MCP | 高铁/火车票信息查询 | 是 |
 
 > 注：MCP 工具的完整名称（如 `amap_search_poi`）由对应 MCP Server 在运行时注册，可通过观察 SSE 事件流中的 `tool_call` 事件的 `tool_name` 字段获取实际名称。
 
@@ -245,4 +245,46 @@ data: {"node": "Orchestrator", "code": 500, "message": "Backend API error: 401"}
 
 event: done
 data: {"node": "Orchestrator", "status": "error", "message": "Backend API error: 401"}
+```
+
+## 工具查询接口
+
+### 查询可禁用工具
+
+- 功能说明：返回当前系统中所有支持被禁用的工具列表。可禁用工具均为 MCP 外部工具，前端可据此渲染开关控件，供用户按需关闭对应服务。
+- 接口地址: `GET /tools/disableable`
+- 请求头
+  - `Authorization: Bearer <token>`
+
+#### 响应Body
+
+| 字段名 | 类型 | 描述 |
+| --- | --- | --- |
+| `tools` | Array\<DisableableTool\> | 可禁用工具列表 |
+
+**DisableableTool 对象**
+
+| 字段名 | 类型 | 描述 |
+| --- | --- | --- |
+| `prefix` | String | 工具名称前缀（如 `variflight_`、`12306_`） |
+| `source` | String | MCP 服务来源名称 |
+| `description` | String | 该工具组的功能说明 |
+
+#### 响应示例
+
+```json
+{
+  "tools": [
+    {
+      "prefix": "variflight_",
+      "source": "Variflight MCP",
+      "description": "航班信息查询"
+    },
+    {
+      "prefix": "12306_",
+      "source": "12306 MCP",
+      "description": "高铁/火车票信息查询"
+    }
+  ]
+}
 ```
