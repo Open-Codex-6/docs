@@ -27,43 +27,7 @@
 | `metadata` | Object | 否 | 业务透传上下文（如地理位置、语言偏好、时区、请求来源等），方便注入到内部大模型请求和工具逻辑中 |
 | `tool_ids` | Array\<String\> | 否 | 允许本次对话使用的工具名称白名单（如 `["amap_search_poi", "variflight_query_flight"]`）。提供时仅有列表中的工具会暴露给 LLM；不提供或传 `null` 则默认开放全部工具。与后端 YAML 配置的 per-agent 工具过滤取交集，名单中不存在的工具名会被静默忽略。 |
 | `files` | Array\<FileAttachment\> | 否 | 随本次对话附带的文件（图片或 PDF），以 Base64 编码传入，内容会注入到最后一条 `user` 消息中。支持的格式：`image/jpeg`、`image/png`、`image/webp`、`image/gif`、`application/pdf`；传入不支持的 `media_type` 将返回 HTTP 400。 |
-| `callback_path` | String | 否 | 本轮对话 Trace 的回调路径（相对于 `BACKEND_API_BASE_URL`）。需与 `callback_id` 同时提供，对话完成后服务端会向该地址 POST 结构化 Trace 数据。 |
-| `callback_id` | Integer | 否 | 对应本轮问答的 `question_id`，随 Trace 数据一同回传给 `callback_path`。 |
 
-#### tool_ids 可选值
-
-工具名称分为三类，使用时填写下表中的 `工具名` 字段值：
-
-**本地工具**（固定可用，不依赖外部服务）
-
-| 工具名 | 说明 | 是否可禁用 |
-| --- | --- | --- |
-| `get_travel_plan` | 读取当前旅行计划（返回结构化 JSON） | 否 |
-| `save_attraction` | 保存景点类计划项 | 否 |
-| `save_hotel` | 保存酒店类计划项 | 否 |
-| `save_food` | 保存餐饮类计划项 | 否 |
-| `save_transport_long` | 保存长途交通类计划项（航班/火车/客车/轮渡） | 否 |
-| `save_transport_short` | 保存市内交通类计划项 | 否 |
-
-**子 Agent 委托工具**（Supervisor 层可用，触发后由对应 Worker Agent 执行）
-
-| 工具名 | 说明 | 是否可禁用 |
-| --- | --- | --- |
-| `delegate_traffic` | 委托交通规划专家（查长途航班、火车等） | 否 |
-| `delegate_local_transport` | 委托市内出行专家（查市内路线、导航等） | 否 |
-| `delegate_hotel` | 委托酒店住宿专家 | 否 |
-| `delegate_attraction` | 委托景点游玩专家 | 否 |
-| `delegate_food` | 委托美食餐饮专家 | 否 |
-
-**MCP 外部工具**（名称由 MCP Server 动态提供，以固定前缀区分来源）
-
-| 前缀 | 来源 | 说明 | 是否可禁用 |
-| --- | --- | --- | --- |
-| `amap_` | 高德地图 MCP | POI 搜索、路线规划、地理编码等地图服务 | 否 |
-| `variflight_` | Variflight MCP | 航班信息查询 | 是 |
-| `12306_` | 12306 MCP | 高铁/火车票信息查询 | 是 |
-
-> 注：MCP 工具的完整名称（如 `amap_search_poi`）由对应 MCP Server 在运行时注册，可通过观察 SSE 事件流中的 `tool_call` 事件的 `tool_name` 字段获取实际名称。
 
 #### FileAttachment 对象
 
@@ -260,31 +224,12 @@ data: {"node": "Orchestrator", "status": "error", "message": "Backend API error:
 
 | 字段名 | 类型 | 描述 |
 | --- | --- | --- |
-| `tools` | Array\<DisableableTool\> | 可禁用工具列表 |
-
-**DisableableTool 对象**
-
-| 字段名 | 类型 | 描述 |
-| --- | --- | --- |
-| `prefix` | String | 工具名称前缀（如 `variflight_`、`12306_`） |
-| `source` | String | MCP 服务来源名称 |
-| `description` | String | 该工具组的功能说明 |
+| `tools` | Array\<String\> | 可禁用工具的名称前缀列表 |
 
 #### 响应示例
 
 ```json
 {
-  "tools": [
-    {
-      "prefix": "variflight_",
-      "source": "Variflight MCP",
-      "description": "航班信息查询"
-    },
-    {
-      "prefix": "12306_",
-      "source": "12306 MCP",
-      "description": "高铁/火车票信息查询"
-    }
-  ]
+  "tools": ["variflight_", "12306_"]
 }
 ```
