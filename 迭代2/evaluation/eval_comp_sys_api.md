@@ -17,9 +17,117 @@
 
 | 参数名 | 类型 | 是否必填 | 说明 |
 | :--- | :--- | :--- | :--- |
-| `target_metrics` | `Array[String]` | 是 | 要触发的评价指标列表 (例如: `["avg_latency"]`)。 |
+| `target_metrics` | `Array[String]` | 是 | 要触发的评价指标列表 (例如: `["avg_latency"]`)。内置指标见下方说明，自定义指标需同时提供 `custom_metrics` 配置 |
 | `rounds` | `Array[Round]` | 是 | 会话内的多轮对话交互与执行记录，Agent 后端在一次问答结束后，记录该次问答对应的 `Round` 数据，评测平台可从 Agent 数据库中导出对话的 `rounds` |
 | `current_plan` | `CurrentPlan` | 否 | 当前行程计划快照。包含计划版本、更新来源及条目列表。用于评测计划相关的指标 |
+| `custom_metrics` | `Array[CustomMetricConfig]` | 否 | 用户自定义评分量规。当 `target_metrics` 中包含自定义指标名时，需在此提供对应的评分标准 |
+
+#### 内置指标
+
+平台内置以下统计与 LLM 评估指标，可直接在 `target_metrics` 中使用：
+
+| 指标名 | 类型 | 说明 | 依赖数据 |
+| :--- | :--- | :--- | :--- |
+| `Average Latency` | 统计 | 计算所有轮次的平均延迟 | `rounds[].metadata.latency_ms` |
+| `Location Reliability` | 统计+API | 三级流水线验证坐标有效性、POI 是否存在、坐标是否偏移 | `currentPlan.items` + 高德 Geocoding API |
+| `Schedule Reasonability` | 统计 | 按日期分组检测时间冲突，取最严重冲突对的惩罚分 | `currentPlan.items[].start_time/end_time` |
+| `Route Efficiency` | 统计 | 按日期分组计算路线顺直度（最近邻贪心 vs 实际路线） | `currentPlan.items[].details.data` |
+| `Faithfulness` | Ragas LLM | Ragas 忠实度评估 | `rounds[]` |
+| `Answer Relevancy` | Ragas LLM | Ragas 答案相关性评估 | `rounds[]` |
+| `Coherence` | Ragas LLM | Ragas 连贯性评估 | `rounds[]` |
+| `Harmfulness` | Ragas LLM | Ragas 有害性评估 | `rounds[]` |
+
+#### 自定义指标（Custom Metrics）
+
+自定义指标允许用户指定评分量规（rubric），由 LLM 根据对话内容和量规进行 0~1 浮点评分。
+
+**`CustomMetricConfig` 结构：**
+
+| 参数名 | 类型 | 是否必填 | 说明 |
+| :--- | :--- | :--- | :--- |
+| `metric_name` | `String` | 是 | 自定义指标名称，需与 `target_metrics` 中的条目一致 |
+| `rubric` | `Dict[Float, String]` | 是 | 评分量规，键为 0.0~1.0 的分数等级，值为该等级的判定标准描述 |
+
+- 请求在 `target_metrics` 中声明自定义指标名，同时在 `custom_metrics` 中提供对应的量规配置
+
+**量规示例：**
+
+```json
+{
+  "metric_name": "任务完成度",
+  "rubric": {
+    "0.0": "完全没有理解用户需求，答非所问",
+    "0.2": "只响应用户需求的一小部分，遗漏了多个核心诉求",
+    "0.4": "响应了用户部分需求，但有关键信息缺失或未跟进用户的追问",
+    "0.6": "基本完成了用户的主要需求，但在完整性或细节上仍有不足",
+    "0.8": "完整满足了用户的所有需求，回复有条理、细节充分",
+    "1.0": "不仅完美完成所有需求，还主动提供了额外有价值的信息"
+  }
+}
+```
+
+**完整请求示例：**
+
+```json
+{
+  "target_metrics": ["Average Latency", "任务完成度", "容错处理能力"],
+  "rounds": [
+    {
+      "query": "帮我规划北京3天行程",
+      "final_response": "已为您规划好...",
+      "agent": "supervisor",
+      "is_delegated": false,
+      "steps": [],
+      "metadata": {"latency_ms": 3800, "is_error": false}
+    }
+  ],
+  "custom_metrics": [
+    {
+      "metric_name": "任务完成度",
+      "rubric": {
+        "0.0": "完全没有理解用户需求",
+        "0.5": "部分完成用户需求",
+        "1.0": "完美完成所有需求"
+      }
+    },
+    {
+      "metric_name": "容错处理能力",
+      "rubric": {
+        "0.0": "遇到错误后完全崩溃",
+        "0.5": "能感知错误但未处理",
+        "1.0": "优雅降级并主动提供替代方案"
+      }
+    }
+  ]
+}
+```
+
+**响应示例：**
+
+```json
+{
+  "results": [
+    {
+      "metric_name": "Average Latency",
+      "score": 3800.0,
+      "reason": "全局共有 1 个有效轮次记录耗时, Session平均延迟为 3800.00 ms",
+      "status": "success"
+    },
+    {
+      "metric_name": "任务完成度",
+      "score": 0.75,
+      "reason": "Agent 基本完成了行程规划...",
+      "status": "success"
+    },
+    {
+      "metric_name": "容错处理能力",
+      "score": 0.8,
+      "reason": "在颐和园查询超时后明确告知用户...",
+      "status": "success"
+    }
+  ]
+}
+```
 
 #### `CurrentPlan`（当前计划）
 
@@ -27,7 +135,7 @@
 
 | 参数名 | 类型 | 是否必填 | 说明 |
 | :--- | :--- | :--- | :--- |
-| `version` | `Integer` | 是 | 计划版本号 |
+| `version` | `Integer` | 否 | 计划版本号 |
 | `updated_by` | `Enum(account,agent)` | 是 | 更新来源：`account`=用户手动修改，`agent`=Agent 自动更新 |
 | `items` | `Array[PlanItem]` | 是 | 计划条目列表 |
 
