@@ -57,6 +57,7 @@
 | `group_type` | String | 常见出行类型，枚举值：`"solo"`、`"couple"`、`"family"`（含老人或儿童）、`"friends"`。 |
 | `typical_trip_duration` | Integer | 常见出行天数（天），用于辅助判断行程疏密。 |
 | `past_destinations` | Array\<String\> | 曾经去过的目的地城市/地区列表，如 `["北京", "上海", "成都"]`，避免重复推荐相同景点。 |
+| `notes` | String | 纯文本备注，用于记录结构化字段无法涵盖的个性化信息，如特殊需求、过往旅行中的具体经历、对某次行程的感受等。Agent 规划时应参考此字段。 |
 
 **AccommodationPreference 子对象**
 
@@ -92,7 +93,8 @@
   "physical_level": "medium",
   "group_type": "couple",
   "typical_trip_duration": 5,
-  "past_destinations": ["北京", "上海", "成都"]
+  "past_destinations": ["北京", "上海", "成都"],
+  "notes": "对人多的热门景点兴趣不大，偏好小众路线；上次去成都时对火锅印象极好，希望每次旅行都能安排一顿当地特色火锅类菜肴。"
 }
 ```
 
@@ -126,7 +128,8 @@
     "physical_level": "medium",
     "group_type": "couple",
     "typical_trip_duration": 5,
-    "past_destinations": ["上海", "成都"]
+    "past_destinations": ["上海", "成都"],
+    "notes": "偏好小众路线，不喜欢人多的热门景点。"
   },
   "profile_callback_path": "/api/profile/update",
   "files": [
