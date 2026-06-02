@@ -27,6 +27,8 @@
 | `metadata` | Object | 否 | 业务透传上下文（如地理位置、语言偏好、时区、请求来源等），方便注入到内部大模型请求和工具逻辑中 |
 | `tool_ids` | Array\<String\> | 否 | 允许本次对话使用的工具名称白名单（如 `["amap_search_poi", "variflight_query_flight"]`）。提供时仅有列表中的工具会暴露给 LLM；不提供或传 `null` 则默认开放全部工具。与后端 YAML 配置的 per-agent 工具过滤取交集，名单中不存在的工具名会被静默忽略。 |
 | `files` | Array\<FileAttachment\> | 否 | 随本次对话附带的文件（图片或 PDF），以 Base64 编码传入，内容会注入到最后一条 `user` 消息中。支持的格式：`image/jpeg`、`image/png`、`image/webp`、`image/gif`、`application/pdf`；传入不支持的 `media_type` 将返回 HTTP 400。 |
+| `user_profile` | UserProfile | 否 | 当前用户画像，Agent 在规划过程中可参考用户偏好、习惯等信息，提升个性化程度；详见 UserProfile 对象定义。不提供则按无偏好信息处理。 |
+| `profile_callback_path` | String | 否 | 用户画像回调接口的相对路径。对话结束后，若 Agent 依据本次交互对用户画像有更新，则向该路径发起回调，将更新后的 UserProfile 写回业务后端；只需提供相对路径，域名在配置文件中确定。不提供则不回调。 |
 
 
 #### FileAttachment 对象
@@ -36,6 +38,65 @@
 | `data` | String | 是 | 文件内容的 Base64 编码字符串。 |
 | `media_type` | String | 是 | 文件 MIME 类型，支持 `image/jpeg`、`image/png`、`image/webp`、`image/gif`、`application/pdf`。 |
 | `filename` | String | 否 | 文件名，用于日志记录；PDF 上传时作为 OpenAI Files API 的文件名（默认 `document.pdf`）。 |
+
+
+#### UserProfile 对象
+
+用户画像用于在对话中向 Agent 注入用户的长期偏好与历史信息，所有字段均为可选，Agent 应仅参考已存在的字段。
+
+| 字段名 | 类型 | 描述 |
+| --- | --- | --- |
+| `pace` | String | 出行节奏偏好，枚举值：`"relaxed"`（慢节奏，每天不超过 2 个景点）、`"moderate"`（适中）、`"intensive"`（高密度，每天 4 个以上景点）。 |
+| `budget_level` | String | 预算档次偏好，枚举值：`"budget"`（经济型）、`"mid-range"`（舒适型）、`"luxury"`（豪华型）。 |
+| `interests` | Array\<String\> | 兴趣标签列表，如 `["历史文化", "自然风景", "购物", "美食体验", "摄影"]`。 |
+| `food_preferences` | Array\<String\> | 餐饮偏好标签，如 `["本地特色", "素食", "海鲜", "辣食"]`。 |
+| `disliked_things` | Array\<String\> | 不喜欢或希望回避的内容，如 `["过于商业化的景点", "人多的地方", "早班机"]`。 |
+| `accommodation` | AccommodationPreference | 住宿偏好，详见子对象定义。 |
+| `transport` | TransportPreference | 交通偏好，详见子对象定义。 |
+| `physical_level` | String | 体力/运动能力，枚举值：`"low"`（不适合长距离步行）、`"medium"`（一般）、`"high"`（可接受高强度徒步）。 |
+| `group_type` | String | 常见出行类型，枚举值：`"solo"`、`"couple"`、`"family"`（含老人或儿童）、`"friends"`。 |
+| `typical_trip_duration` | Integer | 常见出行天数（天），用于辅助判断行程疏密。 |
+| `past_destinations` | Array\<String\> | 曾经去过的目的地城市/地区列表，如 `["北京", "上海", "成都"]`，避免重复推荐相同景点。 |
+| `notes` | String | 纯文本备注，用于记录结构化字段无法涵盖的个性化信息，如特殊需求、过往旅行中的具体经历、对某次行程的感受等。Agent 规划时应参考此字段。 |
+
+**AccommodationPreference 子对象**
+
+| 字段名 | 类型 | 描述 |
+| --- | --- | --- |
+| `min_star` | Integer | 最低可接受星级（1–5）。 |
+| `preferred_room_type` | String | 偏好房型，如 `"大床房"`、`"双床房"`。 |
+
+**TransportPreference 子对象**
+
+| 字段名 | 类型 | 描述 |
+| --- | --- | --- |
+| `avoid_overnight` | Boolean | 是否回避夜班车/红眼航班，`true` 表示回避。 |
+| `preferred_modes` | Array\<String\> | 偏好的交通方式，枚举值：`"flight"`、`"train"`、`"coach"`、`"ferry"`。 |
+
+**UserProfile 示例**
+
+```json
+{
+  "pace": "moderate",
+  "budget_level": "mid-range",
+  "interests": ["历史文化", "自然风景", "美食体验"],
+  "food_preferences": ["本地特色", "海鲜"],
+  "disliked_things": ["早班机", "过于商业化的景点"],
+  "accommodation": {
+    "min_star": 4,
+    "preferred_room_type": "大床房"
+  },
+  "transport": {
+    "avoid_overnight": true,
+    "preferred_modes": ["train", "flight"]
+  },
+  "physical_level": "medium",
+  "group_type": "couple",
+  "typical_trip_duration": 5,
+  "past_destinations": ["北京", "上海", "成都"],
+  "notes": "对人多的热门景点兴趣不大，偏好小众路线；上次去成都时对火锅印象极好，希望每次旅行都能安排一顿当地特色火锅类菜肴。"
+}
+```
 
 
 #### 请求示例
@@ -56,6 +117,21 @@
     "timezone": "Asia/Shanghai"
   },
   "tool_ids": ["amap_search_poi", "variflight_query_flight"],
+  "user_profile": {
+    "pace": "moderate",
+    "budget_level": "mid-range",
+    "interests": ["历史文化", "自然风景"],
+    "food_preferences": ["本地特色"],
+    "disliked_things": ["早班机"],
+    "accommodation": { "min_star": 4, "preferred_room_type": "大床房" },
+    "transport": { "avoid_overnight": true, "preferred_modes": ["train", "flight"] },
+    "physical_level": "medium",
+    "group_type": "couple",
+    "typical_trip_duration": 5,
+    "past_destinations": ["上海", "成都"],
+    "notes": "偏好小众路线，不喜欢人多的热门景点。"
+  },
+  "profile_callback_path": "/api/profile/update",
   "files": [
     {
       "data": "<base64编码内容>",
@@ -210,6 +286,8 @@ data: {"node": "Orchestrator", "code": 500, "message": "Backend API error: 401"}
 event: done
 data: {"node": "Orchestrator", "status": "error", "message": "Backend API error: 401"}
 ```
+
+
 
 ## 工具查询接口
 
