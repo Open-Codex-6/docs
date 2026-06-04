@@ -1206,11 +1206,7 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
 
 #### 请求示例
 
-```json
-{
-    "num": 2,
-}
-```
+无
 
 #### 响应示例
 
