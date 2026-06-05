@@ -25,10 +25,28 @@
 | `callback_path` | String | 否 | 回调接口路径，用于在请求结束后， Agent 向请求者回调该轮对话的轨迹，只需提供相对路径，域名在配置文件中确定，若不提供则不调用接口并回传会话数据 |
 | `callback_id` | Integer | 否 | 回调 id，用于在请求结束后， Agent 向请求者回调该轮对话的轨迹，若不提供则不调用接口并回传会话数据 |
 | `metadata` | Object | 否 | 业务透传上下文（如地理位置、语言偏好、时区、请求来源等），方便注入到内部大模型请求和工具逻辑中 |
-| `tool_ids` | Array\<String\> | 否 | 允许本次对话使用的工具名称白名单（如 `["amap_search_poi", "variflight_query_flight"]`）。提供时仅有列表中的工具会暴露给 LLM；不提供或传 `null` 则默认开放全部工具。与后端 YAML 配置的 per-agent 工具过滤取交集，名单中不存在的工具名会被静默忽略。 |
+| `selections` | Array\<SelectionItem\> | 否 | 本次对话允许使用的工具/技能/智能体白名单。提供时仅有列表中的项目会生效；不提供或传 `null` 则默认开放全部。工具类型与后端 YAML 配置的 per-agent 过滤取交集，列表中不存在的 id 会被静默忽略。详见 SelectionItem 对象定义。 |
 | `files` | Array\<FileAttachment\> | 否 | 随本次对话附带的文件（图片或 PDF），以 Base64 编码传入，内容会注入到最后一条 `user` 消息中。支持的格式：`image/jpeg`、`image/png`、`image/webp`、`image/gif`、`application/pdf`；传入不支持的 `media_type` 将返回 HTTP 400。 |
 | `user_profile` | UserProfile | 否 | 当前用户画像，Agent 在规划过程中可参考用户偏好、习惯等信息，提升个性化程度；详见 UserProfile 对象定义。不提供则按无偏好信息处理。 |
 | `profile_callback_path` | String | 否 | 用户画像回调接口的相对路径。对话结束后，若 Agent 依据本次交互对用户画像有更新，则向该路径发起回调，将更新后的 UserProfile 写回业务后端；只需提供相对路径，域名在配置文件中确定。不提供则不回调。 |
+
+
+#### SelectionItem 对象
+
+| 字段名 | 类型 | 必填 | 描述 |
+| --- | --- | --- | --- |
+| `type` | String | 是 | 类型，枚举值：`"tool"`（外部工具）、`"skill"`（技能）、`"subagent"`（子智能体） |
+| `id` | String | 是 | 对应类型的标识符，与 `GET /tools/options` 返回的 `id` 字段一致 |
+
+**SelectionItem 示例**
+
+```json
+[
+  { "type": "tool", "id": "variflight_" },
+  { "type": "skill", "id": "new_trip_planning" },
+  { "type": "subagent", "id": "traffic" }
+]
+```
 
 
 #### FileAttachment 对象
@@ -116,7 +134,12 @@
     "location": "北京",
     "timezone": "Asia/Shanghai"
   },
-  "tool_ids": ["amap_search_poi", "variflight_query_flight"],
+  "selections": [
+    { "type": "tool", "id": "amap_" },
+    { "type": "tool", "id": "variflight_" },
+    { "type": "skill", "id": "new_trip_planning" },
+    { "type": "subagent", "id": "traffic" }
+  ],
   "user_profile": {
     "pace": "moderate",
     "budget_level": "mid-range",
@@ -291,10 +314,10 @@ data: {"node": "Orchestrator", "status": "error", "message": "Backend API error:
 
 ## 工具查询接口
 
-### 查询可禁用工具
+### 查询可用工具/技能/智能体
 
-- 功能说明：返回当前系统中所有支持被禁用的工具列表。可禁用工具均为 MCP 外部工具，前端可据此渲染开关控件，供用户按需关闭对应服务。
-- 接口地址: `GET /tools/disableable`
+- 功能说明：返回当前系统中所有可供用户选择的工具、技能（skill）和子智能体（subagent）列表，前端可据此渲染选项控件，供用户按需启用或禁用。每项均包含 `type` 字段标识其类型，工具类项目额外含 `name` 字段。
+- 接口地址: `GET /tools/options`
 - 请求头
   - `Authorization: Bearer <token>`
 
@@ -302,25 +325,79 @@ data: {"node": "Orchestrator", "status": "error", "message": "Backend API error:
 
 返回一个列表，每项包含以下字段：
 
-| 字段名 | 类型 | 描述 |
-| --- | --- | --- |
-| `id` | String | 工具标识前缀（如 `variflight_`、`12306_`），对应 `tool_ids` 传参时使用的前缀 |
-| `name` | String | 工具显示名称，取自 `display_names.yaml` 配置（如"航班查询"） |
-| `description` | String | 工具功能描述 |
+| 字段名 | 类型 | 适用类型 | 描述 |
+| --- | --- | --- | --- |
+| `type` | String | 全部 | 类型标识，枚举值：`"tool"`、`"skill"`、`"subagent"` |
+| `id` | String | 全部 | 标识符，与 `selections` 传参时的 `id` 一致。工具类为前缀（如 `variflight_`），技能和子智能体为名称（如 `new_trip_planning`、`traffic`） |
+| `name` | String | `tool` | 工具显示名称，取自 `display_names.yaml`（如"航班查询"）；`skill` 和 `subagent` 类型无此字段 |
+| `description` | String | 全部 | 功能描述 |
 
 #### 响应示例
 
 ```json
 [
   {
+    "type": "tool",
     "id": "variflight_",
     "name": "航班查询",
     "description": "航班信息查询"
   },
   {
+    "type": "tool",
     "id": "12306_",
-    "name": "火车票查询",
+    "name": "铁路查询",
     "description": "高铁/火车票信息查询"
+  },
+  {
+    "type": "tool",
+    "id": "amap_",
+    "name": "地图服务",
+    "description": "POI 搜索、路线规划等地图功能"
+  },
+  {
+    "type": "skill",
+    "id": "new_trip_planning",
+    "description": "从零规划完整旅行，适用于用户尚无行程、需要系统性制定出行计划的场景。"
+  },
+  {
+    "type": "skill",
+    "id": "budget_optimization",
+    "description": "在用户明确预算上限的场景下，以性价比为核心目标进行旅行规划或方案调整。"
+  },
+  {
+    "type": "skill",
+    "id": "itinerary_modification",
+    "description": "对已有行程进行局部增删或调整，适用于修改既有计划的场景。"
+  },
+  {
+    "type": "skill",
+    "id": "emergency_handling",
+    "description": "处理行程中的突发情况（如航班取消、酒店变更等），快速给出应对方案。"
+  },
+  {
+    "type": "subagent",
+    "id": "traffic",
+    "description": "交通规划专家，负责长途交通（机票/火车票）的查询与规划。"
+  },
+  {
+    "type": "subagent",
+    "id": "local_transport",
+    "description": "市内出行专家，负责目的地内各景点间的短途交通规划。"
+  },
+  {
+    "type": "subagent",
+    "id": "hotel",
+    "description": "酒店住宿专家，负责搜索和推荐符合需求的住宿方案。"
+  },
+  {
+    "type": "subagent",
+    "id": "attraction",
+    "description": "景点游玩专家，负责按天数和偏好规划景点游览安排。"
+  },
+  {
+    "type": "subagent",
+    "id": "food",
+    "description": "美食餐饮专家，负责为行程安排特色餐饮推荐。"
   }
 ]
 ```
