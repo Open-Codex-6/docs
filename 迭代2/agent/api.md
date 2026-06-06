@@ -25,7 +25,7 @@
 | `callback_path` | String | 否 | 回调接口路径，用于在请求结束后， Agent 向请求者回调该轮对话的轨迹，只需提供相对路径，域名在配置文件中确定，若不提供则不调用接口并回传会话数据 |
 | `callback_id` | Integer | 否 | 回调 id，用于在请求结束后， Agent 向请求者回调该轮对话的轨迹，若不提供则不调用接口并回传会话数据 |
 | `metadata` | Object | 否 | 业务透传上下文（如地理位置、语言偏好、时区、请求来源等），方便注入到内部大模型请求和工具逻辑中 |
-| `selections` | Array\<SelectionItem\> | 否 | 本次对话允许使用的工具/技能/智能体白名单。提供时仅有列表中的项目会生效；不提供或传 `null` 则默认开放全部。工具类型与后端 YAML 配置的 per-agent 过滤取交集，列表中不存在的 id 会被静默忽略。详见 SelectionItem 对象定义。 |
+| `disabled_selections` | Array\<SelectionItem\> | 否 | 本次对话中需要禁用的工具/技能/智能体列表。不提供或传 `null` 则默认全部开放。传入条目后，对应项目将被禁用，其余保持可用。某 type 在列表中无条目时，该类型默认全部开放；列表中不存在的 id 会被静默忽略。详见 SelectionItem 对象定义。 |
 | `files` | Array\<FileAttachment\> | 否 | 随本次对话附带的文件（图片或 PDF），以 Base64 编码传入，内容会注入到最后一条 `user` 消息中。支持的格式：`image/jpeg`、`image/png`、`image/webp`、`image/gif`、`application/pdf`；传入不支持的 `media_type` 将返回 HTTP 400。 |
 | `user_profile` | UserProfile | 否 | 当前用户画像，Agent 在规划过程中可参考用户偏好、习惯等信息，提升个性化程度；详见 UserProfile 对象定义。不提供则按无偏好信息处理。 |
 | `profile_callback_path` | String | 否 | 用户画像回调接口的相对路径。对话结束后，若 Agent 依据本次交互对用户画像有更新，则向该路径发起回调，将更新后的 UserProfile 写回业务后端；只需提供相对路径，域名在配置文件中确定。不提供则不回调。 |
@@ -38,12 +38,11 @@
 | `type` | String | 是 | 类型，枚举值：`"tool"`（外部工具）、`"skill"`（技能）、`"subagent"`（子智能体） |
 | `id` | String | 是 | 对应类型的标识符，与 `GET /tools/options` 返回的 `id` 字段一致 |
 
-**SelectionItem 示例**
+**SelectionItem 示例**（禁用航班查询工具和交通专家子智能体）
 
 ```json
 [
   { "type": "tool", "id": "variflight_" },
-  { "type": "skill", "id": "new_trip_planning" },
   { "type": "subagent", "id": "traffic" }
 ]
 ```
@@ -134,11 +133,8 @@
     "location": "北京",
     "timezone": "Asia/Shanghai"
   },
-  "selections": [
-    { "type": "tool", "id": "amap_" },
-    { "type": "tool", "id": "variflight_" },
-    { "type": "skill", "id": "new_trip_planning" },
-    { "type": "subagent", "id": "traffic" }
+  "disabled_selections": [
+    { "type": "tool", "id": "12306_" }
   ],
   "user_profile": {
     "pace": "moderate",
@@ -316,7 +312,7 @@ data: {"node": "Orchestrator", "status": "error", "message": "Backend API error:
 
 ### 查询可用工具/技能/智能体
 
-- 功能说明：返回当前系统中所有可供用户选择的工具、技能（skill）和子智能体（subagent）列表，前端可据此渲染选项控件，供用户按需启用或禁用。每项均包含 `type` 字段标识其类型，工具类项目额外含 `name` 字段。
+- 功能说明：返回当前系统中所有可供用户选择禁用的工具、技能（skill）和子智能体（subagent）列表，前端可据此渲染开关控件，供用户按需禁用。默认情况下所有项目均开放；将选中项的 `id` 传入 `disabled_selections` 即可禁用。每项均包含 `type` 字段标识其类型，工具类项目额外含 `name` 字段。
 - 接口地址: `GET /tools/options`
 - 请求头
   - `Authorization: Bearer <token>`
@@ -328,7 +324,7 @@ data: {"node": "Orchestrator", "status": "error", "message": "Backend API error:
 | 字段名 | 类型 | 适用类型 | 描述 |
 | --- | --- | --- | --- |
 | `type` | String | 全部 | 类型标识，枚举值：`"tool"`、`"skill"`、`"subagent"` |
-| `id` | String | 全部 | 标识符，与 `selections` 传参时的 `id` 一致。工具类为前缀（如 `variflight_`），技能和子智能体为名称（如 `new_trip_planning`、`traffic`） |
+| `id` | String | 全部 | 标识符，与 `disabled_selections` 传参时的 `id` 一致。工具类为前缀（如 `variflight_`），技能和子智能体为名称（如 `new_trip_planning`、`traffic`） |
 | `name` | String | `tool` | 工具显示名称，取自 `display_names.yaml`（如"航班查询"）；`skill` 和 `subagent` 类型无此字段 |
 | `description` | String | 全部 | 功能描述 |
 
