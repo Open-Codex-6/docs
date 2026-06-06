@@ -534,7 +534,14 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
             "id": 1,
             "role": "user",
             "content": "帮我规划行程",
-            "timestamp": "2026-04-18T10:00:00+08:00"
+            "timestamp": "2026-04-18T10:00:00+08:00",
+            "files": [
+                {
+                    "name": "软工三迭代三测试.png",
+                    "url": "https://cloud-zyf.obs.cn-north-4.myhuaweicloud.com/chat-files/135/0f2996c3-056f-4e72-b66b-cdd8d012b757.png",
+                    "type": "image/png"
+                }
+            ]
         },
         {
             "id": 2,
