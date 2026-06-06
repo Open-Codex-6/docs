@@ -424,7 +424,14 @@
 | `id` | `int` | 是 | 会话`id` |
 | `message` | `String` | 是 | 发送的内容 |
 | `files` | `File[]` | 否 | 上传的文件数组（支持图片、文档等，支持多文件） |
-| `tools` | `String[]` | 否 | 选择调用的工具 |
+| `selections` | `selection[]` | 否 | 选择调用的工具 |
+
+- 其中,`selection`类型为
+
+| 参数名 | 类型 | 是否必填 | 说明 |
+| --- | --- | --- | --- |
+| `type` | `String` | 是 | 调用的工具等的类型 |
+| `id` | `String` | 是 | 调用的工具等的标识 |
 
 #### 请求示例
 
@@ -471,6 +478,107 @@ data: {"status": "success", "usage": {"prompt_tokens": 200, "completion_tokens":
     "msg": "INVALID_REQUEST:文件格式不支持",
     "data": null
 }
+```
+
+### 查询可用工具/技能/智能体
+
+- 功能说明：返回当前系统中所有可供用户选择的工具、技能（skill）和子智能体（subagent）列表，前端可据此渲染选项控件，供用户按需启用或禁用。每项均包含 `type` 字段标识其类型，工具类项目额外含 `name` 字段。
+- 接口地址: `GET /chat/selections`
+- 请求头
+  - `Authorization: Bearer <token>`
+
+#### 请求参数
+
+无
+
+#### 请求示例
+
+无
+
+#### 响应Body
+
+返回一个列表，每项包含以下字段：
+
+| 字段名 | 类型 | 适用类型 | 描述 |
+| --- | --- | --- | --- |
+| `type` | String | 全部 | 类型标识，枚举值：`"tool"`、`"skill"`、`"subagent"` |
+| `id` | String | 全部 | 标识符，与 `selections` 传参时的 `id` 一致。工具类为前缀（如 `variflight_`），技能和子智能体为名称（如 `new_trip_planning`、`traffic`） |
+| `name` | String | `tool` | 工具显示名称，取自 `display_names.yaml`（如"航班查询"）；`skill` 和 `subagent` 类型无此字段 |
+| `description` | String | 全部 | 功能描述 |
+
+#### 响应示例
+
+```json
+{
+    "code": "200",
+    "msg": "SUCCESS",
+    "data": [
+    {
+        "type": "tool",
+        "id": "variflight_",
+        "name": "航班查询",
+        "description": "航班信息查询"
+    },
+    {
+        "type": "tool",
+        "id": "12306_",
+        "name": "铁路查询",
+        "description": "高铁/火车票信息查询"
+    },
+    {
+        "type": "tool",
+        "id": "amap_",
+        "name": "地图服务",
+        "description": "POI 搜索、路线规划等地图功能"
+    },
+    {
+        "type": "skill",
+        "id": "new_trip_planning",
+        "description": "从零规划完整旅行，适用于用户尚无行程、需要系统性制定出行计划的场景。"
+    },
+    {
+        "type": "skill",
+        "id": "budget_optimization",
+        "description": "在用户明确预算上限的场景下，以性价比为核心目标进行旅行规划或方案调整。"
+    },
+    {
+        "type": "skill",
+        "id": "itinerary_modification",
+        "description": "对已有行程进行局部增删或调整，适用于修改既有计划的场景。"
+    },
+    {
+        "type": "skill",
+        "id": "emergency_handling",
+        "description": "处理行程中的突发情况（如航班取消、酒店变更等），快速给出应对方案。"
+    },
+    {
+        "type": "subagent",
+        "id": "traffic",
+        "description": "交通规划专家，负责长途交通（机票/火车票）的查询与规划。"
+    },
+    {
+        "type": "subagent",
+        "id": "local_transport",
+        "description": "市内出行专家，负责目的地内各景点间的短途交通规划。"
+    },
+    {
+        "type": "subagent",
+        "id": "hotel",
+        "description": "酒店住宿专家，负责搜索和推荐符合需求的住宿方案。"
+    },
+    {
+        "type": "subagent",
+        "id": "attraction",
+        "description": "景点游玩专家，负责按天数和偏好规划景点游览安排。"
+    },
+    {
+        "type": "subagent",
+        "id": "food",
+        "description": "美食餐饮专家，负责为行程安排特色餐饮推荐。"
+    }
+    ]
+}
+
 ```
 
 ### 轻量级发送消息
