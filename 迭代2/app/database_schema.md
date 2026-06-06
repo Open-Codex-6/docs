@@ -10,6 +10,8 @@
   - 密码，经过加密，不会明文存储，最长100字符，非空
 - `OneToMany`
   - `schedules`：用户拥有的行程
+- `OneToOne`：
+  - `account_profile`：用户画像  
 
 ## schedules行程
 
@@ -196,3 +198,10 @@
   - `question` 对应的问的`message`
 - `ManyToOne`
   - `schedule` 所属行程
+
+## account_profile用户画像
+
+- `data`：`MEDIUMTEXT;not null`
+  - 具体内容，后端不负责，只存储，最长16,777,215 字节 (16 MB)（如有需要可使用更大的类型）
+- `OneToOne`：
+  - `account` 对应的用户
