@@ -312,7 +312,7 @@ data: {"node": "Orchestrator", "status": "error", "message": "Backend API error:
 
 ### 查询可用工具/技能/智能体
 
-- 功能说明：返回当前系统中所有可供用户选择禁用的工具、技能（skill）和子智能体（subagent）列表，前端可据此渲染开关控件，供用户按需禁用。默认情况下所有项目均开放；将选中项的 `id` 传入 `disabled_selections` 即可禁用。每项均包含 `type` 字段标识其类型，工具类项目额外含 `name` 字段。
+- 功能说明：返回当前系统中所有可供用户选择禁用的工具、技能（skill）和子智能体（subagent）列表，前端可据此渲染开关控件，供用户按需禁用。默认情况下所有项目均开放；将选中项的 `id` 传入 `disabled_selections` 即可禁用。每项均包含 `type`、`id`、`name`、`description` 字段。
 - 接口地址: `GET /tools/options`
 - 请求头
   - `Authorization: Bearer <token>`
@@ -325,7 +325,7 @@ data: {"node": "Orchestrator", "status": "error", "message": "Backend API error:
 | --- | --- | --- | --- |
 | `type` | String | 全部 | 类型标识，枚举值：`"tool"`、`"skill"`、`"subagent"` |
 | `id` | String | 全部 | 标识符，与 `disabled_selections` 传参时的 `id` 一致。工具类为前缀（如 `variflight_`），技能和子智能体为名称（如 `new_trip_planning`、`traffic`） |
-| `name` | String | `tool` | 工具显示名称，取自 `display_names.yaml`（如"航班查询"）；`skill` 和 `subagent` 类型无此字段 |
+| `name` | String | 全部 | 用户友好的显示名称（如"航班查询"、"新行程规划"、"交通规划"） |
 | `description` | String | 全部 | 功能描述 |
 
 #### 响应示例
@@ -353,46 +353,55 @@ data: {"node": "Orchestrator", "status": "error", "message": "Backend API error:
   {
     "type": "skill",
     "id": "new_trip_planning",
+    "name": "新行程规划",
     "description": "从零规划完整旅行，适用于用户尚无行程、需要系统性制定出行计划的场景。"
   },
   {
     "type": "skill",
     "id": "budget_optimization",
+    "name": "预算优化规划",
     "description": "在用户明确预算上限的场景下，以性价比为核心目标进行旅行规划或方案调整。"
   },
   {
     "type": "skill",
     "id": "itinerary_modification",
+    "name": "行程增量修改",
     "description": "对已有行程进行局部增删或调整，适用于修改既有计划的场景。"
   },
   {
     "type": "skill",
     "id": "emergency_handling",
+    "name": "突发情况处理",
     "description": "处理行程中的突发情况（如航班取消、酒店变更等），快速给出应对方案。"
   },
   {
     "type": "subagent",
     "id": "traffic",
+    "name": "交通规划",
     "description": "交通规划专家，负责长途交通（机票/火车票）的查询与规划。"
   },
   {
     "type": "subagent",
     "id": "local_transport",
+    "name": "市内出行",
     "description": "市内出行专家，负责目的地内各景点间的短途交通规划。"
   },
   {
     "type": "subagent",
     "id": "hotel",
+    "name": "酒店住宿",
     "description": "酒店住宿专家，负责搜索和推荐符合需求的住宿方案。"
   },
   {
     "type": "subagent",
     "id": "attraction",
+    "name": "景点游玩",
     "description": "景点游玩专家，负责按天数和偏好规划景点游览安排。"
   },
   {
     "type": "subagent",
     "id": "food",
+    "name": "美食餐饮",
     "description": "美食餐饮专家，负责为行程安排特色餐饮推荐。"
   }
 ]
