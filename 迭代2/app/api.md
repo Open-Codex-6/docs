@@ -158,12 +158,20 @@
 | 参数名 | 类型 | 是否必填 | 说明 |
 | --- | --- | --- | --- |
 | `name` | `String` | 否 | 名字，默认值为“默认行程名” |
+| `departure` | `String` | 否 | 出发地，例如“南京” |
+| `destination` | `String` | 否 | 目的地，例如“成都” |
+| `startDate` | `String` | 否 | 行程开始日期，格式 YYYY-MM-DD |
+| `endDate` | `String` | 否 | 行程结束日期，格式 YYYY-MM-DD |
 
 #### 请求示例
 
 ```json
 {
-    "name": "神秘初始行程自定义名111"
+    "name": "神秘初始行程自定义名111",
+    "departure": "南京",
+    "destination": "成都",
+    "startDate": "2026-07-12",
+    "endDate": "2026-07-16"
 }
 ```
 
@@ -236,12 +244,20 @@
         {
             "id": 1,
             "name": "行程1",
-            "updatedAt": "2026-04-01T10:00:00+08:00"
+            "updatedAt": "2026-04-01T10:00:00+08:00",
+            "departure": "南京",
+            "destination": "成都",
+            "startDate": "2026-07-12",
+            "endDate": "2026-07-16"
         },
         {
             "id": 2,
             "name": "行程2",
-            "updatedAt": "2025-04-01T09:00:00+08:00"
+            "updatedAt": "2025-04-01T09:00:00+08:00",
+            "departure": null,
+            "destination": null,
+            "startDate": null,
+            "endDate": null
         }
     ]
 }
