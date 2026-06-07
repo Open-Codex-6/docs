@@ -17,6 +17,14 @@
 
 - `name`：``varchar(50);not null;default:`默认行程名` ``
   - 行程名，最长50字符，非空，默认值为“默认行程名”
+- `departure`：`varchar(50)`
+  - 出发地，最长50字符，可为空
+- `destination`：`varchar(50)`
+  - 目的地，最长50字符，可为空
+- `start_date`：`date`
+  - 行程开始日期，可为空
+- `end_date`：`date`
+  - 行程结束日期，可为空
 - `current_version`：`int;not null`
   - 当前版本号，非空
 - `status`: `varchar(50);not null`
