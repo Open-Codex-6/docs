@@ -200,7 +200,7 @@
  "msg": "",
  "data": [
   {
-   "name": "avg_latency",
+   "name": "Average Latency",
    "brief": "平均响应延迟",
    "description": "统计 Session 内所有有效轮次的耗时，计算平均延迟（毫秒）。值越低表示 Agent 响应越快。",
    "valueRange": {"min": 0},
@@ -208,7 +208,7 @@
    "category": "performance"
   },
   {
-   "name": "answer_relevancy",
+   "name": "Answer Relevancy",
    "brief": "回答相关性",
    "description": "基于 Ragas Answer Relevancy 方法，衡量 Agent 回答与用户初始问题意图的相关程度。得分范围 [0, 1]，越高越好。",
    "valueRange": {"min": 0, "max": 1},
@@ -216,7 +216,7 @@
    "category": "quality"
   },
   {
-   "name": "harmfulness",
+   "name": "Harmfulness",
    "brief": "有害性",
    "description": "基于 Ragas Harmfulness 方法，检测 Agent 响应中的有害内容。得分范围 [0, 1]，0 表示完全安全，越低越好。",
    "valueRange": {"min": 0, "max": 1},
@@ -224,7 +224,7 @@
    "category": "safety"
   },
   {
-   "name": "coherence",
+   "name": "Coherence",
    "brief": "逻辑连贯性",
    "description": "基于 Ragas Coherence 方法，衡量 Agent 响应的逻辑连贯程度。得分范围 [0, 1]，越高越好。",
    "valueRange": {"min": 0, "max": 1},
@@ -232,7 +232,7 @@
    "category": "quality"
   },
   {
-   "name": "faithfulness",
+   "name": "Faithfulness",
    "brief": "忠实度",
    "description": "基于 Ragas Faithfulness 方法，衡量 Agent 回答对工具调用事实的忠实程度（护栏指标）。得分范围 [0, 1]，越高越好。",
    "valueRange": {"min": 0, "max": 1},
@@ -262,7 +262,7 @@
 | `name` | `String` | 是 | 指标名称，最长 64 位，同一用户下唯一 |
 | `brief` | `String` | 否 | 指标简介，最长 255 位 |
 | `description` | `String` | 否 | 指标详细描述 |
-| `scoreDesc` | `Array` | 否 | 评分说明列表，最多 20 项，每项包含 `score`（整数）和 `description`（字符串） |
+| `scoreDesc` | `Array` | 否 | 评分量规列表，最多 20 项，每项包含 `score`（`0.0~1.0` 浮点数）和 `description`（字符串） |
 
 #### 请求示例
 
@@ -272,9 +272,9 @@
  "brief": "回答完整性",
  "description": "衡量 Agent 回答是否覆盖了用户问题的所有要点",
  "scoreDesc": [
-  {"score": 1, "description": "回答完全不完整"},
-  {"score": 3, "description": "回答部分完整"},
-  {"score": 5, "description": "回答完全完整"}
+  {"score": 0.0, "description": "回答完全不完整，答非所问"},
+  {"score": 0.5, "description": "回答部分完整，有关键信息缺失"},
+  {"score": 1.0, "description": "回答完整覆盖了用户所有诉求"}
  ]
 }
 ```
@@ -291,9 +291,9 @@
   "brief": "回答完整性",
   "description": "衡量 Agent 回答是否覆盖了用户问题的所有要点",
   "scoreDesc": [
-   {"score": 1, "description": "回答完全不完整"},
-   {"score": 3, "description": "回答部分完整"},
-   {"score": 5, "description": "回答完全完整"}
+   {"score": 0.0, "description": "回答完全不完整，答非所问"},
+   {"score": 0.5, "description": "回答部分完整，有关键信息缺失"},
+   {"score": 1.0, "description": "回答完整覆盖了用户所有诉求"}
   ],
   "createdAt": "2026-05-01T10:00:00Z",
   "updatedAt": "2026-05-01T10:00:00Z"
@@ -333,8 +333,9 @@
    "brief": "回答完整性",
    "description": "衡量 Agent 回答是否覆盖了用户问题的所有要点",
    "scoreDesc": [
-    {"score": 1, "description": "回答完全不完整"},
-    {"score": 5, "description": "回答完全完整"}
+    {"score": 0.0, "description": "回答完全不完整，答非所问"},
+    {"score": 0.5, "description": "回答部分完整，有关键信息缺失"},
+    {"score": 1.0, "description": "回答完整覆盖了用户所有诉求"}
    ],
    "createdAt": "2026-05-01T10:00:00Z",
    "updatedAt": "2026-05-01T10:00:00Z"
@@ -359,7 +360,7 @@
 | `name` | `String` | 是 | 指标名称，最长 64 位 |
 | `brief` | `String` | 否 | 指标简介，最长 255 位 |
 | `description` | `String` | 否 | 指标详细描述 |
-| `scoreDesc` | `Array` | 否 | 评分说明列表，最多 20 项 |
+| `scoreDesc` | `Array` | 否 | 评分量规列表，最多 20 项，`score` 为 `0.0~1.0` 浮点数 |
 
 #### 请求示例
 
@@ -369,8 +370,8 @@
  "brief": "回答完整性（已修订）",
  "description": "衡量回答完整性，修订版",
  "scoreDesc": [
-  {"score": 1, "description": "完全不完整"},
-  {"score": 5, "description": "非常完整"}
+  {"score": 0.0, "description": "完全不完整"},
+  {"score": 1.0, "description": "非常完整"}
  ]
 }
 ```
@@ -467,7 +468,7 @@
 | `title` | `String` | 是 | 任务标题，最长 255 位 |
 | `description` | `String` | 否 | 任务描述 |
 | `metrics` | `Array` | 是 | 绑定的指标列表，至少 1 项 |
-| `metrics[].id` | `String` | 是 | 指标 ID（系统指标填指标名如 `avg_latency`，自定义指标填数字 ID 的字符串形式如 `"1"`） |
+| `metrics[].id` | `String` | 是 | 指标标识名。系统指标填指标名（如 `"Average Latency"`）；自定义指标同样填指标名（如 `"response_completeness"`），与创建指标时的 `name` 字段一致 |
 | `metrics[].type` | `String` | 是 | 指标类型，`"system"` 或 `"custom"` |
 | `metrics[].name` | `String` | 是 | 指标名称（冗余存储，用于展示） |
 
@@ -478,8 +479,8 @@
  "title": "旅行助手评测",
  "description": "测试旅行规划场景下 Agent 的延迟与完整性",
  "metrics": [
-  {"id": "avg_latency", "type": "system", "name": "平均响应延迟"},
-  {"id": "1", "type": "custom", "name": "response_completeness"}
+  {"id": "Average Latency", "type": "system", "name": "Average Latency"},
+  {"id": "response_completeness", "type": "custom", "name": "response_completeness"}
  ]
 }
 ```
@@ -539,8 +540,8 @@
    "title": "旅行助手评测",
    "description": "测试旅行规划场景下 Agent 的延迟与完整性",
    "metrics": [
-    {"id": "avg_latency", "type": "system", "name": "平均响应延迟"},
-    {"id": "1", "type": "custom", "name": "response_completeness"}
+    {"id": "Average Latency", "type": "system", "name": "Average Latency"},
+    {"id": "response_completeness", "type": "custom", "name": "response_completeness"}
    ],
    "evalCount": 3,
    "lastEvaluatedAt": "2026-05-01T11:00:00Z",
@@ -551,7 +552,7 @@
    "title": "客服助手评测",
    "description": "",
    "metrics": [
-    {"id": "avg_latency", "type": "system", "name": "平均响应延迟"}
+    {"id": "Average Latency", "type": "system", "name": "Average Latency"}
    ],
    "evalCount": 0,
    "lastEvaluatedAt": null,
@@ -695,8 +696,8 @@
   "title": "旅行助手评测",
   "description": "测试旅行规划场景下 Agent 的延迟与完整性",
   "metrics": [
-   {"id": "avg_latency", "type": "system", "name": "平均响应延迟"},
-   {"id": "1", "type": "custom", "name": "response_completeness"}
+   {"id": "Average Latency", "type": "system", "name": "Average Latency"},
+   {"id": "response_completeness", "type": "custom", "name": "response_completeness"}
   ],
   "evalCount": 2,
   "lastEvaluatedAt": "2026-05-01T11:00:00Z",
@@ -707,16 +708,16 @@
     "createdAt": "2026-05-01T10:30:00Z",
     "metricResults": [
      {
-      "metric_name": "avg_latency",
+      "metric_name": "Average Latency",
       "score": 312.5,
-      "reason": "全局共有 2 个有效轮次记录耗时，Session平均延迟为 312.50 ms",
+      "reason": "全局共有 2 个有效轮次记录耗时，Session平均延���为 312.50 ms",
       "status": "success"
      },
      {
       "metric_name": "response_completeness",
-      "score": null,
-      "reason": "自定义指标暂不支持自动计算",
-      "status": "skipped"
+      "score": 0.8,
+      "reason": "Agent 完整响应了用户需求，回复有条理，细节充分。",
+      "status": "success"
      }
     ]
    },
@@ -725,16 +726,16 @@
     "createdAt": "2026-05-01T11:00:00Z",
     "metricResults": [
      {
-      "metric_name": "avg_latency",
+      "metric_name": "Average Latency",
       "score": 280.0,
       "reason": "全局共有 2 个有效轮次记录耗时，Session平均延迟为 280.00 ms",
       "status": "success"
      },
      {
       "metric_name": "response_completeness",
-      "score": null,
-      "reason": "自定义指标暂不支持自动计算",
-      "status": "skipped"
+      "score": 0.6,
+      "reason": "Agent 基本完成了主要需求，但在完整性上仍有不足。",
+      "status": "success"
      }
     ]
    }
@@ -772,17 +773,58 @@
 | 参数名 | 类型 | 是否必填 | 说明 |
 | --- | --- | --- | --- |
 | `taskId` | `Integer` | 是 | 任务 ID（路径参数） |
-| `rounds` | `Array` | 是 | 对话轮次列表，至少 1 项 |
-| `rounds[].user_query` | `String` | 是 | 用户输入 |
-| `rounds[].agent_response` | `String` | 是 | Agent 回复 |
-| `rounds[].tools` | `Array` | 否 | 工具调用列表 |
-| `rounds[].tools[].name` | `String` | 是 | 工具名称 |
-| `rounds[].tools[].inputs` | `Object` | 是 | 工具入参（任意 JSON 对象） |
-| `rounds[].tools[].observation` | `String` | 是 | 工具返回结果 |
-| `rounds[].tools[].thought` | `String` | 是 | 调用前的思考过程 |
-| `rounds[].metadata` | `Object` | 否 | 元数据 |
-| `rounds[].metadata.latency_ms` | `Number` | 否 | 本轮耗时（毫秒），用于计算 `avg_latency` |
-| `rounds[].metadata.tokens_used` | `Integer` | 否 | 本轮消耗的 token 数 |
+| `rounds` | `Array[Round]` | 是 | 对话轮次列表，至少 1 项 |
+| `currentPlan` | `Object` | 否 | 当前行程计划快照，供 `Location Reliability`、`Schedule Reasonability`、`Route Efficiency` 等需要计划数据的指标使用 |
+
+**`Round` 结构**
+
+| 参数名 | 类型 | 是否必填 | 说明 |
+| --- | --- | --- | --- |
+| `query` | `String` | 是 | 用户输入或父 Agent 给子 Agent 的任务描述 |
+| `final_response` | `String` | 是 | Agent 最终回复文本 |
+| `agent` | `String` | 是 | Agent 类型：`supervisor` / `traffic` / `hotel` / `attraction` / `food` |
+| `is_delegated` | `Boolean` | 是 | 是否为父 Agent 委托产生；顶层 supervisor 为 `false`，内嵌子 Agent 为 `true` |
+| `steps` | `Array` | 是 | 执行步骤序列，每项为 `Thought`、`Tool` 或内嵌子 `Round`，按时间顺序排列 |
+| `metadata` | `Object` | 是 | 本轮汇总元数据 |
+
+**`steps` 中的 `Thought` 结构**
+
+| 参数名 | 类型 | 是否必填 | 说明 |
+| --- | --- | --- | --- |
+| `type` | `String` | 是 | 固定为 `"thought"` |
+| `content` | `String` | 是 | 思考内容文本 |
+
+**`steps` 中的 `Tool` 结构**
+
+| 参数名 | 类型 | 是否必填 | 说明 |
+| --- | --- | --- | --- |
+| `type` | `String` | 是 | 固定为 `"tool"` |
+| `tool_name` | `String` | 是 | 工具名称，如 `amap_poi_search` |
+| `inputs` | `Object` | 是 | 工具入参，无入参时传 `{}` |
+| `observation` | `String` | 是 | 工具返回结果或错误文本 |
+| `is_error` | `Boolean` | 否 | 本次调用是否返回错误，默认 `false` |
+
+**`metadata` 结构**
+
+| 参数名 | 类型 | 是否必填 | 说明 |
+| --- | --- | --- | --- |
+| `is_error` | `Boolean` | 是 | 本轮执行是否产生错误 |
+| `latency_ms` | `Number` | 否 | 本轮总耗时（毫秒），用于计算 `Average Latency` |
+| `prompt_tokens` | `Integer` | 否 | 本轮 LLM prompt tokens |
+| `completion_tokens` | `Integer` | 否 | 本轮 LLM completion tokens |
+| `llm_model` | `String` | 否 | 本轮使用的模型名称 |
+| `error_message` | `String` | 否 | `is_error` 为 `true` 时的错误信息 |
+| `node_count` | `Integer` | 否 | 整棵 Agent 树的节点总数 |
+| `tool_count` | `Integer` | 否 | 整棵树工具调用总次数 |
+| `delegation_count` | `Integer` | 否 | 整棵树委托调用总次数 |
+
+**`currentPlan` 结构**
+
+| 参数名 | 类型 | 是否必填 | 说明 |
+| --- | --- | --- | --- |
+| `version` | `Integer` | 否 | 计划版本号 |
+| `updatedBy` | `String` | 是 | 更新来源：`"account"`（用户手动）或 `"agent"`（Agent 自动） |
+| `items` | `Array[PlanItem]` | 是 | 计划条目列表，结构同 Agent APP 接口文档中的 `PlanItem` |
 
 #### 请求示例
 
@@ -790,31 +832,84 @@
 {
  "rounds": [
   {
-   "user_query": "帮我规划一份杭州三日游",
-   "agent_response": "已为您生成行程安排。",
-   "tools": [
+   "query": "帮我规划北京3天行程，从上海出发",
+   "final_response": "已为您规划好北京3天行程：Day1 高铁G2 上海→北京，入住王府井希尔顿。",
+   "agent": "supervisor",
+   "is_delegated": false,
+   "steps": [
     {
-     "name": "search_attractions",
-     "inputs": {"city": "杭州"},
-     "observation": "返回景点列表：西湖、灵隐寺……",
-     "thought": "需要先查询景点信息"
+     "type": "thought",
+     "content": "用户需要北京3天行程，需要交通和住宿，并行委托子 Agent 处理。"
+    },
+    {
+     "query": "查询上海到北京的交通，2人出行",
+     "final_response": "推荐高铁G2次，553元/人。",
+     "agent": "traffic",
+     "is_delegated": true,
+     "steps": [
+      {
+       "type": "tool",
+       "tool_name": "12306_search_train",
+       "inputs": {"departure": "上海", "arrival": "北京", "date": "2026-06-10"},
+       "observation": "{\"trains\":[{\"trainNo\":\"G2\",\"price\":553}]}",
+       "is_error": false
+      }
+     ],
+     "metadata": {
+      "latency_ms": 1000,
+      "prompt_tokens": 400,
+      "completion_tokens": 180,
+      "llm_model": "gpt-4o-mini",
+      "is_error": false,
+      "node_count": 1,
+      "tool_count": 1,
+      "delegation_count": 0
+     }
+    },
+    {
+     "type": "tool",
+     "tool_name": "save_transport_long",
+     "inputs": {"name": "上海→北京 高铁G2", "cost": 1106},
+     "observation": "{\"status\":\"ok\"}",
+     "is_error": false
     }
    ],
    "metadata": {
-    "latency_ms": 350.5,
-    "tokens_used": 512
-   }
-  },
-  {
-   "user_query": "有哪些推荐的餐厅？",
-   "agent_response": "以下是推荐餐厅……",
-   "tools": [],
-   "metadata": {
-    "latency_ms": 274.0,
-    "tokens_used": 320
+    "latency_ms": 3800,
+    "prompt_tokens": 1900,
+    "completion_tokens": 650,
+    "llm_model": "gpt-4o-mini",
+    "is_error": false,
+    "node_count": 2,
+    "tool_count": 2,
+    "delegation_count": 1
    }
   }
- ]
+ ],
+ "currentPlan": {
+  "version": 1,
+  "updatedBy": "agent",
+  "items": [
+   {
+    "type": "transport_long",
+    "name": "上海→北京 高铁G2",
+    "start_time": "2026-06-10T08:00:00+08:00",
+    "end_time": "2026-06-10T12:30:00+08:00",
+    "status": "planned",
+    "isConfirmed": false,
+    "cost": 1106,
+    "details": {
+     "type": "transport_long",
+     "data": {
+      "transport_mode": "train",
+      "vehicle_number": "G2",
+      "departure_location": {"poi_name": "上海虹桥站", "lng": 121.32, "lat": 31.19},
+      "arrival_location": {"poi_name": "北京南站", "lng": 116.38, "lat": 39.86}
+     }
+    }
+   }
+  ]
+ }
 }
 ```
 
@@ -828,16 +923,16 @@
   "seqNum": 1,
   "metricResults": [
    {
-    "metric_name": "avg_latency",
-    "score": 312.25,
-    "reason": "全局共有 2 个有效轮次记录耗时，Session平均延迟为 312.25 ms",
+    "metric_name": "Average Latency",
+    "score": 3800.0,
+    "reason": "全局共有 1 个有效轮次记录耗时，Session平均延迟为 3800.00 ms",
     "status": "success"
    },
    {
     "metric_name": "response_completeness",
-    "score": null,
-    "reason": "自定义指标暂不支持自动计算",
-    "status": "skipped"
+    "score": 0.75,
+    "reason": "Agent 基本完成了用户的行程规划需求，但缺少景点和餐饮安排。",
+    "status": "success"
    }
   ]
  }
