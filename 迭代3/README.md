@@ -25,12 +25,13 @@
 
 ```
 迭代3
-├── 开发重点.md # 迭代 3 新增的亮点功能的介绍
+├── 评测
+│   ├── eval_context_results.json # 评测结果
+│   └── datasets.json # 评测数据集
 ├── 需求分析文档.md
 ├── Agent 详细设计文档.md
-├── agent_optimization_report.md # Agent 优化⽂档
-├── eval_context_results.json # 评测数据集
-├── meeting # 每周会议记录
+├── Agent 优化文档.md
+├── meeting # 会议记录
 │   ├── 260513.md
 │   ├── 260520.md
 │   ├── 260527.assets
